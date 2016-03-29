@@ -17,3 +17,7 @@ hs_err_pid*
 .idea/*
 .project
 *.iml
+
+#project specific buildable
+java2html*
+javadoc*
