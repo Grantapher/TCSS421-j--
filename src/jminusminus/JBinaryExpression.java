@@ -283,12 +283,8 @@ class JModuloOp extends JBinaryExpression {
     @Override
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
-        output.addNoArgInstruction(CLConstants.DUP);
         rhs.codegen(output);
-        output.addNoArgInstruction(CLConstants.DUP_X1);
-        output.addNoArgInstruction(CLConstants.IDIV);
-        output.addNoArgInstruction(CLConstants.IMUL);
-        output.addNoArgInstruction(CLConstants.ISUB);
+        output.addNoArgInstruction(CLConstants.IREM);
     }
 }
 

@@ -16,12 +16,9 @@ public class GCD {
     private int mod(int a, int b) {
         if (b == 0) {
             return a;
-        } else if (a == b) {
-            return 0;
-        } else if (a > b) {
-            return mod(a - b, b);
+        } else {
+            return a % b;
         }
-        return a;
     }
 
     // Compute the GCD(a, b) using the Euclidean algorithm and
