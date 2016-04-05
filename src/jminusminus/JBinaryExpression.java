@@ -11,31 +11,33 @@ import static jminusminus.CLConstants.*;
 
 abstract class JBinaryExpression extends JExpression {
 
-    /** The binary operator. */
+    /**
+     * The binary operator.
+     */
     protected String operator;
 
-    /** The lhs operand. */
+    /**
+     * The lhs operand.
+     */
     protected JExpression lhs;
 
-    /** The rhs operand. */
+    /**
+     * The rhs operand.
+     */
     protected JExpression rhs;
 
     /**
      * Construct an AST node for a binary expression given its line number, the
      * binary operator, and lhs and rhs operands.
-     * 
-     * @param line
-     *            line in which the binary expression occurs in the source file.
-     * @param operator
-     *            the binary operator.
-     * @param lhs
-     *            the lhs operand.
-     * @param rhs
-     *            the rhs operand.
+     *
+     * @param line     line in which the binary expression occurs in the source file.
+     * @param operator the binary operator.
+     * @param lhs      the lhs operand.
+     * @param rhs      the rhs operand.
      */
 
     protected JBinaryExpression(int line, String operator, JExpression lhs,
-            JExpression rhs) {
+                                JExpression rhs) {
         super(line);
         this.operator = operator;
         this.lhs = lhs;
@@ -77,14 +79,11 @@ class JPlusOp extends JBinaryExpression {
     /**
      * Construct an AST node for an addition expression given its line number,
      * and the lhs and rhs operands.
-     * 
-     * @param line
-     *            line in which the addition expression occurs in the source
-     *            file.
-     * @param lhs
-     *            the lhs operand.
-     * @param rhs
-     *            the rhs operand.
+     *
+     * @param line line in which the addition expression occurs in the source
+     *             file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JPlusOp(int line, JExpression lhs, JExpression rhs) {
@@ -96,9 +95,8 @@ class JPlusOp extends JBinaryExpression {
      * concatenation, we rewrite the subtree to make that explicit (and analyze
      * that). Otherwise we check the types of the addition operands and compute
      * the result type.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -123,10 +121,9 @@ class JPlusOp extends JBinaryExpression {
      * (in analyze()), so code generation here involves simply generating code
      * for loading the operands onto the stack and then generating the
      * appropriate add instruction.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -148,14 +145,11 @@ class JSubtractOp extends JBinaryExpression {
     /**
      * Construct an AST node for a subtraction expression given its line number,
      * and lhs and rhs operands.
-     * 
-     * @param line
-     *            line in which the subtraction expression occurs in the source
-     *            file.
-     * @param lhs
-     *            the lhs operand.
-     * @param rhs
-     *            the rhs operand.
+     *
+     * @param line line in which the subtraction expression occurs in the source
+     *             file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JSubtractOp(int line, JExpression lhs, JExpression rhs) {
@@ -165,9 +159,8 @@ class JSubtractOp extends JBinaryExpression {
     /**
      * Analyzing the - operation involves analyzing its operands, checking
      * types, and determining the result type.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -183,10 +176,9 @@ class JSubtractOp extends JBinaryExpression {
     /**
      * Generating code for the - operation involves generating code for the two
      * operands, and then the subtraction instruction.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -206,14 +198,11 @@ class JMultiplyOp extends JBinaryExpression {
     /**
      * Construct an AST for a multiplication expression given its line number,
      * and the lhs and rhs operands.
-     * 
-     * @param line
-     *            line in which the multiplication expression occurs in the
-     *            source file.
-     * @param lhs
-     *            the lhs operand.
-     * @param rhs
-     *            the rhs operand.
+     *
+     * @param line line in which the multiplication expression occurs in the
+     *             source file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JMultiplyOp(int line, JExpression lhs, JExpression rhs) {
@@ -223,9 +212,8 @@ class JMultiplyOp extends JBinaryExpression {
     /**
      * Analyzing the * operation involves analyzing its operands, checking
      * types, and determining the result type.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -241,10 +229,9 @@ class JMultiplyOp extends JBinaryExpression {
     /**
      * Generating code for the * operation involves generating code for the two
      * operands, and then the multiplication instruction.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -254,3 +241,55 @@ class JMultiplyOp extends JBinaryExpression {
     }
 
 }
+
+class JDivideOp extends JBinaryExpression {
+    public JDivideOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "/", lhs, rhs);
+    }
+
+    @Override
+    public JExpression analyze(Context context) {
+        lhs = lhs.analyze(context);
+        rhs = rhs.analyze(context);
+        lhs.type().mustMatchExpected(line(), Type.INT);
+        rhs.type().mustMatchExpected(line(), Type.INT);
+        type = Type.INT;
+        return this;
+    }
+
+    @Override
+    public void codegen(CLEmitter output) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addNoArgInstruction(CLConstants.IDIV);
+    }
+}
+
+class JModuloOp extends JBinaryExpression {
+    public JModuloOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "%", lhs, rhs);
+    }
+
+    @Override
+    public JExpression analyze(Context context) {
+        lhs = lhs.analyze(context);
+        rhs = rhs.analyze(context);
+        lhs.type().mustMatchExpected(line(), Type.INT);
+        rhs.type().mustMatchExpected(line(), Type.INT);
+        type = Type.INT;
+        return this;
+    }
+
+    //TODO store data, should only codegen once each
+    @Override
+    public void codegen(CLEmitter output) {
+        lhs.codegen(output);
+        output.addNoArgInstruction(CLConstants.DUP);
+        rhs.codegen(output);
+        output.addNoArgInstruction(CLConstants.DUP_X1);
+        output.addNoArgInstruction(CLConstants.IDIV);
+        output.addNoArgInstruction(CLConstants.IMUL);
+        output.addNoArgInstruction(CLConstants.ISUB);
+    }
+}
+
