@@ -280,7 +280,6 @@ class JModuloOp extends JBinaryExpression {
         return this;
     }
 
-    //TODO store data, should only codegen once each
     @Override
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
