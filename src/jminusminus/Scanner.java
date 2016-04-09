@@ -31,6 +31,11 @@ class Scanner {
     private Hashtable<String, TokenKind> reserved;
 
     /**
+     * Unimplemented keywords in java.
+     */
+    private Hashtable<String, TokenKind> unimplemented;
+
+    /**
      * Source characters.
      */
     private CharReader input;
@@ -69,33 +74,105 @@ class Scanner {
 
         // Keywords in j--
         reserved = new Hashtable<String, TokenKind>();
-        reserved.put(ABSTRACT.image(), ABSTRACT);
-        reserved.put(BOOLEAN.image(), BOOLEAN);
-        reserved.put(CHAR.image(), CHAR);
-        reserved.put(CLASS.image(), CLASS);
-        reserved.put(ELSE.image(), ELSE);
-        reserved.put(EXTENDS.image(), EXTENDS);
-        reserved.put(FALSE.image(), FALSE);
-        reserved.put(IF.image(), IF);
-        reserved.put(IMPORT.image(), IMPORT);
-        reserved.put(INSTANCEOF.image(), INSTANCEOF);
-        reserved.put(INT.image(), INT);
-        reserved.put(NEW.image(), NEW);
-        reserved.put(NULL.image(), NULL);
-        reserved.put(PACKAGE.image(), PACKAGE);
-        reserved.put(PRIVATE.image(), PRIVATE);
-        reserved.put(PROTECTED.image(), PROTECTED);
-        reserved.put(PUBLIC.image(), PUBLIC);
-        reserved.put(RETURN.image(), RETURN);
-        reserved.put(STATIC.image(), STATIC);
-        reserved.put(SUPER.image(), SUPER);
-        reserved.put(THIS.image(), THIS);
-        reserved.put(TRUE.image(), TRUE);
-        reserved.put(VOID.image(), VOID);
-        reserved.put(WHILE.image(), WHILE);
+        unimplemented = new Hashtable<String, TokenKind>();
+
+        putReserved(ABSTRACT);
+        putReserved(BOOLEAN);
+        putReserved(BREAK);
+        putReserved(BYTE);
+        putReserved(CASE);
+        putReserved(CATCH);
+        putReserved(CHAR);
+        putReserved(CLASS);
+        putReserved(CONST);
+        putReserved(CONTINUE);
+        putReserved(DEFAULT);
+        putReserved(DO);
+        putReserved(DOUBLE);
+        putReserved(ELSE);
+        putReserved(EXTENDS);
+        putReserved(FALSE);
+        putReserved(FINAL);
+        putReserved(FINALLY);
+        putReserved(FLOAT);
+        putReserved(FOR);
+        putReserved(GOTO);
+        putReserved(IF);
+        putReserved(IMPLEMENTS);
+        putReserved(IMPORT);
+        putReserved(INSTANCEOF);
+        putReserved(INT);
+        putReserved(INTERFACE);
+        putReserved(LONG);
+        putReserved(NATIVE);
+        putReserved(NEW);
+        putReserved(NULL);
+        putReserved(PACKAGE);
+        putReserved(PRIVATE);
+        putReserved(PROTECTED);
+        putReserved(PUBLIC);
+        putReserved(RETURN);
+        putReserved(SHORT);
+        putReserved(STATIC);
+        putReserved(STRICTFP);
+        putReserved(SUPER);
+        putReserved(SWITCH);
+        putReserved(SYNCHRONIZED);
+        putReserved(THIS);
+        putReserved(THROW);
+        putReserved(THROWS);
+        putReserved(TRANSIENT);
+        putReserved(TRUE);
+        putReserved(TRY);
+        putReserved(VOID);
+        putReserved(VOLATILE);
+        putReserved(WHILE);
+
+        //unimplemented
+        putUnimplemented(BREAK);
+        putUnimplemented(BYTE);
+        putUnimplemented(CASE);
+        putUnimplemented(CATCH);
+        putUnimplemented(CONST);
+        putUnimplemented(CONTINUE);
+        putUnimplemented(DEFAULT);
+        putUnimplemented(DO);
+        putUnimplemented(DOUBLE);
+        putUnimplemented(FINAL);
+        putUnimplemented(FINALLY);
+        putUnimplemented(FLOAT);
+        putUnimplemented(FOR);
+        putUnimplemented(GOTO);
+        putUnimplemented(IMPLEMENTS);
+        putUnimplemented(INTERFACE);
+        putUnimplemented(LONG);
+        putUnimplemented(NATIVE);
+        putUnimplemented(SHORT);
+        putUnimplemented(STRICTFP);
+        putUnimplemented(SWITCH);
+        putUnimplemented(SYNCHRONIZED);
+        putUnimplemented(THROW);
+        putUnimplemented(THROWS);
+        putUnimplemented(TRANSIENT);
+        putUnimplemented(TRY);
+        putUnimplemented(VOLATILE);
 
         // Prime the pump.
         nextCh();
+    }
+
+    /**
+     * Puts the TokenKind into the reserved HashTable.
+     */
+    private void putReserved(TokenKind tokenKind) {
+        reserved.put(tokenKind.image(), tokenKind);
+    }
+
+    /**
+     * Puts the TokenKind into the unimplemented HashTable.
+     */
+    private void putUnimplemented(TokenKind tokenKind) {
+        unimplemented.put(tokenKind.image(), tokenKind);
     }
 
     /**
@@ -129,6 +206,10 @@ class Scanner {
                             }
                         }
                     }
+                } else if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(DIV_ASSIGN);
+                    return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
                 }
@@ -138,6 +219,42 @@ class Scanner {
         }
         line = input.line();
         switch (ch) {
+            case '?':
+                nextCh();
+                reportUnimplementedError(TERNARY_START);
+                return new TokenInfo(TERNARY_START, line);
+            case ':':
+                nextCh();
+                reportUnimplementedError(TERNARY_END);
+                return new TokenInfo(TERNARY_END, line);
+            case '~':
+                nextCh();
+                reportUnimplementedError(BCOMP);
+                return new TokenInfo(BCOMP, line);
+            case '^':
+                nextCh();
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(XOR_ASSIGN);
+                    return new TokenInfo(XOR_ASSIGN, line);
+                } else {
+                    reportUnimplementedError(XOR);
+                    return new TokenInfo(XOR, line);
+                }
+            case '|':
+                nextCh();
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(BOR_ASSIGN);
+                    return new TokenInfo(BOR_ASSIGN, line);
+                } else if (ch == '|') {
+                    nextCh();
+                    reportUnimplementedError(LOR);
+                    return new TokenInfo(LOR, line);
+                } else {
+                    reportUnimplementedError(BOR);
+                    return new TokenInfo(BOR, line);
+                }
             case '(':
                 nextCh();
                 return new TokenInfo(LPAREN, line);
@@ -172,13 +289,31 @@ class Scanner {
                 }
             case '!':
                 nextCh();
-                return new TokenInfo(LNOT, line);
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(NEQ);
+                    return new TokenInfo(NEQ, line);
+                } else {
+                    return new TokenInfo(LNOT, line);
+                }
             case '*':
                 nextCh();
-                return new TokenInfo(STAR, line);
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(MUL_ASSIGN);
+                    return new TokenInfo(MUL_ASSIGN, line);
+                } else {
+                    return new TokenInfo(MUL, line);
+                }
             case '%':
                 nextCh();
-                return new TokenInfo(MOD, line);
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(MOD_ASSIGN);
+                    return new TokenInfo(MOD_ASSIGN, line);
+                } else {
+                    return new TokenInfo(MOD, line);
+                }
             case '+':
                 nextCh();
                 if (ch == '=') {
@@ -195,29 +330,73 @@ class Scanner {
                 if (ch == '-') {
                     nextCh();
                     return new TokenInfo(DEC, line);
+                } else if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(SUB_ASSIGN);
+                    return new TokenInfo(SUB_ASSIGN, line);
                 } else {
-                    return new TokenInfo(MINUS, line);
+                    return new TokenInfo(SUB, line);
                 }
             case '&':
                 nextCh();
-                if (ch == '&') {
+                if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(BAND_ASSIGN);
+                    return new TokenInfo(BAND_ASSIGN, line);
+                } else if (ch == '&') {
                     nextCh();
                     return new TokenInfo(LAND, line);
                 } else {
-                    reportScannerError("Operator & is not supported in j--.");
-                    return getNextToken();
+                    reportUnimplementedError(BAND);
+                    return new TokenInfo(BAND, line);
                 }
             case '>':
                 nextCh();
-                return new TokenInfo(GT, line);
+                if (ch == '>') {
+                    nextCh();
+                    if (ch == '=') {
+                        nextCh();
+                        reportUnimplementedError(RSHIFT_ASSIGN);
+                        return new TokenInfo(RSHIFT_ASSIGN, line);
+                    } else if (ch == '>') {
+                        nextCh();
+                        if (ch == '=') {
+                            nextCh();
+                            reportUnimplementedError(URSHIFT_ASSIGN);
+                            return new TokenInfo(URSHIFT_ASSIGN, line);
+                        } else {
+                            reportUnimplementedError(URSHIFT);
+                            return new TokenInfo(URSHIFT, line);
+                        }
+                    } else {
+                        reportUnimplementedError(RSHIFT);
+                        return new TokenInfo(RSHIFT, line);
+                    }
+                } else if (ch == '=') {
+                    nextCh();
+                    reportUnimplementedError(GEQ);
+                    return new TokenInfo(GEQ, line);
+                } else {
+                    return new TokenInfo(GT, line);
+                }
             case '<':
                 nextCh();
-                if (ch == '=') {
+                if (ch == '<') {
                     nextCh();
-                    return new TokenInfo(LE, line);
+                    if (ch == '=') {
+                        nextCh();
+                        reportUnimplementedError(LSHIFT_ASSIGN);
+                        return new TokenInfo(LSHIFT_ASSIGN, line);
+                    } else {
+                        reportUnimplementedError(LSHIFT);
+                        return new TokenInfo(LSHIFT, line);
+                    }
+                } else if (ch == '=') {
+                    nextCh();
+                    return new TokenInfo(LEQ, line);
                 } else {
-                    reportScannerError("Operator < is not supported in j--.");
-                    return getNextToken();
+                    reportUnimplementedError(LT);
+                    return new TokenInfo(LT, line);
                 }
             case '\'':
                 buffer = new StringBuffer();
@@ -300,7 +479,9 @@ class Scanner {
                     }
                     String identifier = buffer.toString();
                     if (reserved.containsKey(identifier)) {
-                        return new TokenInfo(reserved.get(identifier), line);
+                        TokenKind token = reserved.get(identifier);
+                        if (unimplemented.containsKey(identifier)) reportUnimplementedError(token);
+                        return new TokenInfo(token, line);
                     } else {
                         return new TokenInfo(IDENTIFIER, identifier, line);
                     }
@@ -362,6 +543,12 @@ class Scanner {
         } catch (Exception e) {
             reportScannerError("Unable to read characters from input");
         }
+    }
+
+    private void reportUnimplementedError(TokenKind identifier) {
+        isInError = true;
+        System.err.printf("%s:%d: ", fileName, line);
+        System.err.println(identifier.image() + " is not implemented in j--.");
     }
 
     /**

@@ -11,18 +11,119 @@ package jminusminus;
  */
 
 enum TokenKind {
-    EOF("<EOF>"), ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), CLASS(
-            "class"), ELSE("else"), EXTENDS("extends"), FALSE("false"), IF("if"), IMPORT(
-            "import"), INSTANCEOF("instanceof"), INT("int"), NEW("new"), NULL(
-            "null"), PACKAGE("package"), PRIVATE("private"), PROTECTED(
-            "protected"), PUBLIC("public"), RETURN("return"), STATIC("static"), SUPER(
-            "super"), THIS("this"), TRUE("true"), VOID("void"), WHILE("while"), PLUS(
-            "+"), ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND(
-            "&&"), LE("<="), LNOT("!"), MINUS("-"), PLUS_ASSIGN("+="), STAR("*"), DIV("/"), MOD(
-            "%"), LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), RBRACK(
-            "]"), SEMI(";"), COMMA(","), DOT("."), IDENTIFIER("<IDENTIFIER>"), INT_LITERAL(
-            "<INT_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL(
-            "<STRING_LITERAL>");
+
+    //eof
+    EOF("<EOF>"),
+
+    //reserved words
+    ABSTRACT("abstract"),
+    ASSERT("assert"),
+    BOOLEAN("boolean"),
+    BREAK("break"),
+    BYTE("byte"),
+    CASE("case"),
+    CATCH("catch"),
+    CHAR("char"),
+    CLASS("class"),
+    CONST("const"),
+    CONTINUE("continue"),
+    DEFAULT("default"),
+    DO("do"),
+    DOUBLE("double"),
+    ELSE("else"),
+    EXTENDS("extends"),
+    FALSE("false"),
+    FINAL("final"),
+    FINALLY("finally"),
+    FLOAT("float"),
+    FOR("for"),
+    GOTO("goto"),
+    IF("if"),
+    IMPLEMENTS("implements"),
+    IMPORT("import"),
+    INSTANCEOF("instanceof"),
+    INT("int"),
+    INTERFACE("interface"),
+    LONG("long"),
+    NATIVE("native"),
+    NEW("new"),
+    NULL("null"),
+    PACKAGE("package"),
+    PRIVATE("private"),
+    PROTECTED("protected"),
+    PUBLIC("public"),
+    RETURN("return"),
+    SHORT("short"),
+    STATIC("static"),
+    STRICTFP("strictfp"),
+    SUPER("super"),
+    SWITCH("switch"),
+    SYNCHRONIZED("synchronized"),
+    THIS("this"),
+    THROW("throw"),
+    THROWS("throws"),
+    TRANSIENT("transient"),
+    TRUE("true"),
+    TRY("try"),
+    VOID("void"),
+    VOLATILE("volatile"),
+    WHILE("while"),
+
+    //operators
+    TERNARY_START("?"),
+    TERNARY_END(":"),
+    ASSIGN("="),
+    EQUAL("=="),
+    LNOT("!"),
+    BCOMP("~"),
+    NEQ("!="),
+    DIV("/"),
+    DIV_ASSIGN("/="),
+    PLUS("+"),
+    PLUS_ASSIGN("+="),
+    INC("++"),
+    SUB("-"),
+    SUB_ASSIGN("-="),
+    DEC("--"),
+    MUL("*"),
+    MUL_ASSIGN("*="),
+    MOD("%"),
+    MOD_ASSIGN("%="),
+    RSHIFT(">>"),
+    RSHIFT_ASSIGN(">>="),
+    URSHIFT(">>>"),
+    URSHIFT_ASSIGN(">>>="),
+    GEQ(">="),
+    GT(">"),
+    LSHIFT("<<"),
+    LSHIFT_ASSIGN("<<="),
+    LEQ("<="),
+    LT("<"),
+    XOR("^"),
+    XOR_ASSIGN("^="),
+    BOR("|"),
+    BOR_ASSIGN("|="),
+    LOR("||"),
+    BAND("&"),
+    BAND_ASSIGN("&="),
+    LAND("&&"),
+
+    //separators
+    LPAREN("("),
+    RPAREN(")"),
+    LCURLY("{"),
+    RCURLY("}"),
+    LBRACK("["),
+    RBRACK("]"),
+    SEMI(";"),
+    COMMA(","),
+    DOT("."),
+
+    //literals
+    IDENTIFIER("<IDENTIFIER>"),
+    INT_LITERAL("<INT_LITERAL>"),
+    CHAR_LITERAL("<CHAR_LITERAL>"),
+    STRING_LITERAL("<STRING_LITERAL>");
 
     /**
      * The token's string representation.

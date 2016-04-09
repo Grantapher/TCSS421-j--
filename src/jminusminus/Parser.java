@@ -1069,7 +1069,7 @@ public class Parser {
         JExpression lhs = additiveExpression();
         if (have(GT)) {
             return new JGreaterThanOp(line, lhs, additiveExpression());
-        } else if (have(LE)) {
+        } else if (have(LEQ)) {
             return new JLessEqualOp(line, lhs, additiveExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
@@ -1083,7 +1083,7 @@ public class Parser {
      * <p>
      * <pre>
      *   additiveExpression ::= multiplicativeExpression // level 3
-     *                            {MINUS multiplicativeExpression}
+     *                            {SUB multiplicativeExpression}
      * </pre>
      *
      * @return an AST for an additiveExpression.
@@ -1094,7 +1094,7 @@ public class Parser {
         boolean more = true;
         JExpression lhs = multiplicativeExpression();
         while (more) {
-            if (have(MINUS)) {
+            if (have(SUB)) {
                 lhs = new JSubtractOp(line, lhs, multiplicativeExpression());
             } else if (have(PLUS)) {
                 lhs = new JPlusOp(line, lhs, multiplicativeExpression());
@@ -1121,7 +1121,7 @@ public class Parser {
         boolean more = true;
         JExpression lhs = unaryExpression();
         while (more) {
-            if (have(STAR)) {
+            if (have(MUL)) {
                 lhs = new JMultiplyOp(line, lhs, unaryExpression());
             } else if (have(DIV)) {
                 lhs = new JDivideOp(line, lhs, unaryExpression());
@@ -1139,7 +1139,7 @@ public class Parser {
      * <p>
      * <pre>
      *   unaryExpression ::= INC unaryExpression // level 1
-     *                     | MINUS unaryExpression
+     *                     | SUB unaryExpression
      *                     | simpleUnaryExpression
      * </pre>
      *
@@ -1150,7 +1150,7 @@ public class Parser {
         int line = scanner.token().line();
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression());
-        } else if (have(MINUS)) {
+        } else if (have(SUB)) {
             return new JNegateOp(line, unaryExpression());
         } else {
             return simpleUnaryExpression();
