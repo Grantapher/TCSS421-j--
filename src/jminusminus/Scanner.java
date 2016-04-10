@@ -448,13 +448,57 @@ class Scanner {
                 return new TokenInfo(STRING_LITERAL, buffer.toString(), line);
             case '.':
                 nextCh();
-                return new TokenInfo(DOT, line);
+                // floating point literal
+                if (isDigit(ch)) {
+                    buffer = new StringBuffer();
+                    // dot
+                    buffer.append('.');
+                    // digits
+                    if (isDigit(ch)) {
+                        while (isDigit(ch)) {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                    } else {
+                        reportScannerError("Expected at least one digit after decimal point for floating point literal");
+                    }
+                    // optional exponent
+                    if (ch == 'e' || ch == 'E') {
+                        // exponent indicator
+                        buffer.append(ch);
+                        nextCh();
+                        // optional sign
+                        if (ch == '+' || ch == '-') {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                        // digits
+                        while (isDigit(ch)) {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                    }
+                    // optional suffix
+                    TokenKind literalType;
+                    if (ch == 'f' || ch == 'F') {
+                        literalType = FLOAT_LITERAL;
+                        buffer.append(ch);
+                        nextCh();
+                    } else if (ch == 'd' || ch == 'D') {
+                        literalType = DOUBLE_LITERAL;
+                        buffer.append(ch);
+                        nextCh();
+                    } else {
+                        literalType = DOUBLE_LITERAL;
+                    }
+                    reportUnimplementedError(literalType);
+                    return new TokenInfo(literalType, buffer.toString(), line);
+                } else {
+                    return new TokenInfo(DOT, line);
+                }
             case EOFCH:
                 return new TokenInfo(EOF, line);
             case '0':
-                // Handle only simple decimal integers for now.
-                nextCh();
-                return new TokenInfo(INT_LITERAL, "0", line);
             case '1':
             case '2':
             case '3':
@@ -465,11 +509,230 @@ class Scanner {
             case '8':
             case '9':
                 buffer = new StringBuffer();
+                buffer.append(ch);
+                if (ch == '0') {
+                    nextCh();
+                    if (ch == 'x' || ch == 'X') {
+                        //hex number
+                        // the x
+                        buffer.append(ch);
+                        nextCh();
+                        TokenKind literalType = INT_LITERAL;
+                        //digits
+                        while (isHexDigit(ch)) {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                        //optional dot
+                        if (ch == '.') {
+                            reportUnimplementedError(DOUBLE_LITERAL);
+                            literalType = DOUBLE_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                            // optional hex digits following dot (not optional if no digits preceding dot)
+                            if (buffer.length() > 3 && !isHexDigit(ch)) {
+                                reportScannerError("Malformed floating point literal");
+                                return getNextToken();
+                            }
+                            while (isHexDigit(ch)) {
+                                buffer.append(ch);
+                                nextCh();
+                            }
+                        }
+                        // required p if floating point
+                        if (ch == 'p' || ch == 'P') {
+                            reportUnimplementedError(DOUBLE_LITERAL);
+                            literalType = DOUBLE_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                            //optional sign
+                            if (ch == '+' || ch == '-') {
+                                buffer.append(ch);
+                                nextCh();
+                            }
+                            // hex digits
+                            if (!isHexDigit(ch)) {
+                                reportScannerError("Malformed floating point literal");
+                                return getNextToken();
+                            }
+                            while (isHexDigit(ch)) {
+                                buffer.append(ch);
+                                nextCh();
+                            }
+                        } else if (literalType == DOUBLE_LITERAL) {
+                            reportScannerError("Malformed floating point literal");
+                            return getNextToken();
+                        }
+
+                        // optional suffixes
+                        if (ch == 'f' || ch == 'F') {
+                            if (literalType == INT_LITERAL) {
+                                reportScannerError("malformed floating point literal");
+                                return getNextToken();
+                            }
+                            reportUnimplementedError(FLOAT_LITERAL);
+                            literalType = FLOAT_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                        } else if (ch == 'd' || ch == 'D') {
+                            if (literalType == INT_LITERAL) {
+                                reportScannerError("malformed floating point literal");
+                                return getNextToken();
+                            }
+                            reportUnimplementedError(DOUBLE_LITERAL);
+                            literalType = DOUBLE_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                        } else if (ch == 'l' || ch == 'L') {
+                            if (literalType == DOUBLE_LITERAL) {
+                                reportScannerError("malformed integer literal");
+                                return getNextToken();
+                            }
+                            reportUnimplementedError(LONG_LITERAL);
+                            literalType = LONG_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                        } else {
+                            reportScannerError("Hex numbers are not yet implemented in j--.");
+                        }
+
+                        return new TokenInfo(literalType, buffer.toString(), line);
+                    } else if (ch == 'b' || ch == 'B') {
+                        //bin int
+                        reportScannerError("Binary ints are not yet implemented in j--.");
+                        // the b
+                        buffer.append(ch);
+                        nextCh();
+                        //digits
+                        while (ch == '0' || ch == '1') {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+
+                        //optional suffix
+                        TokenKind literalType = INT_LITERAL;
+                        if (ch == 'l' || ch == 'L') {
+                            reportUnimplementedError(LONG_LITERAL);
+                            literalType = LONG_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                        return new TokenInfo(literalType, buffer.toString(), line);
+                    } else if (isDigit(ch)) {
+                        // octal
+                        reportScannerError("Octal ints are not yet implemented in j--.");
+                        boolean isAboveOctal = false;
+                        boolean isFloatingPoint = false;
+                        while (isDigit(ch)) {
+                            if (ch == '8' || ch == '9') {
+                                isAboveOctal = true;
+                            } else if (ch == 'e' || ch == 'E' || ch == '.') {
+                                isFloatingPoint = true;
+                                break;
+                            }
+                            buffer.append(ch);
+                            nextCh();
+                        }
+
+                        TokenKind literalType = INT_LITERAL;
+                        if (ch == 'l' || ch == 'L') {
+                            reportUnimplementedError(LONG_LITERAL);
+                            literalType = LONG_LITERAL;
+                            buffer.append(ch);
+                            nextCh();
+                        }
+
+                        if (isFloatingPoint) {
+                            //just fall through, it's a floating point literal, the below will take care of it.
+                        } else if (isAboveOctal) {
+                            if (ch == 'l' || ch == 'L') {
+                                buffer.append(ch);
+                                nextCh();
+                            }
+                            reportScannerError("Integer number too large: " + buffer.toString());
+                            return getNextToken();
+                        } else {
+                            return new TokenInfo(literalType, buffer.toString(), line);
+                        }
+                    } else if (ch == 'f' || ch == 'F') {
+                        reportUnimplementedError(FLOAT_LITERAL);
+                        buffer.append(ch);
+                        nextCh();
+                        return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
+                    } else if (ch == 'd' || ch == 'D') {
+                        reportUnimplementedError(DOUBLE_LITERAL);
+                        buffer.append(ch);
+                        nextCh();
+                        return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+                    } else if (ch == 'l' || ch == 'L') {
+                        reportUnimplementedError(LONG_LITERAL);
+                        buffer.append(ch);
+                        nextCh();
+                        return new TokenInfo(LONG_LITERAL, buffer.toString(), line);
+                    } else if (ch == 'e' || ch == 'E' || ch == '.') {
+                        //just fall through, it's a floating point literal, the below will take care of it.
+                    } else {
+                        //just 0
+                        return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+                    }
+                } else {
+                    nextCh();
+                }
+                TokenKind literalType = null;
+                // digits
                 while (isDigit(ch)) {
                     buffer.append(ch);
                     nextCh();
                 }
-                return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+                // optional dot
+                if (ch == '.') {
+                    reportUnimplementedError(DOUBLE_LITERAL);
+                    literalType = DOUBLE_LITERAL;
+                    buffer.append(ch);
+                    nextCh();
+                    // optional digits
+                    while (isDigit(ch)) {
+                        buffer.append(ch);
+                        nextCh();
+                    }
+                }
+                // optional exponent
+                if (ch == 'e' || ch == 'E') {
+                    reportUnimplementedError(DOUBLE_LITERAL);
+                    literalType = DOUBLE_LITERAL;
+                    // exponent indicator
+                    buffer.append(ch);
+                    nextCh();
+                    // optional sign
+                    if (ch == '+' || ch == '-') {
+                        buffer.append(ch);
+                        nextCh();
+                    }
+                    // digits
+                    while (isDigit(ch)) {
+                        buffer.append(ch);
+                        nextCh();
+                    }
+                }
+
+                // optional suffixes
+                if (ch == 'f' || ch == 'F') {
+                    reportUnimplementedError(FLOAT_LITERAL);
+                    literalType = FLOAT_LITERAL;
+                    buffer.append(ch);
+                    nextCh();
+                } else if (ch == 'd' || ch == 'D') {
+                    reportUnimplementedError(DOUBLE_LITERAL);
+                    literalType = DOUBLE_LITERAL;
+                    buffer.append(ch);
+                    nextCh();
+                } else if (ch == 'l' || ch == 'L') {
+                    reportUnimplementedError(LONG_LITERAL);
+                    literalType = LONG_LITERAL;
+                    buffer.append(ch);
+                    nextCh();
+                }
+                return new TokenInfo(null == literalType ? INT_LITERAL : literalType, buffer.toString(), line);
             default:
                 if (isIdentifierStart(ch)) {
                     buffer = new StringBuffer();
@@ -548,7 +811,7 @@ class Scanner {
     private void reportUnimplementedError(TokenKind identifier) {
         isInError = true;
         System.err.printf("%s:%d: ", fileName, line);
-        System.err.println(identifier.image() + " is not implemented in j--.");
+        System.err.println(identifier.image() + " is not yet implemented in j--.");
     }
 
     /**
@@ -576,6 +839,10 @@ class Scanner {
 
     private boolean isDigit(char c) {
         return (c >= '0' && c <= '9');
+    }
+
+    private boolean isHexDigit(char c) {
+        return isDigit(c) || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
     }
 
     /**

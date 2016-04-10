@@ -48,6 +48,24 @@ public class UnimplementedErrors {
         bool = true || false;
         bool = true && false;
 
+        int intLiteral = 0;
+        intLiteral = 0x1234567890ABCDEF;
+        intLiteral = 0b01;
+        intLiteral = 01234567;
+        intLiteral = 0L;
+
+        float floatLiteral = 0.;
+        floatLiteral = .0e0;
+        floatLiteral = 0d;
+        floatLiteral = 0e0;
+        floatLiteral = 0x.0p0;
+        floatLiteral = 0x0.0p0;
+        floatLiteral = 0.f;
+        floatLiteral = .0e0f;
+        floatLiteral = 0e0f;
+        floatLiteral = 0x.0p0f;
+        floatLiteral = 0x0.0p0f;
+
         return result;
     }
 
