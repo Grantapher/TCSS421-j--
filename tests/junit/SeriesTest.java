@@ -19,8 +19,8 @@ public class SeriesTest extends TestCase {
     }
 
     public void testComputeSum() {
-        this.assertEquals(series.computeSum(Series.ARITHMETIC), 5050);
-        this.assertEquals(series.computeSum(Series.GEOMETRIC), 100);
+        assertEquals(series.computeSum(Series.ARITHMETIC), 5050);
+        assertEquals(series.computeSum(Series.GEOMETRIC), 100);
     }
 
 }

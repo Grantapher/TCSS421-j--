@@ -8,7 +8,7 @@ import pass.HelloWorld;
 public class HelloWorldTest extends TestCase {
 
     public void testMessage() {
-        this.assertEquals(HelloWorld.message(), "Hello, World!");
+        assertEquals(HelloWorld.message(), "Hello, World!");
     }
 
 }

@@ -8,7 +8,7 @@ import pass.Classes;
 public class ClassesTest extends TestCase {
 
     public void testMessage() {
-        this.assertEquals(Classes.message(), "Hello, World!");
+        assertEquals(Classes.message(), "Hello, World!");
     }
 
 }
