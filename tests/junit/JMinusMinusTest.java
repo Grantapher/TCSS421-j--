@@ -3,6 +3,7 @@
 package junit;
 
 import java.io.File;
+
 import junit.framework.TestCase;
 import jminusminus.Main;
 
@@ -36,13 +37,17 @@ public class JMinusMinusTest extends TestCase {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
                 System.out.printf("Running j-- (with "
-                        + "handwritten frontend) on %s ...\n\n", files[i]
+                        + "handwritten frontend) on %s ...\n", files[i]
                         .toString());
-                args = new String[] { "-d", genClassDir.getAbsolutePath(),
-                        files[i].toString() };
+                args = new String[]{"-d", genClassDir.getAbsolutePath(),
+                        files[i].toString()};
                 Main.main(args);
-                System.out.printf("\n\n");
 
+                if (Main.errorHasOccurred()) {
+                    System.out.println(files[i] + " failed to compile when it should have!");
+                }
+                
+                System.out.printf("\n");
                 // true even if a single test fails
                 errorHasOccurred |= Main.errorHasOccurred();
             }
@@ -67,13 +72,17 @@ public class JMinusMinusTest extends TestCase {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
                 System.out.printf("Running j-- (with "
-                        + "handwritten frontend) on %s ...\n\n", files[i]
+                        + "handwritten frontend) on %s ...\n", files[i]
                         .toString());
-                args = new String[] { "-d", genClassDir.getAbsolutePath(),
-                        files[i].toString() };
+                args = new String[]{"-d", genClassDir.getAbsolutePath(),
+                        files[i].toString()};
                 Main.main(args);
-                System.out.printf("\n\n");
 
+                if (!Main.errorHasOccurred()) {
+                    System.out.println(files[i] + " compiled when it shouldn't have!");
+                }
+
+                System.out.printf("\n");
                 // true only if all tests fail
                 errorHasOccurred &= Main.errorHasOccurred();
             }
@@ -85,9 +94,8 @@ public class JMinusMinusTest extends TestCase {
 
     /**
      * Entry point.
-     * 
-     * @param args
-     *            command-line arguments.
+     *
+     * @param args command-line arguments.
      */
 
     public static void main(String[] args) {
