@@ -4,29 +4,30 @@ package jminusminus;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
 import static jminusminus.TokenKind.EOF;
 
 /**
  * Driver class for j-- compiler using hand-written front-end. This is the main
  * entry point for the compiler. The compiler proceeds as follows:
- * 
+ * <p>
  * (1) It reads arguments that affects its behavior.
- * 
+ * <p>
  * (2) It builds a scanner.
- * 
+ * <p>
  * (3) It builds a parser (using the scanner) and parses the input for producing
  * an abstact syntax tree (AST).
- * 
+ * <p>
  * (4) It sends the preAnalyze() message to that AST, which recursively descends
  * the tree so far as the memeber headers for declaring types and members in the
  * symbol table (represented as a string of contexts).
- * 
+ * <p>
  * (5) It sends the analyze() message to that AST for declaring local variables,
  * and cheking and assigning types to expressions. Analysis also sometimes
  * rewrites some of the abstract syntax trees for clarifying the semantics.
  * Analysis does all of this by recursively descending the AST down to its
  * leaves.
- * 
+ * <p>
  * (6) Finally, it sends a codegen() message to the AST for generating code.
  * Again, codegen() recursively descends the tree, down to its leaves,
  * generating JVM code for producing a .class or .s (SPIM) file for each defined
@@ -35,7 +36,9 @@ import static jminusminus.TokenKind.EOF;
 
 public class Main {
 
-    /** Whether an error occurred during compilation. */
+    /**
+     * Whether an error occurred during compilation.
+     */
     private static boolean errorHasOccurred;
 
     /**
@@ -77,11 +80,13 @@ public class Main {
                         NPhysicalRegister.MAX_COUNT);
             } else {
                 printUsage(caller);
+                System.exit(1);
                 return;
             }
         }
         if (sourceFile.equals("")) {
             printUsage(caller);
+            System.exit(1);
             return;
         }
 
@@ -90,6 +95,7 @@ public class Main {
             scanner = new LookaheadScanner(sourceFile);
         } catch (FileNotFoundException e) {
             System.err.println("Error: file " + sourceFile + " not found.");
+            System.exit(2);
             return;
         }
 
@@ -103,6 +109,10 @@ public class Main {
                         .tokenRep(), token.image());
             } while (token.kind() != EOF);
             errorHasOccurred |= scanner.errorHasOccured();
+            if (errorHasOccurred) {
+                System.err.println("Scanner errors are present!");
+                System.exit(3);
+            }
             return;
         }
 
@@ -115,6 +125,8 @@ public class Main {
             return;
         }
         if (errorHasOccurred) {
+            System.err.println("Parser errors are present!");
+            System.exit(4);
             return;
         }
 
@@ -126,6 +138,8 @@ public class Main {
             return;
         }
         if (errorHasOccurred) {
+            System.err.println("Pre-analysis errors are present!");
+            System.exit(5);
             return;
         }
 
@@ -137,6 +151,8 @@ public class Main {
             return;
         }
         if (errorHasOccurred) {
+            System.err.println("Analysis errors are present!");
+            System.exit(5);
             return;
         }
 
@@ -146,6 +162,8 @@ public class Main {
         ast.codegen(clEmitter);
         errorHasOccurred |= clEmitter.errorHasOccurred();
         if (errorHasOccurred) {
+            System.err.println("Errors while generating JVM code!");
+            System.exit(6);
             return;
         }
 
@@ -158,12 +176,21 @@ public class Main {
             nEmitter.destinationDir(outputDir);
             nEmitter.write();
             errorHasOccurred |= nEmitter.errorHasOccurred();
+            if (errorHasOccurred()) {
+                System.err.println("Errors while outputting SPIM!");
+                System.exit(8);
+            }
+        }
+
+        if (errorHasOccurred()) {
+            System.err.println("Miscellaneous errors are present!");
+            System.exit(8);
         }
     }
 
     /**
      * Return true if an error occurred during compilation; false otherwise.
-     * 
+     *
      * @return true or false.
      */
 
@@ -173,9 +200,8 @@ public class Main {
 
     /**
      * Print command usage to STDOUT.
-     * 
-     * @param caller
-     *            denotes how this class is invoked.
+     *
+     * @param caller denotes how this class is invoked.
      */
 
     private static void printUsage(String caller) {
