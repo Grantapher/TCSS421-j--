@@ -16,6 +16,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(HelloWorldTest.class);
         suite.addTestSuite(DivisionTest.class);
         suite.addTestSuite(ModuloTest.class);
+        suite.addTestSuite(LogicalTest.class);
         suite.addTestSuite(CommentsTest.class);
         suite.addTestSuite(FactorialTest.class);
         suite.addTestSuite(GCDTest.class);

@@ -1032,7 +1032,7 @@ public class Parser {
      * <p>
      * <pre>
      *   equalityExpression ::= relationalExpression  // level 6
-     *                            {EQUAL relationalExpression}
+     *                            {(EQUAL | NEQUAL) relationalExpression}
      * </pre>
      *
      * @return an AST for an equalityExpression.
@@ -1045,6 +1045,8 @@ public class Parser {
         while (more) {
             if (have(EQUAL)) {
                 lhs = new JEqualOp(line, lhs, relationalExpression());
+            } else if (have(NEQUAL)) {
+                lhs = new JNotEqualOp(line, lhs, relationalExpression());
             } else {
                 more = false;
             }

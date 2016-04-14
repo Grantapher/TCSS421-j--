@@ -36,6 +36,7 @@ WHILE       ::= "while"
 // Operators
 ASSIGN      ::= "="
 EQUAL       ::= "=="
+NEQUAL      ::= "!="
 GT          ::= ">"
 INC         ::= "++"
 LAND        ::= "&&"

@@ -76,7 +76,7 @@ enum TokenKind {
     EQUAL("=="),
     LNOT("!"),
     BCOMP("~"),
-    NEQ("!="),
+    NEQUAL("!="),
     DIV("/"),
     DIV_ASSIGN("/="),
     PLUS("+"),

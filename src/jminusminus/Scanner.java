@@ -293,8 +293,7 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(NEQ);
-                    return new TokenInfo(NEQ, line);
+                    return new TokenInfo(NEQUAL, line);
                 } else {
                     return new TokenInfo(LNOT, line);
                 }
