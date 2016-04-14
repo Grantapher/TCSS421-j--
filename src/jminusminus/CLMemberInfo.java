@@ -19,38 +19,43 @@ abstract class CLMemberInfo {
     // method_info structures. See JVM Spec Sections 4.6, 4.7 for
     // details.
 
-    /** member_info.access_flags item. */
+    /**
+     * member_info.access_flags item.
+     */
     public int accessFlags;
 
-    /** member_info.name_index item. */
+    /**
+     * member_info.name_index item.
+     */
     public int nameIndex;
 
-    /** member_info.descriptor_index item. */
+    /**
+     * member_info.descriptor_index item.
+     */
     public int descriptorIndex;
 
-    /** member_info.attributes_count item. */
+    /**
+     * member_info.attributes_count item.
+     */
     public int attributesCount;
 
-    /** member_info.attributes item. */
+    /**
+     * member_info.attributes item.
+     */
     public ArrayList<CLAttributeInfo> attributes;
 
     /**
      * Construct a CLMemberInfo object.
-     * 
-     * @param accessFlags
-     *            member_info.access_flags item.
-     * @param nameIndex
-     *            member_info.name_index item.
-     * @param descriptorIndex
-     *            member_info.descriptor_index item.
-     * @param attributesCount
-     *            member_info.attributes_count item.
-     * @param attributes
-     *            member_info.attributes item.
+     *
+     * @param accessFlags     member_info.access_flags item.
+     * @param nameIndex       member_info.name_index item.
+     * @param descriptorIndex member_info.descriptor_index item.
+     * @param attributesCount member_info.attributes_count item.
+     * @param attributes      member_info.attributes item.
      */
 
     protected CLMemberInfo(int accessFlags, int nameIndex, int descriptorIndex,
-            int attributesCount, ArrayList<CLAttributeInfo> attributes) {
+                           int attributesCount, ArrayList<CLAttributeInfo> attributes) {
         this.accessFlags = accessFlags;
         this.nameIndex = nameIndex;
         this.descriptorIndex = descriptorIndex;
@@ -60,9 +65,8 @@ abstract class CLMemberInfo {
 
     /**
      * Write the contents of this class member to the specified output stream.
-     * 
-     * @param out
-     *            output stream.
+     *
+     * @param out output stream.
      */
 
     public void write(CLOutputStream out) throws IOException {
@@ -79,15 +83,13 @@ abstract class CLMemberInfo {
     /**
      * Write the contents of this class member to STDOUT in a format similar to
      * that of javap.
-     * 
-     * @param p
-     *            for pretty printing.
+     *
+     * @param p for pretty printing.
      */
 
     public void writeToStdOut(PrettyPrinter p) {
         p.indentRight();
-        p.printf("Acces Flags: %s\n", CLFile
-                .fieldAccessFlagsToString(accessFlags));
+        p.printf("Acces Flags: %s\n", CLFile.fieldAccessFlagsToString(accessFlags));
         p.printf("Name Index: %d\n", nameIndex);
         p.printf("Descriptor Index: %d\n", descriptorIndex);
         p.println();
@@ -109,23 +111,17 @@ class CLFieldInfo extends CLMemberInfo {
 
     /**
      * Construct a CLFieldInfo object.
-     * 
-     * @param accessFlags
-     *            field_info.access_flags item.
-     * @param nameIndex
-     *            field_info.name_index item.
-     * @param descriptorIndex
-     *            field_info.descriptor_index item.
-     * @param attributesCount
-     *            field_info.attributes_count item.
-     * @param attributes
-     *            field_info.attributes item.
+     *
+     * @param accessFlags     field_info.access_flags item.
+     * @param nameIndex       field_info.name_index item.
+     * @param descriptorIndex field_info.descriptor_index item.
+     * @param attributesCount field_info.attributes_count item.
+     * @param attributes      field_info.attributes item.
      */
 
     public CLFieldInfo(int accessFlags, int nameIndex, int descriptorIndex,
-            int attributesCount, ArrayList<CLAttributeInfo> attributes) {
-        super(accessFlags, nameIndex, descriptorIndex, attributesCount,
-                attributes);
+                       int attributesCount, ArrayList<CLAttributeInfo> attributes) {
+        super(accessFlags, nameIndex, descriptorIndex, attributesCount, attributes);
     }
 
     /**
@@ -148,23 +144,17 @@ class CLMethodInfo extends CLMemberInfo {
 
     /**
      * Construct a CLMethodInfo object.
-     * 
-     * @param accessFlags
-     *            method_info.access_flags item.
-     * @param nameIndex
-     *            method_info.name_index item.
-     * @param descriptorIndex
-     *            method_info.descriptor_index item.
-     * @param attributesCount
-     *            method_info.attributes_count item.
-     * @param attributes
-     *            method_info.attributes item.
+     *
+     * @param accessFlags     method_info.access_flags item.
+     * @param nameIndex       method_info.name_index item.
+     * @param descriptorIndex method_info.descriptor_index item.
+     * @param attributesCount method_info.attributes_count item.
+     * @param attributes      method_info.attributes item.
      */
 
     public CLMethodInfo(int accessFlags, int nameIndex, int descriptorIndex,
-            int attributesCount, ArrayList<CLAttributeInfo> attributes) {
-        super(accessFlags, nameIndex, descriptorIndex, attributesCount,
-                attributes);
+                        int attributesCount, ArrayList<CLAttributeInfo> attributes) {
+        super(accessFlags, nameIndex, descriptorIndex, attributesCount, attributes);
     }
 
     /**

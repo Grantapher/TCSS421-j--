@@ -18,13 +18,10 @@ class JStringConcatenationOp extends JBinaryExpression {
      * line number, and the lhs and rhs operands. An expression of this sort is
      * created during the analysis of a (overloaded) + operation (and not by the
      * Parser).
-     * 
-     * @param line
-     *            line in which the expression occurs in the source file.
-     * @param lhs
-     *            lhs operand.
-     * @param rhs
-     *            rhs operand.
+     *
+     * @param line line in which the expression occurs in the source file.
+     * @param lhs  lhs operand.
+     * @param rhs  rhs operand.
      */
 
     public JStringConcatenationOp(int line, JExpression lhs, JExpression rhs) {
@@ -34,9 +31,8 @@ class JStringConcatenationOp extends JBinaryExpression {
     /**
      * Analysis is simple here. The operands have already been analyzed (in
      * JPlusOp) so we simply set the result type.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -50,34 +46,34 @@ class JStringConcatenationOp extends JBinaryExpression {
      * runtime stack, appending the operands (which might contain nested
      * concatenations; these are handled by cascadingCodegen()), and then for
      * converting the StringBuilder to a String.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
         // Firstly, create a StringBuilder
         output.addReferenceInstruction(NEW, "java/lang/StringBuilder");
         output.addNoArgInstruction(DUP);
-        output.addMemberAccessInstruction(INVOKESPECIAL,
-                "java/lang/StringBuilder", "<init>", "()V");
+        output.addMemberAccessInstruction(INVOKESPECIAL, "java/lang/StringBuilder",
+                                          "<init>", "()V"
+        );
 
         // Lhs and Rhs
         nestedCodegen(output);
 
         // Finally, make into a String
-        output.addMemberAccessInstruction(INVOKEVIRTUAL,
-                "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
+        output.addMemberAccessInstruction(INVOKEVIRTUAL, "java/lang/StringBuilder",
+                                          "toString", "()Ljava/lang/String;"
+        );
     }
 
     /**
      * Like a codegen() but we needn't (and shouldn't) create a StringBuilder
      * nor convert the result to a String, as that will be done in a parent.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     void nestedCodegen(CLEmitter output) {
@@ -87,10 +83,11 @@ class JStringConcatenationOp extends JBinaryExpression {
             ((JStringConcatenationOp) lhs).nestedCodegen(output);
         } else {
             lhs.codegen(output);
-            output.addMemberAccessInstruction(INVOKEVIRTUAL,
-                    "java/lang/StringBuilder", "append", "("
-                            + lhs.type().argumentTypeForAppend()
-                            + ")Ljava/lang/StringBuilder;");
+            output.addMemberAccessInstruction(INVOKEVIRTUAL, "java/lang/StringBuilder",
+                                              "append",
+                                              "(" + lhs.type().argumentTypeForAppend() +
+                                                      ")Ljava/lang/StringBuilder;"
+            );
         }
 
         // Rhs
@@ -99,10 +96,11 @@ class JStringConcatenationOp extends JBinaryExpression {
             ((JStringConcatenationOp) rhs).nestedCodegen(output);
         } else {
             rhs.codegen(output);
-            output.addMemberAccessInstruction(INVOKEVIRTUAL,
-                    "java/lang/StringBuilder", "append", "("
-                            + rhs.type().argumentTypeForAppend()
-                            + ")Ljava/lang/StringBuilder;");
+            output.addMemberAccessInstruction(INVOKEVIRTUAL, "java/lang/StringBuilder",
+                                              "append",
+                                              "(" + rhs.type().argumentTypeForAppend() +
+                                                      ")Ljava/lang/StringBuilder;"
+            );
         }
     }
 

@@ -12,9 +12,8 @@ class JLiteralFalse extends JExpression {
 
     /**
      * Construct an AST node for a "false" literal given its line number.
-     * 
-     * @param line
-     *            line in which the literal occurs in the source file.
+     *
+     * @param line line in which the literal occurs in the source file.
      */
 
     public JLiteralFalse(int line) {
@@ -23,9 +22,8 @@ class JLiteralFalse extends JExpression {
 
     /**
      * Analyzing a boolean literal is trivial.
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -37,10 +35,9 @@ class JLiteralFalse extends JExpression {
     /**
      * Generating code for a boolean literal means generating code to push it
      * onto the stack.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -50,14 +47,11 @@ class JLiteralFalse extends JExpression {
     /**
      * Generating branch code for a boolean literal is trivial; it's either
      * empty or an unconditional branch.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
-     * @param targetLabel
-     *            the label to which we should branch.
-     * @param onTrue
-     *            do we branch on true?
+     *
+     * @param output      the code emitter (basically an abstraction for producing the
+     *                    .class file).
+     * @param targetLabel the label to which we should branch.
+     * @param onTrue      do we branch on true?
      */
 
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
@@ -72,7 +66,8 @@ class JLiteralFalse extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JLiteralFalse line=\"%d\" type=\"%s\"/>\n", line(),
-                ((type == null) ? "" : type.toString()));
+                 ((type == null) ? "" : type.toString())
+        );
     }
 
 }

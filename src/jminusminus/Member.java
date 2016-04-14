@@ -12,7 +12,7 @@ abstract class Member {
 
     /**
      * Return the member's (simple) name.
-     * 
+     *
      * @return the name.
      */
 
@@ -22,7 +22,7 @@ abstract class Member {
 
     /**
      * Return the type in which this member was declared.
-     * 
+     *
      * @return the declaring type.
      */
 
@@ -32,7 +32,7 @@ abstract class Member {
 
     /**
      * Has this member been declared with the static modifier?
-     * 
+     *
      * @return is the member static?
      */
 
@@ -42,7 +42,7 @@ abstract class Member {
 
     /**
      * Has this member been declared with the public modifier?
-     * 
+     *
      * @return is the member public?
      */
 
@@ -52,7 +52,7 @@ abstract class Member {
 
     /**
      * Has this member been declared with the protected modifier?
-     * 
+     *
      * @return is the member protected?
      */
 
@@ -62,7 +62,7 @@ abstract class Member {
 
     /**
      * Has this member been declared with the private modifier?
-     * 
+     *
      * @return is the member private?
      */
 
@@ -72,7 +72,7 @@ abstract class Member {
 
     /**
      * Has this member been declared with the abstract modifier?
-     * 
+     *
      * @return is the member abstract?
      */
 
@@ -85,7 +85,7 @@ abstract class Member {
      * declare anything final as it is not in our lexicon. But we may refer to
      * names that are declared final in the java API and so we (may) want to
      * honor those declarations.
-     * 
+     *
      * @return is the member final?
      */
 
@@ -95,7 +95,7 @@ abstract class Member {
 
     /**
      * Return the member's internal representation.
-     * 
+     *
      * @return the internal representation.
      */
 
@@ -110,14 +110,15 @@ abstract class Member {
 
 class Method extends Member {
 
-    /** Internal representation of this method. */
+    /**
+     * Internal representation of this method.
+     */
     private java.lang.reflect.Method method;
 
     /**
      * Construct a Method is constructed from its internal representation.
-     * 
-     * @param method
-     *            a Java method in the relection API.
+     *
+     * @param method a Java method in the relection API.
      */
 
     public Method(java.lang.reflect.Method method) {
@@ -126,7 +127,7 @@ class Method extends Member {
 
     /**
      * Return the JVM descriptor for this method.
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -141,7 +142,7 @@ class Method extends Member {
 
     /**
      * Return the Java representation for this method.
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -156,7 +157,7 @@ class Method extends Member {
 
     /**
      * Return the method's return type.
-     * 
+     *
      * @return the return type.
      */
 
@@ -166,20 +167,20 @@ class Method extends Member {
 
     /**
      * Method equality is defined HERE as having override-equivalent signatures.
-     * 
-     * @param that
-     *            the method we are comparing this to.
+     *
+     * @param that the method we are comparing this to.
      * @return true iff the methods are override-equivalent.
      */
 
     public boolean equals(Method that) {
-        return Type.argTypesMatch(this.method.getParameterTypes(), that.method
-                .getParameterTypes());
+        return Type.argTypesMatch(this.method.getParameterTypes(),
+                                  that.method.getParameterTypes()
+        );
     }
 
     /**
      * Return the member's internal representation.
-     * 
+     *
      * @return the internal representation.
      */
 
@@ -195,14 +196,15 @@ class Method extends Member {
 
 class Field extends Member {
 
-    /** Internal representation of this field. */
+    /**
+     * Internal representation of this field.
+     */
     private java.lang.reflect.Field field;
 
     /**
      * Construct a Field is constructed from its internal representation.
-     * 
-     * @param field
-     *            a Java field in the relection API.
+     *
+     * @param field a Java field in the relection API.
      */
 
     public Field(java.lang.reflect.Field field) {
@@ -211,7 +213,7 @@ class Field extends Member {
 
     /**
      * Return the field's type.
-     * 
+     *
      * @return the field's type.
      */
 
@@ -235,14 +237,15 @@ class Field extends Member {
 
 class Constructor extends Member {
 
-    /** Internal representation of this constructor. */
+    /**
+     * Internal representation of this constructor.
+     */
     java.lang.reflect.Constructor constructor;
 
     /**
      * Construct a Constructor from its internal representation.
-     * 
-     * @param constructor
-     *            a Java constructor in the relection API.
+     *
+     * @param constructor a Java constructor in the relection API.
      */
 
     public Constructor(java.lang.reflect.Constructor constructor) {
@@ -251,7 +254,7 @@ class Constructor extends Member {
 
     /**
      * Return the JVM descriptor for this constructor.
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -266,7 +269,7 @@ class Constructor extends Member {
 
     /**
      * Return the type declaring this constructor.
-     * 
+     *
      * @return the declaring type.
      */
 

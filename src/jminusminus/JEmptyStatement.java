@@ -12,9 +12,8 @@ class JEmptyStatement extends JStatement {
 
     /**
      * Construct an AST node for an empty statement.
-     * 
-     * @param line
-     *            line in which the empty statement occurs in the source file.
+     *
+     * @param line line in which the empty statement occurs in the source file.
      */
 
     protected JEmptyStatement(int line) {

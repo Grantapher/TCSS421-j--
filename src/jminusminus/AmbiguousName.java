@@ -6,23 +6,23 @@ import java.util.StringTokenizer;
 
 /**
  * Ambiguous names are meant to deal with snippets like
- * 
+ * <p>
  * <pre>
  *   x.y.z
  *   a.b.c()
  * </pre>
- * 
+ * <p>
  * Clearly, z is a field and c is a method. But what about x.y and a.b ? x could
  * be a package name and y a type, making for a (static) class field selection.
  * Or, x could be a local variable and y an instance field. The parser cannot
  * know how to parse these.
- * 
+ * <p>
  * Disambiguating the ambiguity must wait until analysis time. The parser can,
  * with x.y.z, treat the .z as a field selection, but constructs an
  * AmbiguousName object encapsulating the x.y . And it can, with a.b.c(), treat
  * the .c() as a message expression, but constructs an AbiguousName object
  * encapsulating a.b.
- * 
+ * <p>
  * reclassify() is called upon in JFieldSelection.analyze() and
  * JMessageExpression.analyze() to reclassify the components and construct the
  * proper ast, following the rules for names in the Java language Specification
@@ -38,17 +38,17 @@ class AmbiguousName {
      */
     private int line;
 
-    /** The ambiguous part, eg x.y */
+    /**
+     * The ambiguous part, eg x.y
+     */
     private String name;
 
     /**
      * Construct an encapsulation of the ambiguous portion of a snippet like
      * x.y.z.
-     * 
-     * @param line
-     *            line in which the ambiguous name occurs in the source file.
-     * @param name
-     *            the ambiguous part.
+     *
+     * @param line line in which the ambiguous name occurs in the source file.
+     * @param name the ambiguous part.
      */
 
     public AmbiguousName(int line, String name) {
@@ -59,9 +59,8 @@ class AmbiguousName {
     /**
      * Reclassify the name according to the rules in the Java Language
      * Specification.
-     * 
-     * @param context
-     *            context in which we look up the component names.
+     *
+     * @param context context in which we look up the component names.
      * @return the properly parsed AST.
      */
 
@@ -81,8 +80,8 @@ class AmbiguousName {
                 break;
             } else if (!st.hasMoreTokens()) {
                 // Nothing found. :(
-                JAST.compilationUnit.reportSemanticError(line,
-                        "Cannot find name " + newName);
+                JAST.compilationUnit
+                        .reportSemanticError(line, "Cannot find name " + newName);
                 return null;
             } else {
                 newName += "." + st.nextToken();

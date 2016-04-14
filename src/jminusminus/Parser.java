@@ -105,8 +105,9 @@ public class Parser {
             isRecovered = true;
         } else if (isRecovered) {
             isRecovered = false;
-            reportParserError("%s found where %s sought", scanner.token()
-                    .image(), sought.image());
+            reportParserError("%s found where %s sought", scanner.token().image(),
+                              sought.image()
+            );
         } else {
             // Do not report the (possibly spurious) error,
             // but rather attempt to recover by forcing a match.
@@ -132,8 +133,8 @@ public class Parser {
         int lastDotIndex = qualifiedName.lastIndexOf('.');
         return lastDotIndex == -1 ? null // It was a simple
                 // name
-                : new AmbiguousName(name.line(), qualifiedName.substring(0,
-                lastDotIndex));
+                : new AmbiguousName(name.line(), qualifiedName.substring(0, lastDotIndex)
+                );
     }
 
     /**
@@ -146,8 +147,7 @@ public class Parser {
     private void reportParserError(String message, Object... args) {
         isInError = true;
         isRecovered = false;
-        System.err
-                .printf("%s:%d: ", scanner.fileName(), scanner.token().line());
+        System.err.printf("%s:%d: ", scanner.fileName(), scanner.token().line());
         System.err.printf(message, args);
         System.err.println();
     }
@@ -364,8 +364,9 @@ public class Parser {
             }
         }
         mustBe(EOF);
-        return new JCompilationUnit(scanner.fileName(), line, packageName,
-                imports, typeDeclarations);
+        return new JCompilationUnit(scanner.fileName(), line, packageName, imports,
+                                    typeDeclarations
+        );
     }
 
     /**
@@ -426,7 +427,7 @@ public class Parser {
         boolean scannedSTATIC = false;
         boolean scannedABSTRACT = false;
         boolean more = true;
-        while (more)
+        while (more) {
             if (have(PUBLIC)) {
                 mods.add("public");
                 if (scannedPUBLIC) {
@@ -469,6 +470,7 @@ public class Parser {
             } else {
                 more = false;
             }
+        }
         return mods;
     }
 
@@ -550,8 +552,7 @@ public class Parser {
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
             JBlock body = block();
-            memberDecl = new JConstructorDeclaration(line, mods, name, params,
-                    body);
+            memberDecl = new JConstructorDeclaration(line, mods, name, params, body);
         } else {
             Type type = null;
             if (have(VOID)) {
@@ -561,8 +562,7 @@ public class Parser {
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
                 JBlock body = have(SEMI) ? null : block();
-                memberDecl = new JMethodDeclaration(line, mods, name, type,
-                        params, body);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, body);
             } else {
                 type = type();
                 if (seeIdentLParen()) {
@@ -571,12 +571,14 @@ public class Parser {
                     String name = scanner.previousToken().image();
                     ArrayList<JFormalParameter> params = formalParameters();
                     JBlock body = have(SEMI) ? null : block();
-                    memberDecl = new JMethodDeclaration(line, mods, name, type,
-                            params, body);
+                    memberDecl = new JMethodDeclaration(line, mods, name, type, params,
+                                                        body
+                    );
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
-                            variableDeclarators(type));
+                                                       variableDeclarators(type)
+                    );
                     mustBe(SEMI);
                 }
             }
@@ -685,8 +687,7 @@ public class Parser {
     private ArrayList<JFormalParameter> formalParameters() {
         ArrayList<JFormalParameter> parameters = new ArrayList<JFormalParameter>();
         mustBe(LPAREN);
-        if (have(RPAREN))
-            return parameters; // ()
+        if (have(RPAREN)) return parameters; // ()
         do {
             parameters.add(formalParameter());
         } while (have(COMMA));
@@ -762,7 +763,8 @@ public class Parser {
      */
 
     private ArrayList<JVariableDeclarator> variableDeclarators(Type type) {
-        ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<JVariableDeclarator>();
+        ArrayList<JVariableDeclarator> variableDeclarators = new
+                ArrayList<JVariableDeclarator>();
         do {
             variableDeclarators.add(variableDeclarator(type));
         } while (have(COMMA));
@@ -831,8 +833,7 @@ public class Parser {
         }
         initials.add(variableInitializer(type.componentType()));
         while (have(COMMA)) {
-            initials.add(see(RCURLY) ? null : variableInitializer(type
-                    .componentType()));
+            initials.add(see(RCURLY) ? null : variableInitializer(type.componentType()));
         }
         mustBe(RCURLY);
         return new JArrayInitializer(line, type, initials);
@@ -897,8 +898,7 @@ public class Parser {
         } else if (have(INT)) {
             return Type.INT;
         } else {
-            reportParserError("Type sought where %s found", scanner.token()
-                    .image());
+            reportParserError("Type sought where %s found", scanner.token().image());
             return Type.ANY;
         }
     }
@@ -946,17 +946,16 @@ public class Parser {
     private JStatement statementExpression() {
         int line = scanner.token().line();
         JExpression expr = expression();
-        if (expr instanceof JAssignment || expr instanceof JPreIncrementOp
-                || expr instanceof JPostDecrementOp
-                || expr instanceof JMessageExpression
-                || expr instanceof JSuperConstruction
-                || expr instanceof JThisConstruction || expr instanceof JNewOp
-                || expr instanceof JNewArrayOp) {
+        if (expr instanceof JAssignment || expr instanceof JPreIncrementOp ||
+                expr instanceof JPostDecrementOp || expr instanceof JMessageExpression ||
+                expr instanceof JSuperConstruction || expr instanceof JThisConstruction ||
+                expr instanceof JNewOp || expr instanceof JNewArrayOp) {
             // So as not to save on stack
             expr.isStatementExpression = true;
         } else {
-            reportParserError("Invalid statement expression; "
-                    + "it does not have a side-effect");
+            reportParserError(
+                    "Invalid statement expression; " + "it does not have a side-effect"
+            );
         }
         return new JStatementExpression(line, expr);
     }
@@ -1184,8 +1183,7 @@ public class Parser {
             boolean isBasicType = seeBasicType();
             Type type = type();
             mustBe(RPAREN);
-            JExpression expr = isBasicType ? unaryExpression()
-                    : simpleUnaryExpression();
+            JExpression expr = isBasicType ? unaryExpression() : simpleUnaryExpression();
             return new JCastOp(line, type, expr);
         } else {
             return postfixExpression();
@@ -1282,7 +1280,8 @@ public class Parser {
                 JExpression newTarget = new JSuper(line);
                 if (see(LPAREN)) {
                     return new JMessageExpression(line, newTarget, null, name,
-                            arguments());
+                                                  arguments()
+                    );
                 } else {
                     return new JFieldSelection(line, newTarget, name);
                 }
@@ -1292,15 +1291,16 @@ public class Parser {
         } else if (see(IDENTIFIER)) {
             TypeName id = qualifiedIdentifier();
             if (see(LPAREN)) {
-                return new JMessageExpression(line, null, ambiguousPart(id), id
-                        .simpleName(), arguments());
+                return new JMessageExpression(line, null, ambiguousPart(id),
+                                              id.simpleName(), arguments()
+                );
             } else if (ambiguousPart(id) == null) {
                 // A simple name
                 return new JVariable(line, id.simpleName());
             } else {
                 // ambiguousPart.fieldName
-                return new JFieldSelection(line, ambiguousPart(id), null, id
-                        .simpleName());
+                return new JFieldSelection(line, ambiguousPart(id), null, id.simpleName()
+                );
             }
         } else {
             return literal();
@@ -1336,11 +1336,9 @@ public class Parser {
                     expected = new ArrayTypeName(expected);
                 }
                 return arrayInitializer(expected);
-            } else
-                return newArrayDeclarator(line, type);
+            } else return newArrayDeclarator(line, type);
         } else {
-            reportParserError("( or [ sought where %s found", scanner.token()
-                    .image());
+            reportParserError("( or [ sought where %s found", scanner.token().image());
             return new JWildExpression(line);
         }
     }
@@ -1409,8 +1407,7 @@ public class Parser {
         } else if (have(NULL)) {
             return new JLiteralNull(line);
         } else {
-            reportParserError("Literal sought where %s found", scanner.token()
-                    .image());
+            reportParserError("Literal sought where %s found", scanner.token().image());
             return new JWildExpression(line);
         }
     }

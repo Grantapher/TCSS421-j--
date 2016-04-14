@@ -4,6 +4,7 @@ package junit;
 
 import junit.framework.TestCase;
 import jminusminus.Main;
+
 import java.io.File;
 
 /**
@@ -32,10 +33,10 @@ public class PreAnalysisTest extends TestCase {
         boolean errorHasOccurred = false;
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
-                System.out.printf(
-                        "Running compiler (up to pre-analysis) on %s ...\n\n",
-                        files[i].toString());
-                String[] args = { "-pa", files[i].toString() };
+                System.out.printf("Running compiler (up to pre-analysis) on %s ...\n\n",
+                                  files[i].toString()
+                );
+                String[] args = {"-pa", files[i].toString()};
                 Main.main(args);
                 System.out.printf("\n\n");
 
@@ -50,9 +51,8 @@ public class PreAnalysisTest extends TestCase {
 
     /**
      * Entry point.
-     * 
-     * @param args
-     *            command-line arguments.
+     *
+     * @param args command-line arguments.
      */
 
     public static void main(String[] args) {

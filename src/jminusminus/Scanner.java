@@ -417,8 +417,9 @@ class Scanner {
                 } else {
                     // Expected a ' ; report error and try to
                     // recover.
-                    reportScannerError(ch
-                            + " found by scanner where closing ' was expected.");
+                    reportScannerError(
+                            ch + " found by scanner where closing ' was expected."
+                    );
                     while (ch != '\'' && ch != ';' && ch != '\n') {
                         nextCh();
                     }
@@ -461,7 +462,10 @@ class Scanner {
                             nextCh();
                         }
                     } else {
-                        reportScannerError("Expected at least one digit after decimal point for floating point literal");
+                        reportScannerError(
+                                "Expected at least one digit after decimal point for " +
+                                        "floating point literal"
+                        );
                     }
                     // optional exponent
                     if (ch == 'e' || ch == 'E') {
@@ -530,7 +534,8 @@ class Scanner {
                             literalType = DOUBLE_LITERAL;
                             buffer.append(ch);
                             nextCh();
-                            // optional hex digits following dot (not optional if no digits preceding dot)
+                            // optional hex digits following dot (not optional if no
+                            // digits preceding dot)
                             if (buffer.length() > 3 && !isHexDigit(ch)) {
                                 reportScannerError("Malformed floating point literal");
                                 return getNextToken();
@@ -594,7 +599,9 @@ class Scanner {
                             buffer.append(ch);
                             nextCh();
                         } else {
-                            reportScannerError("Hex numbers are not yet implemented in j--.");
+                            reportScannerError(
+                                    "Hex numbers are not yet implemented in j--."
+                            );
                         }
 
                         return new TokenInfo(literalType, buffer.toString(), line);
@@ -644,13 +651,16 @@ class Scanner {
                         }
 
                         if (isFloatingPoint) {
-                            //just fall through, it's a floating point literal, the below will take care of it.
+                            //just fall through, it's a floating point literal, the
+                            // below will take care of it.
                         } else if (isAboveOctal) {
                             if (ch == 'l' || ch == 'L') {
                                 buffer.append(ch);
                                 nextCh();
                             }
-                            reportScannerError("Integer number too large: " + buffer.toString());
+                            reportScannerError(
+                                    "Integer number too large: " + buffer.toString()
+                            );
                             return getNextToken();
                         } else {
                             return new TokenInfo(literalType, buffer.toString(), line);
@@ -671,7 +681,8 @@ class Scanner {
                         nextCh();
                         return new TokenInfo(LONG_LITERAL, buffer.toString(), line);
                     } else if (ch == 'e' || ch == 'E' || ch == '.') {
-                        //just fall through, it's a floating point literal, the below will take care of it.
+                        //just fall through, it's a floating point literal, the below
+                        // will take care of it.
                     } else {
                         //just 0
                         return new TokenInfo(INT_LITERAL, buffer.toString(), line);
@@ -733,7 +744,9 @@ class Scanner {
                     buffer.append(ch);
                     nextCh();
                 }
-                return new TokenInfo(null == literalType ? INT_LITERAL : literalType, buffer.toString(), line);
+                return new TokenInfo(null == literalType ? INT_LITERAL : literalType,
+                                     buffer.toString(), line
+                );
             default:
                 if (isIdentifierStart(ch)) {
                     buffer = new StringBuffer();
@@ -744,7 +757,8 @@ class Scanner {
                     String identifier = buffer.toString();
                     if (reserved.containsKey(identifier)) {
                         TokenKind token = reserved.get(identifier);
-                        if (unimplemented.containsKey(identifier)) reportUnimplementedError(token);
+                        if (unimplemented.containsKey(identifier))
+                            reportUnimplementedError(token);
                         return new TokenInfo(token, line);
                     } else {
                         return new TokenInfo(IDENTIFIER, identifier, line);

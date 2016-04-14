@@ -10,22 +10,23 @@ import static jminusminus.CLConstants.*;
 
 class JWhileStatement extends JStatement {
 
-    /** Test expression. */
+    /**
+     * Test expression.
+     */
     private JExpression condition;
 
-    /** The body. */
+    /**
+     * The body.
+     */
     private JStatement body;
 
     /**
      * Construct an AST node for a while-statement given its line number, the
      * test expression, and the body.
-     * 
-     * @param line
-     *            line in which the while-statement occurs in the source file.
-     * @param condition
-     *            test expression.
-     * @param body
-     *            the body.
+     *
+     * @param line      line in which the while-statement occurs in the source file.
+     * @param condition test expression.
+     * @param body      the body.
      */
 
     public JWhileStatement(int line, JExpression condition, JStatement body) {
@@ -37,9 +38,8 @@ class JWhileStatement extends JStatement {
     /**
      * Analysis involves analyzing the test, checking its type and analyzing the
      * body statement.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -52,10 +52,9 @@ class JWhileStatement extends JStatement {
 
     /**
      * Generate code for the while loop.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

@@ -8,24 +8,24 @@ import java.io.FileNotFoundException;
 /**
  * Driver class for j-- compiler using JavaCC front-end. This is the main entry
  * point for the compiler. The compiler proceeds as follows:
- * 
+ * <p>
  * (1) It reads arguments that affects its behavior.
- * 
+ * <p>
  * (2) It builds a scanner.
- * 
+ * <p>
  * (3) It builds a parser (using the scanner) and parses the input for producing
  * an abstact syntax tree (AST).
- * 
+ * <p>
  * (4) It sends the preAnalyze() message to that AST, which recursively descends
  * the tree so far as the memeber headers for declaring types and members in the
  * symbol table (represented as a string of contexts).
- * 
+ * <p>
  * (5) It sends the analyze() message to that AST for declaring local variables,
  * and cheking and assigning types to expressions. Analysis also sometimes
  * rewrites some of the abstract syntax trees for clarifying the semantics.
  * Analysis does all of this by recursively descending the AST down to its
  * leaves.
- * 
+ * <p>
  * (6) Finally, it sends a codegen() message to the AST for generating code.
  * Again, codegen() recursively descends the tree, down to its leaves,
  * generating JVM code for producing a .class or .s (SPIM) file for each defined
@@ -34,7 +34,9 @@ import java.io.FileNotFoundException;
 
 public class JavaCCMain {
 
-    /** Whether an error occurred during compilation. */
+    /**
+     * Whether an error occurred during compilation.
+     */
     private static boolean errorHasOccurred;
 
     /**
@@ -54,26 +56,24 @@ public class JavaCCMain {
                 caller = "javaccj--";
             } else if (args[i].endsWith(".java")) {
                 sourceFile = args[i];
-            } else if (args[i].equals("-t") || args[i].equals("-p")
-                    || args[i].equals("-pa") || args[i].equals("-a")) {
+            } else if (args[i].equals("-t") || args[i].equals("-p") ||
+                    args[i].equals("-pa") || args[i].equals("-a")) {
                 debugOption = args[i];
             } else if (args[i].endsWith("-d") && (i + 1) < args.length) {
                 outputDir = args[++i];
             } else if (args[i].endsWith("-s") && (i + 1) < args.length) {
                 spimOutput = true;
                 registerAllocation = args[++i];
-                if (!registerAllocation.equals("naive")
-                        && !registerAllocation.equals("linear")
-                        && !registerAllocation.equals("graph")
-                        || registerAllocation.equals("")) {
+                if (!registerAllocation.equals("naive") &&
+                        !registerAllocation.equals("linear") &&
+                        !registerAllocation.equals("graph") ||
+                        registerAllocation.equals("")) {
                     printUsage(caller);
                     return;
                 }
             } else if (args[i].endsWith("-r") && (i + 1) < args.length) {
-                NPhysicalRegister.MAX_COUNT = Math.min(18, Integer
-                        .parseInt(args[++i]));
-                NPhysicalRegister.MAX_COUNT = Math.max(1,
-                        NPhysicalRegister.MAX_COUNT);
+                NPhysicalRegister.MAX_COUNT = Math.min(18, Integer.parseInt(args[++i]));
+                NPhysicalRegister.MAX_COUNT = Math.max(1, NPhysicalRegister.MAX_COUNT);
             } else {
                 printUsage(caller);
                 return;
@@ -86,8 +86,9 @@ public class JavaCCMain {
 
         JavaCCParserTokenManager javaCCScanner = null;
         try {
-            javaCCScanner = new JavaCCParserTokenManager(new SimpleCharStream(
-                    new FileInputStream(sourceFile), 1, 1));
+            javaCCScanner = new JavaCCParserTokenManager(
+                    new SimpleCharStream(new FileInputStream(sourceFile), 1, 1)
+            );
         } catch (FileNotFoundException e) {
             System.err.println("Error: file " + sourceFile + " not found.");
         }
@@ -98,14 +99,16 @@ public class JavaCCMain {
             do {
                 token = javaCCScanner.getNextToken();
                 if (token.kind == JavaCCParserConstants.ERROR) {
-                    System.err.printf(
-                            "%s:%d: Unidentified input token: '%s'\n",
-                            sourceFile, token.beginLine, token.image);
+                    System.err
+                            .printf("%s:%d: Unidentified input token: '%s'\n", sourceFile,
+                                    token.beginLine, token.image
+                            );
                     errorHasOccurred |= true;
                 } else {
                     System.out.printf("%d\t : %s = %s\n", token.beginLine,
-                            JavaCCParserConstants.tokenImage[token.kind],
-                            token.image);
+                                      JavaCCParserConstants.tokenImage[token.kind],
+                                      token.image
+                    );
                 }
             } while (token.kind != JavaCCParserConstants.EOF);
             return;
@@ -165,7 +168,8 @@ public class JavaCCMain {
         // allocation scheme.
         if (spimOutput) {
             NEmitter nEmitter = new NEmitter(sourceFile, ast.clFiles(),
-                    registerAllocation);
+                                             registerAllocation
+            );
             nEmitter.destinationDir(outputDir);
             nEmitter.write();
             errorHasOccurred |= nEmitter.errorHasOccurred();
@@ -174,7 +178,7 @@ public class JavaCCMain {
 
     /**
      * Return true if an error occurred during compilation; false otherwise.
-     * 
+     *
      * @return true or false.
      */
 
@@ -184,25 +188,22 @@ public class JavaCCMain {
 
     /**
      * Print command usage to STDOUT.
-     * 
-     * @param caller
-     *            denotes how this class is invoked.
+     *
+     * @param caller denotes how this class is invoked.
      */
 
     private static void printUsage(String caller) {
-        String usage = "Usage: "
-                + caller
-                + " <options> <source file>\n"
-                + "where possible options include:\n"
-                + "  -t Only tokenize input and print tokens to STDOUT\n"
-                + "  -p Only parse input and print AST to STDOUT\n"
-                + "  -pa Only parse and pre-analyze input and print "
-                + "AST to STDOUT\n"
-                + "  -a Only parse, pre-analyze, and analyze input "
-                + "and print AST to STDOUT\n"
-                + "  -s <naive|linear|graph> Generate SPIM code\n"
-                + "  -r <num> Max. physical registers (1-18) available for allocation; default = 8\n"
-                + "  -d <dir> Specify where to place output files; default = .";
+        String usage = "Usage: " + caller + " <options> <source file>\n" +
+                "where possible options include:\n" +
+                "  -t Only tokenize input and print tokens to STDOUT\n" +
+                "  -p Only parse input and print AST to STDOUT\n" +
+                "  -pa Only parse and pre-analyze input and print " + "AST to STDOUT\n" +
+                "  -a Only parse, pre-analyze, and analyze input " +
+                "and print AST to STDOUT\n" +
+                "  -s <naive|linear|graph> Generate SPIM code\n" +
+                "  -r <num> Max. physical registers (1-18) available for allocation; " +
+                "default = 8\n" +
+                "  -d <dir> Specify where to place output files; default = .";
         System.out.println(usage);
     }
 

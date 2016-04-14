@@ -10,17 +10,17 @@ import static jminusminus.CLConstants.*;
 
 class JLiteralChar extends JExpression {
 
-    /** String representation of the char. */
+    /**
+     * String representation of the char.
+     */
     private String text;
 
     /**
      * Construct an AST node for a char literal given its line number and text
      * representation.
-     * 
-     * @param line
-     *            line in which the literal occurs in the source file.
-     * @param text
-     *            string representation of the literal.
+     *
+     * @param line line in which the literal occurs in the source file.
+     * @param text string representation of the literal.
      */
 
     public JLiteralChar(int line, String text) {
@@ -30,9 +30,8 @@ class JLiteralChar extends JExpression {
 
     /**
      * Analyzing a char literal is trivial.
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -44,10 +43,9 @@ class JLiteralChar extends JExpression {
     /**
      * Generating code for a char literal means generating code to push it onto
      * the stack.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -60,32 +58,32 @@ class JLiteralChar extends JExpression {
         char c = s.charAt(1);
         int i = (int) c;
         switch (i) {
-        case 0:
-            output.addNoArgInstruction(ICONST_0);
-            break;
-        case 1:
-            output.addNoArgInstruction(ICONST_1);
-            break;
-        case 2:
-            output.addNoArgInstruction(ICONST_2);
-            break;
-        case 3:
-            output.addNoArgInstruction(ICONST_3);
-            break;
-        case 4:
-            output.addNoArgInstruction(ICONST_4);
-            break;
-        case 5:
-            output.addNoArgInstruction(ICONST_5);
-            break;
-        default:
-            if (i >= 6 && i <= 127) {
-                output.addOneArgInstruction(BIPUSH, i);
-            } else if (i >= 128 && i <= 32767) {
-                output.addOneArgInstruction(SIPUSH, i);
-            } else {
-                output.addLDCInstruction(i);
-            }
+            case 0:
+                output.addNoArgInstruction(ICONST_0);
+                break;
+            case 1:
+                output.addNoArgInstruction(ICONST_1);
+                break;
+            case 2:
+                output.addNoArgInstruction(ICONST_2);
+                break;
+            case 3:
+                output.addNoArgInstruction(ICONST_3);
+                break;
+            case 4:
+                output.addNoArgInstruction(ICONST_4);
+                break;
+            case 5:
+                output.addNoArgInstruction(ICONST_5);
+                break;
+            default:
+                if (i >= 6 && i <= 127) {
+                    output.addOneArgInstruction(BIPUSH, i);
+                } else if (i >= 128 && i <= 32767) {
+                    output.addOneArgInstruction(SIPUSH, i);
+                } else {
+                    output.addLDCInstruction(i);
+                }
         }
     }
 
@@ -94,9 +92,9 @@ class JLiteralChar extends JExpression {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JLiteralChar line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n",
-                line(), ((type == null) ? "" : type.toString()), Util
-                        .escapeSpecialXMLChars(text));
+        p.printf("<JLiteralChar line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
+                 ((type == null) ? "" : type.toString()), Util.escapeSpecialXMLChars(text)
+        );
     }
 
 }

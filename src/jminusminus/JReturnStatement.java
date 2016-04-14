@@ -10,21 +10,20 @@ import static jminusminus.CLConstants.*;
  * of the expression denoting that value and its type.
  */
 
-class JReturnStatement
-    extends JStatement {
+class JReturnStatement extends JStatement {
 
-    /** The returned expression. */
+    /**
+     * The returned expression.
+     */
     private JExpression expr;
 
     /**
      * Construct an AST node for a return-statement given its
      * line number, and the expression that is returned.
-     * 
-     * @param line
-     *                line in which the return-statement appears
-     *                in the source file.
-     * @param expr
-     *                the returned expression.
+     *
+     * @param line line in which the return-statement appears
+     *             in the source file.
+     * @param expr the returned expression.
      */
 
     public JReturnStatement(int line, JExpression expr) {
@@ -37,9 +36,8 @@ class JReturnStatement
      * or in a regular method in checking return types. In the
      * case of a return expression, analyze it and check types.
      * Determine the (possibly void) return type.
-     * 
-     * @param context
-     *                context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -60,17 +58,21 @@ class JReturnStatement
             if (expr != null) {
                 // Can't return a value from a constructor
                 JAST.compilationUnit.reportSemanticError(line(),
-                    "cannot return a value from a constructor");
+                                                         "cannot return a value from a " +
+                                                                 "constructor"
+                );
             }
         } else {
             // Must be a method
             Type returnType = methodContext.methodReturnType();
-	    methodContext.confirmMethodHasReturn();
+            methodContext.confirmMethodHasReturn();
             if (expr != null) {
                 if (returnType == Type.VOID) {
                     // Can't return a value from void method
                     JAST.compilationUnit.reportSemanticError(line(),
-                        "cannot return a value from a void method");
+                                                             "cannot return a value " +
+                                                                     "from a void method"
+                    );
                 } else {
                     // There's a (non-void) return expression.
                     // Its
@@ -82,8 +84,8 @@ class JReturnStatement
             } else {
                 // The method better have void as return type
                 if (returnType != Type.VOID) {
-                    JAST.compilationUnit.reportSemanticError(line(),
-                        "missing return value");
+                    JAST.compilationUnit
+                            .reportSemanticError(line(), "missing return value");
                 }
             }
         }
@@ -96,10 +98,9 @@ class JReturnStatement
      * case of a return expression, generate code to load that
      * onto the stack and then generate the appropriate return
      * instruction.
-     * 
-     * @param output
-     *                the code emitter (basically an abstraction
-     *                for producing the .class file).
+     *
+     * @param output the code emitter (basically an abstraction
+     *               for producing the .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -107,9 +108,8 @@ class JReturnStatement
             output.addNoArgInstruction(RETURN);
         } else {
             expr.codegen(output);
-            if (expr.type() == Type.INT
-                || expr.type() == Type.BOOLEAN
-                || expr.type() == Type.CHAR) {
+            if (expr.type() == Type.INT || expr.type() == Type.BOOLEAN ||
+                    expr.type() == Type.CHAR) {
                 output.addNoArgInstruction(IRETURN);
             } else {
                 output.addNoArgInstruction(ARETURN);

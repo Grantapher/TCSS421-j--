@@ -13,7 +13,7 @@ interface IDefn {
     /**
      * The (local variable, formal parameter, or local or imported name)
      * definition's type.
-     * 
+     *
      * @return the definition's type.
      */
 
@@ -28,14 +28,15 @@ interface IDefn {
 
 class TypeNameDefn implements IDefn {
 
-    /** The definition's type. */
+    /**
+     * The definition's type.
+     */
     private Type type;
 
     /**
      * Construct a type name definition given its type.
-     * 
-     * @param type
-     *            the definition's type.
+     *
+     * @param type the definition's type.
      */
 
     public TypeNameDefn(Type type) {
@@ -44,7 +45,7 @@ class TypeNameDefn implements IDefn {
 
     /**
      * The type for this definition.
-     * 
+     *
      * @return the definition's type.
      */
 
@@ -62,7 +63,9 @@ class TypeNameDefn implements IDefn {
 
 class LocalVariableDefn implements IDefn {
 
-    /** The local variable's type. */
+    /**
+     * The local variable's type.
+     */
     private Type type;
 
     /**
@@ -70,17 +73,17 @@ class LocalVariableDefn implements IDefn {
      */
     private int offset;
 
-    /** Has this local variable been initialized? */
+    /**
+     * Has this local variable been initialized?
+     */
     private boolean isInitialized;
 
     /**
      * Construct a local variable definition for a local variable.
-     * 
-     * @param type
-     *            the variable's type.
-     * @param offset
-     *            the variable's offset from the base of the current stack frame
-     *            (allocated for each method invocation.)
+     *
+     * @param type   the variable's type.
+     * @param offset the variable's offset from the base of the current stack frame
+     *               (allocated for each method invocation.)
      */
 
     public LocalVariableDefn(Type type, int offset) {
@@ -90,7 +93,7 @@ class LocalVariableDefn implements IDefn {
 
     /**
      * The type for this variable.
-     * 
+     *
      * @return the type.
      */
 
@@ -100,7 +103,7 @@ class LocalVariableDefn implements IDefn {
 
     /**
      * The offset of this variable on the stack frame.
-     * 
+     *
      * @return the offset.
      */
 
@@ -118,7 +121,7 @@ class LocalVariableDefn implements IDefn {
 
     /**
      * Has this local variable been initialized?
-     * 
+     *
      * @return true or false.
      */
 

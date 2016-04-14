@@ -36,17 +36,21 @@ public class JMinusMinusTest extends TestCase {
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
-                System.out.printf("Running j-- (with "
-                        + "handwritten frontend) on %s ...\n", files[i]
-                        .toString());
+                System.out.printf("Running j-- (with " +
+                                          "handwritten frontend) on %s ...\n",
+                                  files[i].toString()
+                );
                 args = new String[]{"-d", genClassDir.getAbsolutePath(),
-                        files[i].toString()};
+                        files[i].toString()
+                };
                 Main.main(args);
 
                 if (Main.errorHasOccurred()) {
-                    System.out.println(files[i] + " failed to compile when it should have!");
+                    System.out.println(
+                            files[i] + " failed to compile when it should have!"
+                    );
                 }
-                
+
                 System.out.printf("\n");
                 // true even if a single test fails
                 errorHasOccurred |= Main.errorHasOccurred();
@@ -71,11 +75,13 @@ public class JMinusMinusTest extends TestCase {
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
-                System.out.printf("Running j-- (with "
-                        + "handwritten frontend) on %s ...\n", files[i]
-                        .toString());
+                System.out.printf("Running j-- (with " +
+                                          "handwritten frontend) on %s ...\n",
+                                  files[i].toString()
+                );
                 args = new String[]{"-d", genClassDir.getAbsolutePath(),
-                        files[i].toString()};
+                        files[i].toString()
+                };
                 Main.main(args);
 
                 if (!Main.errorHasOccurred()) {

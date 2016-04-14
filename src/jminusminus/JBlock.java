@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 class JBlock extends JStatement {
 
-    /** List of statements forming the block body. */
+    /**
+     * List of statements forming the block body.
+     */
     private ArrayList<JStatement> statements;
 
     /**
@@ -21,11 +23,9 @@ class JBlock extends JStatement {
     /**
      * Construct an AST node for a block given its line number, and the list of
      * statements forming the block body.
-     * 
-     * @param line
-     *            line in which the block occurs in the source file.
-     * @param statements
-     *            list of statements forming the block body.
+     *
+     * @param line       line in which the block occurs in the source file.
+     * @param statements list of statements forming the block body.
      */
 
     public JBlock(int line, ArrayList<JStatement> statements) {
@@ -35,7 +35,7 @@ class JBlock extends JStatement {
 
     /**
      * Return the list of statements comprising the block.
-     * 
+     *
      * @return list of statements.
      */
 
@@ -46,9 +46,8 @@ class JBlock extends JStatement {
     /**
      * Analyzing a block consists of creating a new nested context for that
      * block and analyzing each of its statements within that context.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -57,8 +56,7 @@ class JBlock extends JStatement {
         this.context = new LocalContext(context);
 
         for (int i = 0; i < statements.size(); i++) {
-            statements.set(i, (JStatement) statements.get(i).analyze(
-                    this.context));
+            statements.set(i, (JStatement) statements.get(i).analyze(this.context));
         }
         return this;
     }
@@ -66,10 +64,9 @@ class JBlock extends JStatement {
     /**
      * Generating code for a block consists of generating code for each of its
      * statements.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

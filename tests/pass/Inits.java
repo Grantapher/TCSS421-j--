@@ -8,7 +8,7 @@ public class Inits {
 
     int i = 5;
 
-    int[][] ia = { { 1, 2, 3 }, { 4, i, 6 }, null };
+    int[][] ia = {{1, 2, 3}, {4, i, 6}, null};
 
     public static void main(String[] args) {
         Inits obj = new Inits();

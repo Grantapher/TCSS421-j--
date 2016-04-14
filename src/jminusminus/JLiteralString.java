@@ -8,17 +8,17 @@ package jminusminus;
 
 class JLiteralString extends JExpression {
 
-    /** Representation of the string. */
+    /**
+     * Representation of the string.
+     */
     private String text;
 
     /**
      * Construct an AST node for a string literal given its line number and
      * string representation.
-     * 
-     * @param line
-     *            line in which the literal occurs in the source file.
-     * @param text
-     *            representation of the literal.
+     *
+     * @param line line in which the literal occurs in the source file.
+     * @param text representation of the literal.
      */
 
     public JLiteralString(int line, String text) {
@@ -28,9 +28,8 @@ class JLiteralString extends JExpression {
 
     /**
      * Analyzing a String literal is trivial.
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -42,10 +41,9 @@ class JLiteralString extends JExpression {
     /**
      * Generating code for a string literal means generating code to push it
      * onto the stack.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -63,9 +61,9 @@ class JLiteralString extends JExpression {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JLiteralString line=\"%d\" type=\"%s\" "
-                + "value=\"%s\"/>\n", line(), ((type == null) ? "" : type
-                .toString()), Util.escapeSpecialXMLChars(text));
+        p.printf("<JLiteralString line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
+                 ((type == null) ? "" : type.toString()), Util.escapeSpecialXMLChars(text)
+        );
     }
 
 }

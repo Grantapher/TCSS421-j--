@@ -3,6 +3,7 @@
 package jminusminus;
 
 import static jminusminus.CLConstants.*;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -17,31 +18,38 @@ import java.util.Queue;
 
 class NTuple {
 
-    /** Program counter of the instruction. */
+    /**
+     * Program counter of the instruction.
+     */
     public int pc;
 
-    /** Opcode of the instruction. */
+    /**
+     * Opcode of the instruction.
+     */
     public int opcode;
 
-    /** Operands of the instructions. */
+    /**
+     * Operands of the instructions.
+     */
     public ArrayList<Short> operands;
 
-    /** String representation (mnemonic) of the instruction. */
+    /**
+     * String representation (mnemonic) of the instruction.
+     */
     public String mnemonic;
 
-    /** Is this tuple the leader of the block containing it. */
+    /**
+     * Is this tuple the leader of the block containing it.
+     */
     public boolean isLeader;
 
     /**
      * Construct a tuple representing the JVM instruction with the given program
      * counter, opcode, and operand list.
-     * 
-     * @param pc
-     *            program counter.
-     * @param opcode
-     *            opcode of the instruction.
-     * @param operands
-     *            list of operands of the instruction.
+     *
+     * @param pc       program counter.
+     * @param opcode   opcode of the instruction.
+     * @param operands list of operands of the instruction.
      */
 
     public NTuple(int pc, int opcode, ArrayList<Short> operands) {
@@ -54,9 +62,8 @@ class NTuple {
 
     /**
      * Write the information pertaining to this tuple to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeToStdOut(PrettyPrinter p) {
@@ -75,25 +82,39 @@ class NTuple {
 
 class NBasicBlock {
 
-    /** The control flow graph (cfg) that this block belongs to. */
+    /**
+     * The control flow graph (cfg) that this block belongs to.
+     */
     public NControlFlowGraph cfg;
 
-    /** Unique identifier of ths block. */
+    /**
+     * Unique identifier of ths block.
+     */
     public int id;
 
-    /** List of tuples in this block. */
+    /**
+     * List of tuples in this block.
+     */
     public ArrayList<NTuple> tuples;
 
-    /** List of predecessor blocks. */
+    /**
+     * List of predecessor blocks.
+     */
     public ArrayList<NBasicBlock> predecessors;
 
-    /** List of successor blocks. */
+    /**
+     * List of successor blocks.
+     */
     public ArrayList<NBasicBlock> successors;
 
-    /** List of high-level (HIR) instructions in this block. */
+    /**
+     * List of high-level (HIR) instructions in this block.
+     */
     public ArrayList<Integer> hir;
 
-    /** List of low-level (LIR) instructions in this block. */
+    /**
+     * List of low-level (LIR) instructions in this block.
+     */
     public ArrayList<NLIRInstruction> lir;
 
     /**
@@ -102,37 +123,59 @@ class NBasicBlock {
      */
     public int[] locals;
 
-    /** Has this block been visited? */
+    /**
+     * Has this block been visited?
+     */
     public boolean visited;
 
-    /** Is this block active? */
+    /**
+     * Is this block active?
+     */
     public boolean active;
 
-    /** Is this block a loop head? */
+    /**
+     * Is this block a loop head?
+     */
     public boolean isLoopHead;
 
-    /** Is this block a loop tail? */
+    /**
+     * Is this block a loop tail?
+     */
     public boolean isLoopTail;
 
-    /** Index of a loop. */
+    /**
+     * Index of a loop.
+     */
     public int loopIndex;
 
-    /** Depth of a loop. */
+    /**
+     * Depth of a loop.
+     */
     public int loopDepth;
 
-    /** Number of forward branches to this block. */
+    /**
+     * Number of forward branches to this block.
+     */
     public int fwdBranches;
 
-    /** Number of backward branches to this block. */
+    /**
+     * Number of backward branches to this block.
+     */
     public int bwdBranches;
 
-    /** Ref count of this block. */
+    /**
+     * Ref count of this block.
+     */
     public int ref;
 
-    /** The dominator of this block. */
+    /**
+     * The dominator of this block.
+     */
     public NBasicBlock dom;
 
-    /** All virtual registers locally defined within this block. */
+    /**
+     * All virtual registers locally defined within this block.
+     */
     public BitSet liveDef;
 
     /**
@@ -140,19 +183,21 @@ class NBasicBlock {
      */
     public BitSet liveUse;
 
-    /** All virtual registers live in the block. */
+    /**
+     * All virtual registers live in the block.
+     */
     public BitSet liveIn;
 
-    /** All virtual registers live outside the block. */
+    /**
+     * All virtual registers live outside the block.
+     */
     public BitSet liveOut;
 
     /**
      * Construct a block given its unique identifier.
-     * 
-     * @param cfg
-     *            the cfg containing this block.
-     * @param id
-     *            id of the block.
+     *
+     * @param cfg the cfg containing this block.
+     * @param id  id of the block.
      */
 
     public NBasicBlock(NControlFlowGraph cfg, int id) {
@@ -168,7 +213,7 @@ class NBasicBlock {
 
     /**
      * Return a string identifier of this block.
-     * 
+     *
      * @return string identifier of this block.
      */
 
@@ -179,9 +224,8 @@ class NBasicBlock {
     /**
      * Is this block the same as the other block? Two blocks are the same if
      * their ids are the same.
-     * 
-     * @param other
-     *            the other block.
+     *
+     * @param other the other block.
      * @return true or false.
      */
 
@@ -191,7 +235,7 @@ class NBasicBlock {
 
     /**
      * Return a string representation of this block.
-     * 
+     *
      * @return string representation of this block.
      */
 
@@ -201,9 +245,8 @@ class NBasicBlock {
 
     /**
      * Write the tuples in this block to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeTuplesToStdOut(PrettyPrinter p) {
@@ -217,17 +260,14 @@ class NBasicBlock {
 
     /**
      * Write the HIR instructions in this block to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeHirToStdOut(PrettyPrinter p) {
-        String s = id() + (isLoopHead ? " [LH]" : "")
-                + (isLoopTail ? " [LT]" : "");
+        String s = id() + (isLoopHead ? " [LH]" : "") + (isLoopTail ? " [LT]" : "");
         if (tuples.size() > 0) {
-            s += " [" + tuples.get(0).pc + ", "
-                    + tuples.get(tuples.size() - 1).pc + "]";
+            s += " [" + tuples.get(0).pc + ", " + tuples.get(tuples.size() - 1).pc + "]";
         }
         if (dom != null) {
             s += " dom: " + dom.id();
@@ -256,8 +296,9 @@ class NBasicBlock {
         p.printf("%s\n", s);
         for (int ins : hir) {
             if (cfg.hirMap.get(ins) instanceof NHIRPhiFunction) {
-                p.printf("%s: %s\n", ((NHIRPhiFunction) cfg.hirMap.get(ins))
-                        .id(), ((NHIRPhiFunction) cfg.hirMap.get(ins)));
+                p.printf("%s: %s\n", ((NHIRPhiFunction) cfg.hirMap.get(ins)).id(),
+                         ((NHIRPhiFunction) cfg.hirMap.get(ins))
+                );
             }
         }
         for (int ins : hir) {
@@ -270,9 +311,8 @@ class NBasicBlock {
 
     /**
      * Write the LIR instructions in this block to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
     public void writeLirToStdOut(PrettyPrinter p) {
         p.printf("%s\n", id());
@@ -284,7 +324,7 @@ class NBasicBlock {
 
     /**
      * The instruction identifier for the first LIR instruction.
-     * 
+     *
      * @return the instruction identifier.
      */
     public int getFirstLIRInstId() {
@@ -296,7 +336,7 @@ class NBasicBlock {
 
     /**
      * The instruction identifier for the last LIR instruction.
-     * 
+     *
      * @return the instruction identifier.
      */
     public int getLastLIRInstId() {
@@ -309,10 +349,8 @@ class NBasicBlock {
     /**
      * Iterates through the lir array of this block, returning an
      * NLIRInstruction with the specified id.
-     * 
-     * @param id
-     *            the id to look for.
-     * 
+     *
+     * @param id the id to look for.
      * @return NLIRInstruction with the specified id, null if none matched.
      */
     public NLIRInstruction getInstruction(int id) {
@@ -327,7 +365,7 @@ class NBasicBlock {
     /**
      * Checks to see if there is an LIRInstruction with this id in the block's
      * lir.
-     * 
+     *
      * @return true or false.
      */
     public boolean idIsFree(int id) {
@@ -341,9 +379,8 @@ class NBasicBlock {
     /**
      * Inserts an NLIRInstruction to the appropriate place in this block's lir
      * array based on its id -- preserving order by id.
-     * 
-     * @param inst
-     *            the NLIRInstruction to be inserted.
+     *
+     * @param inst the NLIRInstruction to be inserted.
      */
     public void insertLIRInst(NLIRInstruction inst) {
         int idx = -1;
@@ -367,37 +404,59 @@ class NBasicBlock {
 
 class NControlFlowGraph {
 
-    /** Constant pool for the class containing the method. */
+    /**
+     * Constant pool for the class containing the method.
+     */
     private CLConstantPool cp;
 
-    /** Contains information about the method. */
+    /**
+     * Contains information about the method.
+     */
     private CLMethodInfo m;
 
-    /** Maps the pc of a JVM instruction to the block it's in. */
+    /**
+     * Maps the pc of a JVM instruction to the block it's in.
+     */
     private HashMap<Integer, NBasicBlock> pcToBasicBlock;
 
-    /** block identifier. */
+    /**
+     * block identifier.
+     */
     public static int blockId;
 
-    /** HIR instruction identifier. */
+    /**
+     * HIR instruction identifier.
+     */
     public static int hirId;
 
-    /** HIR instruction identifier. */
+    /**
+     * HIR instruction identifier.
+     */
     public static int lirId;
 
-    /** Virtual register identifier. */
+    /**
+     * Virtual register identifier.
+     */
     public static int regId;
 
-    /** Stack offset counter.. */
+    /**
+     * Stack offset counter..
+     */
     public int offset;
 
-    /** Loop identifier. */
+    /**
+     * Loop identifier.
+     */
     public static int loopIndex;
 
-    /** Name of the method this cfg corresponds to. */
+    /**
+     * Name of the method this cfg corresponds to.
+     */
     public String name;
 
-    /** Descriptor of the method this cfg corresponds to. */
+    /**
+     * Descriptor of the method this cfg corresponds to.
+     */
     public String desc;
 
     /**
@@ -405,7 +464,9 @@ class NControlFlowGraph {
      */
     public ArrayList<NBasicBlock> basicBlocks;
 
-    /** Maps HIR instruction ids in this cfg to HIR instructions. */
+    /**
+     * Maps HIR instruction ids in this cfg to HIR instructions.
+     */
     public TreeMap<Integer, NHIRInstruction> hirMap;
 
     /**
@@ -430,7 +491,9 @@ class NControlFlowGraph {
      */
     public ArrayList<NInterval> intervals;
 
-    /** Used to construct jump labels in spim output. */
+    /**
+     * Used to construct jump labels in spim output.
+     */
     public String labelPrefix;
 
     /**
@@ -442,11 +505,9 @@ class NControlFlowGraph {
      * Construct an NControlFlowGraph object for a method given the constant
      * pool for the class containing the method and the object containing
      * information about the method.
-     * 
-     * @param cp
-     *            constant pool for the class containing the method.
-     * @param m
-     *            contains information about the method.
+     *
+     * @param cp constant pool for the class containing the method.
+     * @param m  contains information about the method.
      */
 
     public NControlFlowGraph(CLConstantPool cp, CLMethodInfo m) {
@@ -474,54 +535,55 @@ class NControlFlowGraph {
             short operandByte1, operandByte2, operandByte3, operandByte4;
             int offset;
             switch (tuple.opcode) {
-            case IFEQ:
-            case IFNE:
-            case IFLT:
-            case IFGE:
-            case IFGT:
-            case IFLE:
-            case IF_ICMPEQ:
-            case IF_ICMPNE:
-            case IF_ICMPLT:
-            case IF_ICMPGE:
-            case IF_ICMPGT:
-            case IF_ICMPLE:
-            case IF_ACMPEQ:
-            case IF_ACMPNE:
-            case GOTO:
-            case JSR:
-            case IFNULL:
-            case IFNONNULL:
-                operandByte1 = tuple.operands.get(0);
-                operandByte2 = tuple.operands.get(1);
-                offset = shortValue(operandByte1, operandByte2);
-                tupleAt[tuple.pc + offset].isLeader = true;
-                break;
-            case GOTO_W:
-            case JSR_W:
-                operandByte1 = tuple.operands.get(0);
-                operandByte2 = tuple.operands.get(1);
-                operandByte3 = tuple.operands.get(2);
-                operandByte4 = tuple.operands.get(3);
-                offset = intValue(operandByte1, operandByte2, operandByte3,
-                        operandByte4);
-                tupleAt[tuple.pc + offset].isLeader = true;
-                break;
-            case IRETURN:
-            case LRETURN:
-            case FRETURN:
-            case DRETURN:
-            case ARETURN:
-            case RETURN:
-            case RET:
-            case ATHROW:
-                break;
-            case TABLESWITCH: // TBD
-                break;
-            case LOOKUPSWITCH: // TBD
-                break;
-            default:
-                jumpInstruction = false;
+                case IFEQ:
+                case IFNE:
+                case IFLT:
+                case IFGE:
+                case IFGT:
+                case IFLE:
+                case IF_ICMPEQ:
+                case IF_ICMPNE:
+                case IF_ICMPLT:
+                case IF_ICMPGE:
+                case IF_ICMPGT:
+                case IF_ICMPLE:
+                case IF_ACMPEQ:
+                case IF_ACMPNE:
+                case GOTO:
+                case JSR:
+                case IFNULL:
+                case IFNONNULL:
+                    operandByte1 = tuple.operands.get(0);
+                    operandByte2 = tuple.operands.get(1);
+                    offset = shortValue(operandByte1, operandByte2);
+                    tupleAt[tuple.pc + offset].isLeader = true;
+                    break;
+                case GOTO_W:
+                case JSR_W:
+                    operandByte1 = tuple.operands.get(0);
+                    operandByte2 = tuple.operands.get(1);
+                    operandByte3 = tuple.operands.get(2);
+                    operandByte4 = tuple.operands.get(3);
+                    offset = intValue(operandByte1, operandByte2, operandByte3,
+                                      operandByte4
+                    );
+                    tupleAt[tuple.pc + offset].isLeader = true;
+                    break;
+                case IRETURN:
+                case LRETURN:
+                case FRETURN:
+                case DRETURN:
+                case ARETURN:
+                case RETURN:
+                case RET:
+                case ATHROW:
+                    break;
+                case TABLESWITCH: // TBD
+                    break;
+                case LOOKUPSWITCH: // TBD
+                    break;
+                default:
+                    jumpInstruction = false;
             }
             if (jumpInstruction) {
                 if (j < tuples.size() - 1) {
@@ -568,72 +630,73 @@ class NControlFlowGraph {
             int offset;
             NBasicBlock target;
             switch (tuple.opcode) {
-            case IFEQ:
-            case IFNE:
-            case IFLT:
-            case IFGE:
-            case IFGT:
-            case IFLE:
-            case IF_ICMPEQ:
-            case IF_ICMPNE:
-            case IF_ICMPLT:
-            case IF_ICMPGE:
-            case IF_ICMPGT:
-            case IF_ICMPLE:
-            case IF_ACMPEQ:
-            case IF_ACMPNE:
-            case IFNULL:
-            case IFNONNULL:
-                operandByte1 = tuple.operands.get(0);
-                operandByte2 = tuple.operands.get(1);
-                offset = shortValue(operandByte1, operandByte2);
-                target = blockAt[tuple.pc + offset];
-                if (j < basicBlocks.size() - 1) {
-                    block.successors.add(basicBlocks.get(j + 1));
-                    basicBlocks.get(j + 1).predecessors.add(block);
-                }
-                block.successors.add(target);
-                target.predecessors.add(block);
-                break;
-            case GOTO:
-            case JSR:
-                operandByte1 = tuple.operands.get(0);
-                operandByte2 = tuple.operands.get(1);
-                offset = shortValue(operandByte1, operandByte2);
-                target = blockAt[tuple.pc + offset];
-                block.successors.add(target);
-                target.predecessors.add(block);
-                break;
-            case GOTO_W:
-            case JSR_W:
-                operandByte1 = tuple.operands.get(0);
-                operandByte2 = tuple.operands.get(1);
-                operandByte3 = tuple.operands.get(2);
-                operandByte4 = tuple.operands.get(3);
-                offset = intValue(operandByte1, operandByte2, operandByte3,
-                        operandByte4);
-                target = blockAt[tuple.pc + offset];
-                block.successors.add(target);
-                target.predecessors.add(block);
-                break;
-            case IRETURN:
-            case LRETURN:
-            case FRETURN:
-            case DRETURN:
-            case ARETURN:
-            case RETURN:
-            case RET:
-            case ATHROW:
-                break;
-            case TABLESWITCH: // TBD
-                break;
-            case LOOKUPSWITCH: // TBD
-                break;
-            default:
-                if (j < basicBlocks.size() - 1) {
-                    block.successors.add(basicBlocks.get(j + 1));
-                    basicBlocks.get(j + 1).predecessors.add(block);
-                }
+                case IFEQ:
+                case IFNE:
+                case IFLT:
+                case IFGE:
+                case IFGT:
+                case IFLE:
+                case IF_ICMPEQ:
+                case IF_ICMPNE:
+                case IF_ICMPLT:
+                case IF_ICMPGE:
+                case IF_ICMPGT:
+                case IF_ICMPLE:
+                case IF_ACMPEQ:
+                case IF_ACMPNE:
+                case IFNULL:
+                case IFNONNULL:
+                    operandByte1 = tuple.operands.get(0);
+                    operandByte2 = tuple.operands.get(1);
+                    offset = shortValue(operandByte1, operandByte2);
+                    target = blockAt[tuple.pc + offset];
+                    if (j < basicBlocks.size() - 1) {
+                        block.successors.add(basicBlocks.get(j + 1));
+                        basicBlocks.get(j + 1).predecessors.add(block);
+                    }
+                    block.successors.add(target);
+                    target.predecessors.add(block);
+                    break;
+                case GOTO:
+                case JSR:
+                    operandByte1 = tuple.operands.get(0);
+                    operandByte2 = tuple.operands.get(1);
+                    offset = shortValue(operandByte1, operandByte2);
+                    target = blockAt[tuple.pc + offset];
+                    block.successors.add(target);
+                    target.predecessors.add(block);
+                    break;
+                case GOTO_W:
+                case JSR_W:
+                    operandByte1 = tuple.operands.get(0);
+                    operandByte2 = tuple.operands.get(1);
+                    operandByte3 = tuple.operands.get(2);
+                    operandByte4 = tuple.operands.get(3);
+                    offset = intValue(operandByte1, operandByte2, operandByte3,
+                                      operandByte4
+                    );
+                    target = blockAt[tuple.pc + offset];
+                    block.successors.add(target);
+                    target.predecessors.add(block);
+                    break;
+                case IRETURN:
+                case LRETURN:
+                case FRETURN:
+                case DRETURN:
+                case ARETURN:
+                case RETURN:
+                case RET:
+                case ATHROW:
+                    break;
+                case TABLESWITCH: // TBD
+                    break;
+                case LOOKUPSWITCH: // TBD
+                    break;
+                default:
+                    if (j < basicBlocks.size() - 1) {
+                        block.successors.add(basicBlocks.get(j + 1));
+                        basicBlocks.get(j + 1).predecessors.add(block);
+                    }
             }
         }
 
@@ -649,11 +712,9 @@ class NControlFlowGraph {
      * Implements loop detection algorithm to figure out if the specified block
      * is a loop head or a loop tail. Also calculates the number of backward
      * branches to the block.
-     * 
-     * @param block
-     *            a block.
-     * @param pred
-     *            block's predecessor or null.
+     *
+     * @param block a block.
+     * @param pred  block's predecessor or null.
      */
 
     public void detectLoops(NBasicBlock block, NBasicBlock pred) {
@@ -704,11 +765,9 @@ class NControlFlowGraph {
     /**
      * Compute the dominator of each block in this cfg recursively given the
      * starting block and its predecessor.
-     * 
-     * @param block
-     *            starting block.
-     * @param pred
-     *            block's predecessor.
+     *
+     * @param block starting block.
+     * @param pred  block's predecessor.
      */
 
     public void computeDominators(NBasicBlock block, NBasicBlock pred) {
@@ -744,8 +803,7 @@ class NControlFlowGraph {
             NHIRInstruction ins = null;
             if (i < argTypes.size()) {
                 String lType = argTypes.get(i);
-                ins = new NHIRLoadLocal(beginBlock, hirId++, i,
-                        shortType(lType), lType);
+                ins = new NHIRLoadLocal(beginBlock, hirId++, i, shortType(lType), lType);
                 beginBlock.hir.add(ins.id);
             } else {
                 ins = new NHIRLocal(beginBlock, hirId++, i, "", "");
@@ -780,8 +838,8 @@ class NControlFlowGraph {
                     }
                     for (int i = 0; i < block.locals.length; i++) {
                         ArrayList<Integer> args = new ArrayList<Integer>();
-                        NHIRPhiFunction phi = new NHIRPhiFunction(block,
-                                hirId++, args, i);
+                        NHIRPhiFunction phi = new NHIRPhiFunction(block, hirId++, args, i
+                        );
                         block.hir.add(phi.id);
                         block.cfg.hirMap.put(phi.id, phi);
                         phi.arguments.add(block.locals[i]);
@@ -806,334 +864,353 @@ class NControlFlowGraph {
                 short operandByte1 = 0, operandByte2 = 0, operandByte3 = 0, offset = 0;
                 int operand1 = 0, operand2 = 0, operand3 = 0;
                 switch (insInfo.opcode) {
-                case MULTIANEWARRAY: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    operandByte3 = tuple.operands.get(2);
-                    int index = shortValue(operandByte1, operandByte2);
-                    int classIndex = ((CLConstantClassInfo) cp.cpItem(index)).nameIndex;
-                    String type = new String(((CLConstantUtf8Info) cp
-                            .cpItem(classIndex)).b);
-                    ins = new NHIRNewArray(block, hirId++, insInfo.opcode,
-                            (int) operandByte3, shortType(type), type);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case AALOAD: {
-                    operand2 = operandStack.pop();
-                    operand1 = operandStack.pop();
-
-                    // Compute base address.
-                    NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++,
-                            12);
-                    NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++,
-                            IADD, operand1, ins1.id);
-                    block.cfg.hirMap.put(ins1.id, ins1);
-                    block.hir.add(ins1.id);
-                    block.cfg.hirMap.put(ins2.id, ins2);
-                    block.hir.add(ins2.id);
-
-                    // Compute index.
-                    NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++,
-                            4);
-                    NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++,
-                            IMUL, operand2, ins3.id);
-                    block.cfg.hirMap.put(ins3.id, ins3);
-                    block.hir.add(ins3.id);
-                    block.cfg.hirMap.put(ins4.id, ins4);
-                    block.hir.add(ins4.id);
-
-                    ins = new NHIRALoad(block, hirId++, insInfo.opcode,
-                            ins2.id, ins4.id, "L", "L");
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case IALOAD: {
-                    operand2 = operandStack.pop();
-                    operand1 = operandStack.pop();
-
-                    // Compute base address.
-                    NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++,
-                            12);
-                    NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++,
-                            IADD, operand1, ins1.id);
-                    block.cfg.hirMap.put(ins1.id, ins1);
-                    block.hir.add(ins1.id);
-                    block.cfg.hirMap.put(ins2.id, ins2);
-                    block.hir.add(ins2.id);
-
-                    // Compute index.
-                    NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++,
-                            4);
-                    NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++,
-                            IMUL, operand2, ins3.id);
-                    block.cfg.hirMap.put(ins3.id, ins3);
-                    block.hir.add(ins3.id);
-                    block.cfg.hirMap.put(ins4.id, ins4);
-                    block.hir.add(ins4.id);
-
-                    ins = new NHIRALoad(block, hirId++, insInfo.opcode,
-                            ins2.id, ins4.id, "I", "I");
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case IASTORE: {
-                    operand3 = operandStack.pop();
-                    operand2 = operandStack.pop();
-                    operand1 = operandStack.pop();
-
-                    // Compute base address.
-                    NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++,
-                            12);
-                    NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++,
-                            IADD, operand1, ins1.id);
-                    block.cfg.hirMap.put(ins1.id, ins1);
-                    block.hir.add(ins1.id);
-                    block.cfg.hirMap.put(ins2.id, ins2);
-                    block.hir.add(ins2.id);
-
-                    // Compute index.
-                    NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++,
-                            4);
-                    NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++,
-                            IMUL, operand2, ins3.id);
-                    block.cfg.hirMap.put(ins3.id, ins3);
-                    block.hir.add(ins3.id);
-                    block.cfg.hirMap.put(ins4.id, ins4);
-                    block.hir.add(ins4.id);
-
-                    ins = new NHIRAStore(block, hirId++, insInfo.opcode,
-                            ins2.id, ins4.id, operand3, "I", "I");
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case ICONST_0:
-                case ICONST_1:
-                case ICONST_2:
-                case ICONST_3:
-                case ICONST_4:
-                case ICONST_5: {
-                    ins = new NHIRIntConstant(block, hirId++, tuple.opcode - 3);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case ILOAD: {
-                    operandByte1 = tuple.operands.get(0);
-                    localVariableIndex = operandByte1;
-                    operandStack.push(block.locals[localVariableIndex]);
-                    break;
-                }
-                case ILOAD_0:
-                case ILOAD_1:
-                case ILOAD_2:
-                case ILOAD_3:
-                case ALOAD_0:
-                case ALOAD_1:
-                case ALOAD_2:
-                case ALOAD_3: {
-                    operandStack.push(block.locals[localVariableIndex]);
-                    break;
-                }
-                case ISTORE: {
-                    operandByte1 = tuple.operands.get(0);
-                    localVariableIndex = operandByte1;
-                    block.locals[localVariableIndex] = operandStack.pop();
-                    break;
-                }
-                case ISTORE_0:
-                case ISTORE_1:
-                case ISTORE_2:
-                case ISTORE_3:
-                case ASTORE_0:
-                case ASTORE_1:
-                case ASTORE_2:
-                case ASTORE_3: {
-                    block.locals[localVariableIndex] = operandStack.pop();
-                    break;
-                }
-                case BIPUSH: {
-                    operandByte1 = tuple.operands.get(0);
-                    ins = new NHIRIntConstant(block, hirId++, operandByte1);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case SIPUSH: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    ins = new NHIRIntConstant(block, hirId++, shortValue(
-                            operandByte1, operandByte2));
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case LDC: {
-                    operandByte1 = tuple.operands.get(0);
-
-                    // Only allowing ldc of string constants for
-                    // now.
-                    int stringIndex = ((CLConstantStringInfo) cp
-                            .cpItem(operandByte1)).stringIndex;
-                    String s = new String(((CLConstantUtf8Info) cp
-                            .cpItem(stringIndex)).b);
-                    ins = new NHIRStringConstant(block, hirId++, s);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case IADD:
-                case ISUB:
-                case IMUL: {
-                    operand2 = operandStack.pop();
-                    operand1 = operandStack.pop();
-                    ins = new NHIRArithmetic(block, hirId++, insInfo.opcode,
-                            operand1, operand2);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    operandStack.push(ins.id);
-                    break;
-                }
-                case IINC: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    operand1 = block.locals[operandByte1];
-                    NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++,
-                            (byte) operandByte2);
-                    ins = new NHIRArithmetic(block, hirId++, IADD, operand1,
-                            ins1.id);
-                    block.locals[operandByte1] = ins.id;
-                    block.hir.add(ins1.id);
-                    block.cfg.hirMap.put(ins1.id, ins1);
-                    block.hir.add(ins.id);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    break;
-                }
-                case IF_ICMPNE:
-                case IF_ICMPGT:
-                case IF_ICMPLE: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    offset = shortValue(operandByte1, operandByte2);
-                    int rhs = operandStack.pop();
-                    int lhs = operandStack.pop();
-                    NBasicBlock trueDestination = pcToBasicBlock.get(tuple.pc
-                            + offset);
-                    NBasicBlock falseDestination = pcToBasicBlock
-                            .get(tuple.pc + 3);
-                    ins = new NHIRConditionalJump(block, hirId++, lhs, rhs,
-                            insInfo.opcode, trueDestination, falseDestination);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case GOTO: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    offset = shortValue(operandByte1, operandByte2);
-                    NBasicBlock destination = pcToBasicBlock.get(tuple.pc
-                            + offset);
-                    ins = new NHIRGoto(block, hirId++, destination);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case GETSTATIC:
-                case PUTSTATIC: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    int index = shortValue(operandByte1, operandByte2);
-                    int classIndex = ((CLConstantFieldRefInfo) cp.cpItem(index)).classIndex;
-                    int nameAndTypeIndex = ((CLConstantFieldRefInfo) cp
-                            .cpItem(index)).nameAndTypeIndex;
-                    int nameIndex = ((CLConstantClassInfo) cp
-                            .cpItem(classIndex)).nameIndex;
-                    String target = new String(((CLConstantUtf8Info) cp
-                            .cpItem(nameIndex)).b);
-                    int fieldNameIndex = ((CLConstantNameAndTypeInfo) cp
-                            .cpItem(nameAndTypeIndex)).nameIndex;
-                    int fieldDescIndex = ((CLConstantNameAndTypeInfo) cp
-                            .cpItem(nameAndTypeIndex)).descriptorIndex;
-                    String name = new String(((CLConstantUtf8Info) cp
-                            .cpItem(fieldNameIndex)).b);
-                    String desc = new String(((CLConstantUtf8Info) cp
-                            .cpItem(fieldDescIndex)).b);
-                    if (insInfo.opcode == PUTSTATIC) {
-                        ins = new NHIRPutField(block, hirId++, insInfo.opcode,
-                                target, name, shortType(desc), desc,
-                                operandStack.pop());
-                    } else {
-                        ins = new NHIRGetField(block, hirId++, insInfo.opcode,
-                                target, name, shortType(desc), desc);
+                    case MULTIANEWARRAY: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        operandByte3 = tuple.operands.get(2);
+                        int index = shortValue(operandByte1, operandByte2);
+                        int classIndex = ((CLConstantClassInfo) cp
+                                .cpItem(index)).nameIndex;
+                        String type = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(classIndex)).b
+                        );
+                        ins = new NHIRNewArray(block, hirId++, insInfo.opcode,
+                                               (int) operandByte3, shortType(type), type
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
                         operandStack.push(ins.id);
+                        break;
                     }
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case INVOKESPECIAL:
-                case INVOKESTATIC: {
-                    operandByte1 = tuple.operands.get(0);
-                    operandByte2 = tuple.operands.get(1);
-                    int index = shortValue(operandByte1, operandByte2);
-                    int classIndex = ((CLConstantMethodRefInfo) cp
-                            .cpItem(index)).classIndex;
-                    int nameAndTypeIndex = ((CLConstantMethodRefInfo) cp
-                            .cpItem(index)).nameAndTypeIndex;
-                    int nameIndex = ((CLConstantClassInfo) cp
-                            .cpItem(classIndex)).nameIndex;
-                    String target = new String(((CLConstantUtf8Info) cp
-                            .cpItem(nameIndex)).b);
-                    int methodNameIndex = ((CLConstantNameAndTypeInfo) cp
-                            .cpItem(nameAndTypeIndex)).nameIndex;
-                    int methodDescIndex = ((CLConstantNameAndTypeInfo) cp
-                            .cpItem(nameAndTypeIndex)).descriptorIndex;
-                    String name = new String(((CLConstantUtf8Info) cp
-                            .cpItem(methodNameIndex)).b);
-                    String desc = new String(((CLConstantUtf8Info) cp
-                            .cpItem(methodDescIndex)).b);
-                    ArrayList<Integer> args = new ArrayList<Integer>();
-                    int numArgs = argumentCount(desc);
-                    for (int i = 0; i < numArgs; i++) {
-                        int arg = operandStack.pop();
-                        args.add(0, arg);
-                    }
-                    String returnType = returnType(desc);
-                    ins = new NHIRInvoke(block, hirId++, insInfo.opcode,
-                            target, name, args, shortType(returnType),
-                            returnType);
-                    if (!returnType.equals("V")) {
+                    case AALOAD: {
+                        operand2 = operandStack.pop();
+                        operand1 = operandStack.pop();
+
+                        // Compute base address.
+                        NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++, 12);
+                        NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++, IADD,
+                                                                  operand1, ins1.id
+                        );
+                        block.cfg.hirMap.put(ins1.id, ins1);
+                        block.hir.add(ins1.id);
+                        block.cfg.hirMap.put(ins2.id, ins2);
+                        block.hir.add(ins2.id);
+
+                        // Compute index.
+                        NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++, 4);
+                        NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++, IMUL,
+                                                                  operand2, ins3.id
+                        );
+                        block.cfg.hirMap.put(ins3.id, ins3);
+                        block.hir.add(ins3.id);
+                        block.cfg.hirMap.put(ins4.id, ins4);
+                        block.hir.add(ins4.id);
+
+                        ins = new NHIRALoad(block, hirId++, insInfo.opcode, ins2.id,
+                                            ins4.id, "L", "L"
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
                         operandStack.push(ins.id);
+                        break;
                     }
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case IRETURN:
-                case ARETURN: {
-                    ins = new NHIRReturn(block, hirId++, insInfo.opcode,
-                            operandStack.pop());
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
-                case RETURN: {
-                    ins = new NHIRReturn(block, hirId++, insInfo.opcode, -1);
-                    block.cfg.hirMap.put(ins.id, ins);
-                    block.hir.add(ins.id);
-                    break;
-                }
+                    case IALOAD: {
+                        operand2 = operandStack.pop();
+                        operand1 = operandStack.pop();
+
+                        // Compute base address.
+                        NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++, 12);
+                        NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++, IADD,
+                                                                  operand1, ins1.id
+                        );
+                        block.cfg.hirMap.put(ins1.id, ins1);
+                        block.hir.add(ins1.id);
+                        block.cfg.hirMap.put(ins2.id, ins2);
+                        block.hir.add(ins2.id);
+
+                        // Compute index.
+                        NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++, 4);
+                        NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++, IMUL,
+                                                                  operand2, ins3.id
+                        );
+                        block.cfg.hirMap.put(ins3.id, ins3);
+                        block.hir.add(ins3.id);
+                        block.cfg.hirMap.put(ins4.id, ins4);
+                        block.hir.add(ins4.id);
+
+                        ins = new NHIRALoad(block, hirId++, insInfo.opcode, ins2.id,
+                                            ins4.id, "I", "I"
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case IASTORE: {
+                        operand3 = operandStack.pop();
+                        operand2 = operandStack.pop();
+                        operand1 = operandStack.pop();
+
+                        // Compute base address.
+                        NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++, 12);
+                        NHIRInstruction ins2 = new NHIRArithmetic(block, hirId++, IADD,
+                                                                  operand1, ins1.id
+                        );
+                        block.cfg.hirMap.put(ins1.id, ins1);
+                        block.hir.add(ins1.id);
+                        block.cfg.hirMap.put(ins2.id, ins2);
+                        block.hir.add(ins2.id);
+
+                        // Compute index.
+                        NHIRInstruction ins3 = new NHIRIntConstant(block, hirId++, 4);
+                        NHIRInstruction ins4 = new NHIRArithmetic(block, hirId++, IMUL,
+                                                                  operand2, ins3.id
+                        );
+                        block.cfg.hirMap.put(ins3.id, ins3);
+                        block.hir.add(ins3.id);
+                        block.cfg.hirMap.put(ins4.id, ins4);
+                        block.hir.add(ins4.id);
+
+                        ins = new NHIRAStore(block, hirId++, insInfo.opcode, ins2.id,
+                                             ins4.id, operand3, "I", "I"
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case ICONST_0:
+                    case ICONST_1:
+                    case ICONST_2:
+                    case ICONST_3:
+                    case ICONST_4:
+                    case ICONST_5: {
+                        ins = new NHIRIntConstant(block, hirId++, tuple.opcode - 3);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case ILOAD: {
+                        operandByte1 = tuple.operands.get(0);
+                        localVariableIndex = operandByte1;
+                        operandStack.push(block.locals[localVariableIndex]);
+                        break;
+                    }
+                    case ILOAD_0:
+                    case ILOAD_1:
+                    case ILOAD_2:
+                    case ILOAD_3:
+                    case ALOAD_0:
+                    case ALOAD_1:
+                    case ALOAD_2:
+                    case ALOAD_3: {
+                        operandStack.push(block.locals[localVariableIndex]);
+                        break;
+                    }
+                    case ISTORE: {
+                        operandByte1 = tuple.operands.get(0);
+                        localVariableIndex = operandByte1;
+                        block.locals[localVariableIndex] = operandStack.pop();
+                        break;
+                    }
+                    case ISTORE_0:
+                    case ISTORE_1:
+                    case ISTORE_2:
+                    case ISTORE_3:
+                    case ASTORE_0:
+                    case ASTORE_1:
+                    case ASTORE_2:
+                    case ASTORE_3: {
+                        block.locals[localVariableIndex] = operandStack.pop();
+                        break;
+                    }
+                    case BIPUSH: {
+                        operandByte1 = tuple.operands.get(0);
+                        ins = new NHIRIntConstant(block, hirId++, operandByte1);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case SIPUSH: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        ins = new NHIRIntConstant(block, hirId++,
+                                                  shortValue(operandByte1, operandByte2)
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case LDC: {
+                        operandByte1 = tuple.operands.get(0);
+
+                        // Only allowing ldc of string constants for
+                        // now.
+                        int stringIndex = ((CLConstantStringInfo) cp
+                                .cpItem(operandByte1)).stringIndex;
+                        String s = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(stringIndex)).b
+                        );
+                        ins = new NHIRStringConstant(block, hirId++, s);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case IADD:
+                    case ISUB:
+                    case IMUL: {
+                        operand2 = operandStack.pop();
+                        operand1 = operandStack.pop();
+                        ins = new NHIRArithmetic(block, hirId++, insInfo.opcode, operand1,
+                                                 operand2
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        operandStack.push(ins.id);
+                        break;
+                    }
+                    case IINC: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        operand1 = block.locals[operandByte1];
+                        NHIRInstruction ins1 = new NHIRIntConstant(block, hirId++,
+                                                                   (byte) operandByte2
+                        );
+                        ins = new NHIRArithmetic(block, hirId++, IADD, operand1, ins1.id);
+                        block.locals[operandByte1] = ins.id;
+                        block.hir.add(ins1.id);
+                        block.cfg.hirMap.put(ins1.id, ins1);
+                        block.hir.add(ins.id);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        break;
+                    }
+                    case IF_ICMPNE:
+                    case IF_ICMPGT:
+                    case IF_ICMPLE: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        offset = shortValue(operandByte1, operandByte2);
+                        int rhs = operandStack.pop();
+                        int lhs = operandStack.pop();
+                        NBasicBlock trueDestination = pcToBasicBlock
+                                .get(tuple.pc + offset);
+                        NBasicBlock falseDestination = pcToBasicBlock.get(tuple.pc + 3);
+                        ins = new NHIRConditionalJump(block, hirId++, lhs, rhs,
+                                                      insInfo.opcode, trueDestination,
+                                                      falseDestination
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case GOTO: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        offset = shortValue(operandByte1, operandByte2);
+                        NBasicBlock destination = pcToBasicBlock.get(tuple.pc + offset);
+                        ins = new NHIRGoto(block, hirId++, destination);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case GETSTATIC:
+                    case PUTSTATIC: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        int index = shortValue(operandByte1, operandByte2);
+                        int classIndex = ((CLConstantFieldRefInfo) cp
+                                .cpItem(index)).classIndex;
+                        int nameAndTypeIndex = ((CLConstantFieldRefInfo) cp
+                                .cpItem(index)).nameAndTypeIndex;
+                        int nameIndex = ((CLConstantClassInfo) cp
+                                .cpItem(classIndex)).nameIndex;
+                        String target = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(nameIndex)).b
+                        );
+                        int fieldNameIndex = ((CLConstantNameAndTypeInfo) cp
+                                .cpItem(nameAndTypeIndex)).nameIndex;
+                        int fieldDescIndex = ((CLConstantNameAndTypeInfo) cp
+                                .cpItem(nameAndTypeIndex)).descriptorIndex;
+                        String name = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(fieldNameIndex)).b
+                        );
+                        String desc = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(fieldDescIndex)).b
+                        );
+                        if (insInfo.opcode == PUTSTATIC) {
+                            ins = new NHIRPutField(block, hirId++, insInfo.opcode, target,
+                                                   name, shortType(desc), desc,
+                                                   operandStack.pop()
+                            );
+                        } else {
+                            ins = new NHIRGetField(block, hirId++, insInfo.opcode, target,
+                                                   name, shortType(desc), desc
+                            );
+                            operandStack.push(ins.id);
+                        }
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case INVOKESPECIAL:
+                    case INVOKESTATIC: {
+                        operandByte1 = tuple.operands.get(0);
+                        operandByte2 = tuple.operands.get(1);
+                        int index = shortValue(operandByte1, operandByte2);
+                        int classIndex = ((CLConstantMethodRefInfo) cp
+                                .cpItem(index)).classIndex;
+                        int nameAndTypeIndex = ((CLConstantMethodRefInfo) cp
+                                .cpItem(index)).nameAndTypeIndex;
+                        int nameIndex = ((CLConstantClassInfo) cp
+                                .cpItem(classIndex)).nameIndex;
+                        String target = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(nameIndex)).b
+                        );
+                        int methodNameIndex = ((CLConstantNameAndTypeInfo) cp
+                                .cpItem(nameAndTypeIndex)).nameIndex;
+                        int methodDescIndex = ((CLConstantNameAndTypeInfo) cp
+                                .cpItem(nameAndTypeIndex)).descriptorIndex;
+                        String name = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(methodNameIndex)).b
+                        );
+                        String desc = new String(
+                                ((CLConstantUtf8Info) cp.cpItem(methodDescIndex)).b
+                        );
+                        ArrayList<Integer> args = new ArrayList<Integer>();
+                        int numArgs = argumentCount(desc);
+                        for (int i = 0; i < numArgs; i++) {
+                            int arg = operandStack.pop();
+                            args.add(0, arg);
+                        }
+                        String returnType = returnType(desc);
+                        ins = new NHIRInvoke(block, hirId++, insInfo.opcode, target, name,
+                                             args, shortType(returnType), returnType
+                        );
+                        if (!returnType.equals("V")) {
+                            operandStack.push(ins.id);
+                        }
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case IRETURN:
+                    case ARETURN: {
+                        ins = new NHIRReturn(block, hirId++, insInfo.opcode,
+                                             operandStack.pop()
+                        );
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
+                    case RETURN: {
+                        ins = new NHIRReturn(block, hirId++, insInfo.opcode, -1);
+                        block.cfg.hirMap.put(ins.id, ins);
+                        block.hir.add(ins.id);
+                        break;
+                    }
                 }
             }
         }
@@ -1164,10 +1241,10 @@ class NControlFlowGraph {
                     continue;
                 }
                 for (int i = 1; i < phi.arguments.size(); i++) {
-                    if (phi.arguments.get(i) != block.predecessors.get(i).locals[phi.local]) {
+                    if (phi.arguments.get(i) !=
+                            block.predecessors.get(i).locals[phi.local]) {
                         match = false;
-                        phi.arguments.set(i,
-                                block.predecessors.get(i).locals[phi.local]);
+                        phi.arguments.set(i, block.predecessors.get(i).locals[phi.local]);
                     }
                 }
                 if (match && firstArg != phi.id) {
@@ -1227,11 +1304,11 @@ class NControlFlowGraph {
                         continue;
                     }
                     NBasicBlock targetBlock = block.predecessors.get(i);
-                    NLIRMove move = new NLIRMove(arg.block, lirId++, arg.lir,
-                            phi.lir);
+                    NLIRMove move = new NLIRMove(arg.block, lirId++, arg.lir, phi.lir);
                     int len = targetBlock.hir.size();
-                    if (hirMap.get(targetBlock.hir.get(len - 1)) instanceof NHIRGoto
-                            || hirMap.get(targetBlock.hir.get(len - 1)) instanceof NHIRConditionalJump) {
+                    if (hirMap.get(targetBlock.hir.get(len - 1)) instanceof NHIRGoto ||
+                            hirMap.get(targetBlock.hir.get(len - 1)
+                            ) instanceof NHIRConditionalJump) {
                         targetBlock.lir.add(len - 1, move);
                     } else {
                         targetBlock.lir.add(move);
@@ -1251,16 +1328,14 @@ class NControlFlowGraph {
 
     /**
      * The basic block at a particular instruction id.
-     * 
-     * @param id
-     *            the (LIR) instruction id.
+     *
+     * @param id the (LIR) instruction id.
      * @return the basic block.
      */
 
     public NBasicBlock blockAt(int id) {
         for (NBasicBlock b : this.basicBlocks) {
-            if (b.getFirstLIRInstId() <= id && b.getLastLIRInstId() >= id)
-                return b;
+            if (b.getFirstLIRInstId() <= id && b.getLastLIRInstId() >= id) return b;
         }
         return null;
     }
@@ -1274,8 +1349,7 @@ class NControlFlowGraph {
         for (NBasicBlock block : basicBlocks) {
             ArrayList<NLIRInstruction> newLir = new ArrayList<NLIRInstruction>();
             for (NLIRInstruction lir : block.lir) {
-                if (lir instanceof NLIRLoadLocal
-                        && ((NLIRLoadLocal) lir).local < 4) {
+                if (lir instanceof NLIRLoadLocal && ((NLIRLoadLocal) lir).local < 4) {
                     // Ignore first four formals.
                     continue;
                 }
@@ -1303,9 +1377,8 @@ class NControlFlowGraph {
 
     /**
      * Write the tuples in this cfg to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeTuplesToStdOut(PrettyPrinter p) {
@@ -1319,9 +1392,8 @@ class NControlFlowGraph {
 
     /**
      * Write the hir instructions in this cfg to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeHirToStdOut(PrettyPrinter p) {
@@ -1335,9 +1407,8 @@ class NControlFlowGraph {
 
     /**
      * Write the lir instructions in this cfg to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeLirToStdOut(PrettyPrinter p) {
@@ -1351,9 +1422,8 @@ class NControlFlowGraph {
 
     /**
      * Write the intervals in this cfg to STDOUT.
-     * 
-     * @param p
-     *            for pretty printing with indentation.
+     *
+     * @param p for pretty printing with indentation.
      */
 
     public void writeIntervalsToStdOut(PrettyPrinter p) {
@@ -1378,12 +1448,9 @@ class NControlFlowGraph {
 
     /**
      * Given a basic block and its predecessor, return their common dominator.
-     * 
-     * @param b
-     *            a basic block.
-     * @param pred
-     *            predecessor of b.
-     * 
+     *
+     * @param b    a basic block.
+     * @param pred predecessor of b.
      * @return common dominator of the given block and its predecessor.
      */
 
@@ -1404,9 +1471,8 @@ class NControlFlowGraph {
     /**
      * Merge the locals from each of the predecessors of the specified block
      * with the locals in the block.
-     * 
-     * @param block
-     *            block to merge into.
+     *
+     * @param block block to merge into.
      */
 
     private void mergeLocals(NBasicBlock block) {
@@ -1417,24 +1483,22 @@ class NControlFlowGraph {
 
     /**
      * Merge the locals in block b with the locals in block a.
-     * 
-     * @param a
-     *            block to merge into.
-     * @param b
-     *            block to merge from.
+     *
+     * @param a block to merge into.
+     * @param b block to merge from.
      */
 
     private void mergeLocals(NBasicBlock a, NBasicBlock b) {
         for (int i = 0; i < a.locals.length; i++) {
-            if (a.cfg.hirMap.get(a.locals[i]).equals(
-                    b.cfg.hirMap.get(b.locals[i]))) {
+            if (a.cfg.hirMap.get(a.locals[i]).equals(b.cfg.hirMap.get(b.locals[i]))) {
                 continue;
             } else {
                 ArrayList<Integer> args = new ArrayList<Integer>();
                 args.add(a.locals[i]);
                 args.add(b.locals[i]);
-                NHIRInstruction ins = new NHIRPhiFunction(a,
-                        NControlFlowGraph.hirId++, args, i);
+                NHIRInstruction ins = new NHIRPhiFunction(a, NControlFlowGraph.hirId++,
+                                                          args, i
+                );
                 a.locals[i] = ins.id;
                 a.hir.add(ins.id);
                 a.cfg.hirMap.put(ins.id, ins);
@@ -1446,10 +1510,8 @@ class NControlFlowGraph {
     /**
      * Convert the bytecode in the specified list to their tuple
      * representations.
-     * 
-     * @param code
-     *            bytecode to convert.
-     * 
+     *
+     * @param code bytecode to convert.
      * @return list of tuples.
      */
 
@@ -1463,38 +1525,38 @@ class NControlFlowGraph {
             int pad, deflt;
             ArrayList<Short> operands = new ArrayList<Short>();
             switch (operandBytes) {
-            case 0:
-                break;
-            case 1:
-                operandByte1 = code.get(++i).shortValue();
-                operands.add(operandByte1);
-                break;
-            case 2:
-                operandByte1 = code.get(++i).shortValue();
-                operandByte2 = code.get(++i).shortValue();
-                operands.add(operandByte1);
-                operands.add(operandByte2);
-                break;
-            case 3:
-                operandByte1 = code.get(++i).shortValue();
-                operandByte2 = code.get(++i).shortValue();
-                operandByte3 = code.get(++i).shortValue();
-                operands.add(operandByte1);
-                operands.add(operandByte2);
-                operands.add(operandByte3);
-                break;
-            case 4:
-                operandByte1 = code.get(++i).shortValue();
-                operandByte2 = code.get(++i).shortValue();
-                operandByte3 = code.get(++i).shortValue();
-                operandByte4 = code.get(++i).shortValue();
-                operands.add(operandByte1);
-                operands.add(operandByte2);
-                operands.add(operandByte3);
-                operands.add(operandByte4);
-                break;
-            case DYNAMIC: // TBD
-                break;
+                case 0:
+                    break;
+                case 1:
+                    operandByte1 = code.get(++i).shortValue();
+                    operands.add(operandByte1);
+                    break;
+                case 2:
+                    operandByte1 = code.get(++i).shortValue();
+                    operandByte2 = code.get(++i).shortValue();
+                    operands.add(operandByte1);
+                    operands.add(operandByte2);
+                    break;
+                case 3:
+                    operandByte1 = code.get(++i).shortValue();
+                    operandByte2 = code.get(++i).shortValue();
+                    operandByte3 = code.get(++i).shortValue();
+                    operands.add(operandByte1);
+                    operands.add(operandByte2);
+                    operands.add(operandByte3);
+                    break;
+                case 4:
+                    operandByte1 = code.get(++i).shortValue();
+                    operandByte2 = code.get(++i).shortValue();
+                    operandByte3 = code.get(++i).shortValue();
+                    operandByte4 = code.get(++i).shortValue();
+                    operands.add(operandByte1);
+                    operands.add(operandByte2);
+                    operands.add(operandByte3);
+                    operands.add(operandByte4);
+                    break;
+                case DYNAMIC: // TBD
+                    break;
             }
             tuples.add(new NTuple(pc, opcode, operands));
         }
@@ -1503,14 +1565,11 @@ class NControlFlowGraph {
 
     /**
      * Construct and return a short integer from two unsigned bytes specified.
-     * 
-     * @param a
-     *            unsigned byte.
-     * @param b
-     *            unsigned byte.
-     * 
+     *
+     * @param a unsigned byte.
+     * @param b unsigned byte.
      * @return a short integer constructed from the two unsigned bytes
-     *         specified.
+     * specified.
      */
 
     private short shortValue(short a, short b) {
@@ -1519,15 +1578,11 @@ class NControlFlowGraph {
 
     /**
      * Construct and return an integer from the four unsigned bytes specified.
-     * 
-     * @param a
-     *            unsigned byte.
-     * @param b
-     *            unsigned byte.
-     * @param c
-     *            unsigned byte.
-     * @param d
-     *            unsigned byte.
+     *
+     * @param a unsigned byte.
+     * @param b unsigned byte.
+     * @param c unsigned byte.
+     * @param d unsigned byte.
      * @return an integer constructed from the four unsigned bytes specified.
      */
 
@@ -1537,7 +1592,7 @@ class NControlFlowGraph {
 
     /**
      * Extract and return the JVM bytecode for the method denoted by this cfg.
-     * 
+     *
      * @return JVM bytecode for the method denoted by this cfg.
      */
 
@@ -1554,10 +1609,8 @@ class NControlFlowGraph {
 
     /**
      * Return short form of the specified type descriptor.
-     * 
-     * @param descriptor
-     *            type descriptor.
-     * 
+     *
+     * @param descriptor type descriptor.
      * @return short form of type descriptor.
      */
 
@@ -1565,27 +1618,27 @@ class NControlFlowGraph {
         String sType = "V";
         char c = descriptor.charAt(0);
         switch (c) {
-        case 'B':
-        case 'C':
-        case 'I':
-        case 'F':
-        case 'S':
-        case 'Z':
-        case 'J':
-        case 'D':
-            sType = c + "";
-            break;
-        case '[':
-        case 'L':
-            sType = "L";
-            break;
+            case 'B':
+            case 'C':
+            case 'I':
+            case 'F':
+            case 'S':
+            case 'Z':
+            case 'J':
+            case 'D':
+                sType = c + "";
+                break;
+            case '[':
+            case 'L':
+                sType = "L";
+                break;
         }
         return sType;
     }
 
     /**
      * Return the number of local variables in the method denoted by this cfg.
-     * 
+     *
      * @return number of local variables.
      */
 
@@ -1605,9 +1658,8 @@ class NControlFlowGraph {
     /**
      * Return the argument count (number of formal parameters) for the specified
      * method. 0 is returned if the descriptor is invalid.
-     * 
-     * @param descriptor
-     *            method descriptor.
+     *
+     * @param descriptor method descriptor.
      * @return argument count for the specified method.
      */
 
@@ -1622,25 +1674,25 @@ class NControlFlowGraph {
         for (int j = 0; j < argTypes.length(); j++) {
             char c = argTypes.charAt(j);
             switch (c) {
-            case 'B':
-            case 'C':
-            case 'I':
-            case 'F':
-            case 'S':
-            case 'Z':
-                i += 1;
-                break;
-            case '[':
-                break;
-            case 'J':
-            case 'D':
-                i += 2;
-                break;
-            case 'L':
-                int k = argTypes.indexOf(";", j);
-                j = k;
-                i += 1;
-                break;
+                case 'B':
+                case 'C':
+                case 'I':
+                case 'F':
+                case 'S':
+                case 'Z':
+                    i += 1;
+                    break;
+                case '[':
+                    break;
+                case 'J':
+                case 'D':
+                    i += 2;
+                    break;
+                case 'L':
+                    int k = argTypes.indexOf(";", j);
+                    j = k;
+                    i += 1;
+                    break;
             }
         }
         return i;
@@ -1649,9 +1701,8 @@ class NControlFlowGraph {
     /**
      * Return the argument count (number of formal parameters) for the specified
      * method. 0 is returned if the descriptor is invalid.
-     * 
-     * @param descriptor
-     *            method descriptor.
+     *
+     * @param descriptor method descriptor.
      * @return argument count for the specified method.
      */
 
@@ -1669,26 +1720,26 @@ class NControlFlowGraph {
         for (int j = 0; j < argTypes.length(); j++) {
             char c = argTypes.charAt(j);
             switch (c) {
-            case 'B':
-            case 'C':
-            case 'I':
-            case 'F':
-            case 'S':
-            case 'Z':
-            case 'J':
-            case 'D':
-                args.add(type + String.valueOf(c));
-                type = "";
-                break;
-            case '[':
-                type += c;
-                break;
-            case 'L':
-                int k = argTypes.indexOf(";", j);
-                args.add(type + argTypes.substring(j, k));
-                type = "";
-                j = k;
-                break;
+                case 'B':
+                case 'C':
+                case 'I':
+                case 'F':
+                case 'S':
+                case 'Z':
+                case 'J':
+                case 'D':
+                    args.add(type + String.valueOf(c));
+                    type = "";
+                    break;
+                case '[':
+                    type += c;
+                    break;
+                case 'L':
+                    int k = argTypes.indexOf(";", j);
+                    args.add(type + argTypes.substring(j, k));
+                    type = "";
+                    j = k;
+                    break;
             }
         }
         return args;
@@ -1696,16 +1747,13 @@ class NControlFlowGraph {
 
     /**
      * Return the return type of a method given its descriptor.
-     * 
-     * @param descriptor
-     *            descriptor of the method.
-     * 
+     *
+     * @param descriptor descriptor of the method.
      * @return return type, "V" if void.
      */
 
     private String returnType(String descriptor) {
-        String returnType = descriptor
-                .substring(descriptor.lastIndexOf(")") + 1);
+        String returnType = descriptor.substring(descriptor.lastIndexOf(")") + 1);
         return returnType;
     }
 

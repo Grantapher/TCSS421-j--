@@ -5,6 +5,7 @@ package jminusminus;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import static jminusminus.NPhysicalRegister.*;
 
 /**
@@ -18,9 +19,8 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
 
     /**
      * Construct a NNaiveRegisterAllocator.
-     * 
-     * @param cfg
-     *            an instance of a control flow graph.
+     *
+     * @param cfg an instance of a control flow graph.
      */
 
     public NNaiveRegisterAllocator(NControlFlowGraph cfg) {
@@ -35,10 +35,8 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
         // In this allocation scheme, each interval just has a single
         // range spanning the entire cfg.
         for (NInterval interval : cfg.intervals) {
-            NBasicBlock lastBlock = cfg.basicBlocks
-                    .get(cfg.basicBlocks.size() - 1);
-            NLIRInstruction lastLir = lastBlock.lir
-                    .get(lastBlock.lir.size() - 1);
+            NBasicBlock lastBlock = cfg.basicBlocks.get(cfg.basicBlocks.size() - 1);
+            NLIRInstruction lastLir = lastBlock.lir.get(lastBlock.lir.size() - 1);
             interval.ranges.add(new NRange(0, lastLir.id));
         }
 
@@ -47,8 +45,7 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
         // interval.
         for (int i = 0; i < 32; i++) {
             if (cfg.registers.get(i) != null) {
-                cfg.intervals.get(i).pRegister = (NPhysicalRegister) cfg.registers
-                        .get(i);
+                cfg.intervals.get(i).pRegister = (NPhysicalRegister) cfg.registers.get(i);
             }
         }
 
@@ -61,8 +58,7 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
                     NLIRLoadLocal loadLocal = (NLIRLoadLocal) lir;
                     if (loadLocal.local >= 4) {
                         NInterval interval = cfg.intervals
-                                .get(((NVirtualRegister) loadLocal.write)
-                                        .number());
+                                .get(((NVirtualRegister) loadLocal.write).number());
                         interval.spill = true;
                         interval.offset = loadLocal.local - 3;
                         interval.offsetFrom = OffsetFrom.FP;
@@ -96,8 +92,7 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
                     }
                 } else {
                     // Allocate free register to interval.
-                    NPhysicalRegister pRegister = NPhysicalRegister.regInfo[T0
-                            + j++];
+                    NPhysicalRegister pRegister = NPhysicalRegister.regInfo[T0 + j++];
                     interval.pRegister = pRegister;
                     cfg.pRegisters.add(pRegister);
                 }
@@ -122,25 +117,26 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
                 int id = lir.id;
 
                 if (lir.reads.size() == 2) {
-                    NInterval input1 = cfg.intervals.get(
-                            lir.reads.get(0).number()).childAt(id);
-                    NInterval input2 = cfg.intervals.get(
-                            lir.reads.get(1).number()).childAt(id);
+                    NInterval input1 = cfg.intervals.get(lir.reads.get(0).number())
+                                                    .childAt(id);
+                    NInterval input2 = cfg.intervals.get(lir.reads.get(1).number())
+                                                    .childAt(id);
                     if (input1.pRegister == input2.pRegister) {
-                        input2.pRegister = NPhysicalRegister.regInfo[T0
-                                + (input2.pRegister.number() + 1)
-                                % NPhysicalRegister.MAX_COUNT];
+                        input2.pRegister = NPhysicalRegister.regInfo[T0 +
+                                (input2.pRegister.number() + 1) %
+                                        NPhysicalRegister.MAX_COUNT];
                     }
                 }
 
                 // Loads.
                 for (int j = 0; j < lir.reads.size(); j++) {
-                    NInterval input = cfg.intervals.get(
-                            lir.reads.get(j).number()).childAt(id);
+                    NInterval input = cfg.intervals.get(lir.reads.get(j).number())
+                                                   .childAt(id);
                     if (input.spill) {
-                        NLIRLoad load = new NLIRLoad(block, id
-                                - lir.reads.size() + j, input.offset,
-                                input.offsetFrom, input.pRegister);
+                        NLIRLoad load = new NLIRLoad(block, id - lir.reads.size() + j,
+                                                     input.offset, input.offsetFrom,
+                                                     input.pRegister
+                        );
                         newLir.add(newLir.indexOf(lir), load);
                     }
                 }
@@ -149,8 +145,9 @@ public class NNaiveRegisterAllocator extends NRegisterAllocator {
                 if (lir.write != null) {
                     NInterval output = cfg.intervals.get(lir.write.number());
                     if (output.spill) {
-                        NLIRStore store = new NLIRStore(block, id + 1,
-                                output.offset, output.offsetFrom, lir.write);
+                        NLIRStore store = new NLIRStore(block, id + 1, output.offset,
+                                                        output.offsetFrom, lir.write
+                        );
                         newLir.add(newLir.indexOf(lir) + 1, store);
                     }
                 }

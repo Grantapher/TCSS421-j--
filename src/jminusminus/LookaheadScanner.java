@@ -14,34 +14,46 @@ import java.util.Vector;
 
 class LookaheadScanner {
 
-    /** The underlying hand-written scanner. */
+    /**
+     * The underlying hand-written scanner.
+     */
     private Scanner scanner;
 
-    /** Backtracking queue. */
+    /**
+     * Backtracking queue.
+     */
     private Vector<TokenInfo> backtrackingQueue;
 
-    /** Token queue. */
+    /**
+     * Token queue.
+     */
     private Vector<TokenInfo> nextQueue;
 
-    /** Stack of token queues for nested lookahead. */
+    /**
+     * Stack of token queues for nested lookahead.
+     */
     private Stack<Vector<TokenInfo>> queueStack;
 
-    /** Whether we are looking ahead. */
+    /**
+     * Whether we are looking ahead.
+     */
     public boolean isLookingAhead;
 
-    /** Previous token. */
+    /**
+     * Previous token.
+     */
     private TokenInfo previousToken;
 
-    /** Current token. */
+    /**
+     * Current token.
+     */
     private TokenInfo token;
 
     /**
      * Construct a LookaheadScanner from a file name.
-     * 
-     * @param fileName
-     *            the name of the file containing the source.
-     * @exception FileNotFoundException
-     *                when the named file cannot be found.
+     *
+     * @param fileName the name of the file containing the source.
+     * @throws FileNotFoundException when the named file cannot be found.
      */
 
     public LookaheadScanner(String fileName) throws FileNotFoundException {
@@ -103,7 +115,7 @@ class LookaheadScanner {
 
     /**
      * The currently scanned token.
-     * 
+     *
      * @return the current token.
      */
 
@@ -115,7 +127,7 @@ class LookaheadScanner {
      * The previously scanned token. We use this in the parser to get at a
      * token's semantic info (for example an identifier's name), after we've
      * scanned it.
-     * 
+     *
      * @return the previous token.
      */
 
@@ -125,7 +137,7 @@ class LookaheadScanner {
 
     /**
      * Has an error occurred up to now in lexical analysis?
-     * 
+     *
      * @return true or false.
      */
 
@@ -135,7 +147,7 @@ class LookaheadScanner {
 
     /**
      * Return the name of the source file.
-     * 
+     *
      * @return name of the source file.
      */
 

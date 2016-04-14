@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -17,22 +18,26 @@ import static jminusminus.CLConstants.*;
 
 public class CLAbsorber {
 
-    /** CLFile representation of the class that is read. */
+    /**
+     * CLFile representation of the class that is read.
+     */
     private CLFile classFile;
 
-    /** Whether or not an error occurred in reading the class. */
+    /**
+     * Whether or not an error occurred in reading the class.
+     */
     private boolean errorHasOccurred;
 
-    /** Name of the class that is read. */
+    /**
+     * Name of the class that is read.
+     */
     private String className;
 
     /**
      * Print the specified warning to STDERR.
-     * 
-     * @param message
-     *            warning.
-     * @param args
-     *            related values.
+     *
+     * @param message warning.
+     * @param args    related values.
      */
 
     private void reportWarning(String message, Object... args) {
@@ -42,11 +47,9 @@ public class CLAbsorber {
     /**
      * Print the specified error message to STDERR and set the error flag to
      * true.
-     * 
-     * @param message
-     *            error message.
-     * @param args
-     *            related values.
+     *
+     * @param message error message.
+     * @param args    related values.
      */
 
     private void reportError(String message, Object... args) {
@@ -57,9 +60,8 @@ public class CLAbsorber {
     /**
      * Read the constant pool information from the specified stream, and return
      * the information as a CLConstantPool object.
-     * 
-     * @param in
-     *            input stream.
+     *
+     * @param in input stream.
      * @return the constant pool.
      */
 
@@ -69,54 +71,60 @@ public class CLAbsorber {
             for (int i = 1; i < classFile.constantPoolCount; i++) {
                 int tag = in.readUnsignedByte();
                 switch (tag) {
-                case CONSTANT_Class:
-                    cp
-                            .addCPItem(new CLConstantClassInfo(in
-                                    .readUnsignedShort()));
-                    break;
-                case CONSTANT_Fieldref:
-                    cp.addCPItem(new CLConstantFieldRefInfo(in
-                            .readUnsignedShort(), in.readUnsignedShort()));
-                    break;
-                case CONSTANT_Methodref:
-                    cp.addCPItem(new CLConstantMethodRefInfo(in
-                            .readUnsignedShort(), in.readUnsignedShort()));
-                    break;
-                case CONSTANT_InterfaceMethodref:
-                    cp.addCPItem(new CLConstantInterfaceMethodRefInfo(in
-                            .readUnsignedShort(), in.readUnsignedShort()));
-                    break;
-                case CONSTANT_String:
-                    cp.addCPItem(new CLConstantStringInfo(in
-                            .readUnsignedShort()));
-                    break;
-                case CONSTANT_Integer:
-                    cp.addCPItem(new CLConstantIntegerInfo(in.readInt()));
-                    break;
-                case CONSTANT_Float:
-                    cp.addCPItem(new CLConstantFloatInfo(in.readFloat()));
-                    break;
-                case CONSTANT_Long:
-                    cp.addCPItem(new CLConstantLongInfo(in.readLong()));
-                    i++;
-                    break;
-                case CONSTANT_Double:
-                    cp.addCPItem(new CLConstantDoubleInfo(in.readDouble()));
-                    i++;
-                    break;
-                case CONSTANT_NameAndType:
-                    cp.addCPItem(new CLConstantNameAndTypeInfo(in
-                            .readUnsignedShort(), in.readUnsignedShort()));
-                    break;
-                case CONSTANT_Utf8:
-                    int length = in.readUnsignedShort();
-                    byte[] b = new byte[length];
-                    in.read(b);
-                    cp.addCPItem(new CLConstantUtf8Info(b));
-                    break;
-                default:
-                    reportError("Unknown cp_info tag '%d'", tag);
-                    return cp;
+                    case CONSTANT_Class:
+                        cp.addCPItem(new CLConstantClassInfo(in.readUnsignedShort()));
+                        break;
+                    case CONSTANT_Fieldref:
+                        cp.addCPItem(new CLConstantFieldRefInfo(in.readUnsignedShort(),
+                                                                in.readUnsignedShort()
+                                     )
+                        );
+                        break;
+                    case CONSTANT_Methodref:
+                        cp.addCPItem(new CLConstantMethodRefInfo(in.readUnsignedShort(),
+                                                                 in.readUnsignedShort()
+                                     )
+                        );
+                        break;
+                    case CONSTANT_InterfaceMethodref:
+                        cp.addCPItem(new CLConstantInterfaceMethodRefInfo(
+                                             in.readUnsignedShort(),
+                                             in.readUnsignedShort()
+                                     )
+                        );
+                        break;
+                    case CONSTANT_String:
+                        cp.addCPItem(new CLConstantStringInfo(in.readUnsignedShort()));
+                        break;
+                    case CONSTANT_Integer:
+                        cp.addCPItem(new CLConstantIntegerInfo(in.readInt()));
+                        break;
+                    case CONSTANT_Float:
+                        cp.addCPItem(new CLConstantFloatInfo(in.readFloat()));
+                        break;
+                    case CONSTANT_Long:
+                        cp.addCPItem(new CLConstantLongInfo(in.readLong()));
+                        i++;
+                        break;
+                    case CONSTANT_Double:
+                        cp.addCPItem(new CLConstantDoubleInfo(in.readDouble()));
+                        i++;
+                        break;
+                    case CONSTANT_NameAndType:
+                        cp.addCPItem(new CLConstantNameAndTypeInfo(in.readUnsignedShort(),
+                                                                   in.readUnsignedShort()
+                                     )
+                        );
+                        break;
+                    case CONSTANT_Utf8:
+                        int length = in.readUnsignedShort();
+                        byte[] b = new byte[length];
+                        in.read(b);
+                        cp.addCPItem(new CLConstantUtf8Info(b));
+                        break;
+                    default:
+                        reportError("Unknown cp_info tag '%d'", tag);
+                        return cp;
                 }
             }
         } catch (IOException e) {
@@ -127,11 +135,9 @@ public class CLAbsorber {
 
     /**
      * Read the fields from the specified stream, and return them as a list.
-     * 
-     * @param in
-     *            input stream.
-     * @param fieldsCount
-     *            number of fields.
+     *
+     * @param in          input stream.
+     * @param fieldsCount number of fields.
      * @return list of fields.
      */
 
@@ -143,9 +149,11 @@ public class CLAbsorber {
                 int nameIndex = in.readUnsignedShort();
                 int descriptorIndex = in.readUnsignedShort();
                 int attributesCount = in.readUnsignedShort();
-                fields.add(new CLFieldInfo(accessFlags, nameIndex,
-                        descriptorIndex, attributesCount, readAttributes(in,
-                                attributesCount)));
+                fields.add(new CLFieldInfo(accessFlags, nameIndex, descriptorIndex,
+                                           attributesCount,
+                                           readAttributes(in, attributesCount)
+                           )
+                );
             }
         } catch (IOException e) {
             reportError("Error reading fields from file %s", className);
@@ -155,16 +163,13 @@ public class CLAbsorber {
 
     /**
      * Read the methods from the specified stream, and return them as a list.
-     * 
-     * @param in
-     *            input stream.
-     * @param methodsCount
-     *            number of methods.
+     *
+     * @param in           input stream.
+     * @param methodsCount number of methods.
      * @return the methods.
      */
 
-    private ArrayList<CLMethodInfo> readMethods(CLInputStream in,
-            int methodsCount) {
+    private ArrayList<CLMethodInfo> readMethods(CLInputStream in, int methodsCount) {
         ArrayList<CLMethodInfo> methods = new ArrayList<CLMethodInfo>();
         try {
             for (int i = 0; i < methodsCount; i++) {
@@ -172,9 +177,11 @@ public class CLAbsorber {
                 int nameIndex = in.readUnsignedShort();
                 int descriptorIndex = in.readUnsignedShort();
                 int attributesCount = in.readUnsignedShort();
-                methods.add(new CLMethodInfo(accessFlags, nameIndex,
-                        descriptorIndex, attributesCount, readAttributes(in,
-                                attributesCount)));
+                methods.add(new CLMethodInfo(accessFlags, nameIndex, descriptorIndex,
+                                             attributesCount,
+                                             readAttributes(in, attributesCount)
+                            )
+                );
             }
         } catch (IOException e) {
             reportError("Error reading methods from file %s", className);
@@ -184,16 +191,14 @@ public class CLAbsorber {
 
     /**
      * Read the attributes from the specified stream, and return them as a list
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeCount
-     *            number of attributes.
+     *
+     * @param in             input stream.
+     * @param attributeCount number of attributes.
      * @return list of attributes.
      */
 
     private ArrayList<CLAttributeInfo> readAttributes(CLInputStream in,
-            int attributesCount) {
+                                                      int attributesCount) {
         ArrayList<CLAttributeInfo> attributes = new ArrayList<CLAttributeInfo>();
         try {
             CLConstantPool cp = classFile.constantPool;
@@ -201,69 +206,92 @@ public class CLAbsorber {
                 int attributeNameIndex = in.readUnsignedShort();
                 long attributeLength = in.readUnsignedInt();
                 CLAttributeInfo attributeInfo = null;
-                String attributeName = new String(((CLConstantUtf8Info) cp
-                        .cpItem(attributeNameIndex)).b);
+                String attributeName = new String(
+                        ((CLConstantUtf8Info) cp.cpItem(attributeNameIndex)).b
+                );
                 if (attributeName.equals(ATT_CONSTANT_VALUE)) {
-                    attributeInfo = readConstantValueAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readConstantValueAttribute(in, attributeNameIndex,
+                                                               attributeLength
+                    );
                 } else if (attributeName.equals(ATT_CODE)) {
                     attributeInfo = readCodeAttribute(in, attributeNameIndex,
-                            attributeLength);
+                                                      attributeLength
+                    );
                 } else if (attributeName.equals(ATT_EXCEPTIONS)) {
-                    attributeInfo = readExceptionsAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readExceptionsAttribute(in, attributeNameIndex,
+                                                            attributeLength
+                    );
                 } else if (attributeName.equals(ATT_INNER_CLASSES)) {
-                    attributeInfo = readInnerClassesAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readInnerClassesAttribute(in, attributeNameIndex,
+                                                              attributeLength
+                    );
                 } else if (attributeName.equals(ATT_ENCLOSING_METHOD)) {
-                    attributeInfo = readEnclosingMethodAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readEnclosingMethodAttribute(in, attributeNameIndex,
+                                                                 attributeLength
+                    );
                 } else if (attributeName.equals(ATT_SYNTHETIC)) {
-                    attributeInfo = readSyntheticAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readSyntheticAttribute(in, attributeNameIndex,
+                                                           attributeLength
+                    );
                 } else if (attributeName.equals(ATT_SIGNATURE)) {
-                    attributeInfo = readSignatureAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readSignatureAttribute(in, attributeNameIndex,
+                                                           attributeLength
+                    );
                 } else if (attributeName.equals(ATT_SOURCE_FILE)) {
-                    attributeInfo = readSourceFileAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readSourceFileAttribute(in, attributeNameIndex,
+                                                            attributeLength
+                    );
                 } else if (attributeName.equals(ATT_SOURCE_DEBUG_EXTENSION)) {
                     attributeInfo = readSourceDebugExtensionAttribute(in,
-                            attributeNameIndex, attributeLength);
+                                                                      attributeNameIndex,
+                                                                      attributeLength
+                    );
                 } else if (attributeName.equals(ATT_LINE_NUMBER_TABLE)) {
-                    attributeInfo = readLineNumberTableAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readLineNumberTableAttribute(in, attributeNameIndex,
+                                                                 attributeLength
+                    );
                 } else if (attributeName.equals(ATT_LOCAL_VARIABLE_TABLE)) {
                     attributeInfo = readLocalVariableTableAttribute(in,
-                            attributeNameIndex, attributeLength);
+                                                                    attributeNameIndex,
+                                                                    attributeLength
+                    );
                 } else if (attributeName.equals(ATT_LOCAL_VARIABLE_TYPE_TABLE)) {
                     attributeInfo = readLocalVariableTypeTableAttribute(in,
-                            attributeNameIndex, attributeLength);
+                                                                        attributeNameIndex,
+                                                                        attributeLength
+                    );
                 } else if (attributeName.equals(ATT_DEPRECATED)) {
-                    attributeInfo = readDeprecatedAttribute(in,
-                            attributeNameIndex, attributeLength);
-                } else if (attributeName
-                        .equals(ATT_RUNTIME_VISIBLE_ANNOTATIONS)) {
+                    attributeInfo = readDeprecatedAttribute(in, attributeNameIndex,
+                                                            attributeLength
+                    );
+                } else if (attributeName.equals(ATT_RUNTIME_VISIBLE_ANNOTATIONS)) {
                     attributeInfo = readRuntimeVisibleAnnotationsAttribute(in,
-                            attributeNameIndex, attributeLength);
-                } else if (attributeName
-                        .equals(ATT_RUNTIME_INVISIBLE_ANNOTATIONS)) {
-                    attributeInfo = readRuntimeInvisibleAnnotationsAttribute(
-                            in, attributeNameIndex, attributeLength);
+                                                                           attributeNameIndex,
+                                                                           attributeLength
+                    );
+                } else if (attributeName.equals(ATT_RUNTIME_INVISIBLE_ANNOTATIONS)) {
+                    attributeInfo = readRuntimeInvisibleAnnotationsAttribute(in,
+                                                                             attributeNameIndex,
+                                                                             attributeLength
+                    );
                 } else if (attributeName
                         .equals(ATT_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS)) {
-                    attributeInfo = readRuntimeVisibleParameterAnnotationsAttribute(
-                            in, attributeNameIndex, attributeLength);
+                    attributeInfo = readRuntimeVisibleParameterAnnotationsAttribute(in,
+                                                                                    attributeNameIndex,
+                                                                                    attributeLength
+                    );
                 } else if (attributeName
                         .equals(ATT_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS)) {
-                    attributeInfo = readRuntimeInvisibleParameterAnnotationsAttribute(
-                            in, attributeNameIndex, attributeLength);
+                    attributeInfo = readRuntimeInvisibleParameterAnnotationsAttribute(in,
+                                                                                      attributeNameIndex,
+                                                                                      attributeLength
+                    );
                 } else if (attributeName.equals(ATT_ANNOTATION_DEFAULT)) {
-                    attributeInfo = readAnnotationDefaultAttribute(in,
-                            attributeNameIndex, attributeLength);
+                    attributeInfo = readAnnotationDefaultAttribute(in, attributeNameIndex,
+                                                                   attributeLength
+                    );
                 } else {
-                    reportWarning("Unknown attribute '%s'", attributeName,
-                            className);
+                    reportWarning("Unknown attribute '%s'", attributeName, className);
                     for (long j = 0; j < attributeLength; j++) {
                         in.readUnsignedByte();
                     }
@@ -281,43 +309,38 @@ public class CLAbsorber {
     /**
      * Read a ConstantValue attribute from the specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a ConstantValue attribute.
      */
 
-    private CLConstantValueAttribute readConstantValueAttribute(
-            CLInputStream in, int attributeNameIndex, long attributeLength) {
+    private CLConstantValueAttribute readConstantValueAttribute(CLInputStream in,
+                                                                int attributeNameIndex,
+                                                                long attributeLength) {
         CLConstantValueAttribute attribute = null;
         try {
-            attribute = new CLConstantValueAttribute(attributeNameIndex,
-                    attributeLength, in.readUnsignedShort());
+            attribute = new CLConstantValueAttribute(attributeNameIndex, attributeLength,
+                                                     in.readUnsignedShort()
+            );
         } catch (IOException e) {
-            reportError("Error reading ConstantValue_attribute from file %s",
-                    className);
+            reportError("Error reading ConstantValue_attribute from file %s", className);
         }
         return attribute;
     }
 
     /**
      * Read a Code attribute from the specified input stream, and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a Code attribute.
      */
 
-    private CLCodeAttribute readCodeAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+    private CLCodeAttribute readCodeAttribute(CLInputStream in, int attributeNameIndex,
+                                              long attributeLength) {
         CLCodeAttribute attribute = null;
         try {
             int maxStack = in.readUnsignedShort();
@@ -334,16 +357,18 @@ public class CLAbsorber {
                 int endPC = in.readUnsignedShort();
                 int handlerPC = in.readUnsignedShort();
                 int catchType = in.readUnsignedShort();
-                exceptionTable.add(new CLExceptionInfo(startPC, endPC,
-                        handlerPC, catchType));
+                exceptionTable
+                        .add(new CLExceptionInfo(startPC, endPC, handlerPC, catchType));
             }
             int codeAttrAttributesCount = in.readUnsignedShort();
             ArrayList<CLAttributeInfo> codeAttrAttributes = readAttributes(in,
-                    codeAttrAttributesCount);
-            attribute = new CLCodeAttribute(attributeNameIndex,
-                    attributeLength, maxStack, maxLocals, codeLength, code,
-                    exceptionTableLength, exceptionTable,
-                    codeAttrAttributesCount, codeAttrAttributes);
+                                                                           codeAttrAttributesCount
+            );
+            attribute = new CLCodeAttribute(attributeNameIndex, attributeLength, maxStack,
+                                            maxLocals, codeLength, code,
+                                            exceptionTableLength, exceptionTable,
+                                            codeAttrAttributesCount, codeAttrAttributes
+            );
         } catch (IOException e) {
             reportError("Error reading Code_attribute from file %s", className);
         }
@@ -353,18 +378,16 @@ public class CLAbsorber {
     /**
      * Read an Exceptions attribute from the specified input stream, and return
      * it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return an Exceptions attribute.
      */
 
     private CLExceptionsAttribute readExceptionsAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                          int attributeNameIndex,
+                                                          long attributeLength) {
         CLExceptionsAttribute attribute = null;
         try {
             int numberOfExceptions = in.readUnsignedShort();
@@ -372,11 +395,11 @@ public class CLAbsorber {
             for (int l = 0; l < numberOfExceptions; l++) {
                 exceptionIndexTable.add(in.readUnsignedShort());
             }
-            attribute = new CLExceptionsAttribute(attributeNameIndex,
-                    attributeLength, numberOfExceptions, exceptionIndexTable);
+            attribute = new CLExceptionsAttribute(attributeNameIndex, attributeLength,
+                                                  numberOfExceptions, exceptionIndexTable
+            );
         } catch (IOException e) {
-            reportError("Error reading Exceptions_attribute from file %s",
-                    className);
+            reportError("Error reading Exceptions_attribute from file %s", className);
         }
         return attribute;
     }
@@ -384,33 +407,34 @@ public class CLAbsorber {
     /**
      * Read an InnerClasses attribute from the specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return an InnerClasses attribute.
      */
 
     private CLInnerClassesAttribute readInnerClassesAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                              int attributeNameIndex,
+                                                              long attributeLength) {
         CLInnerClassesAttribute attribute = null;
         try {
             int numberOfClasses = in.readUnsignedShort();
             ArrayList<CLInnerClassInfo> classes = new ArrayList<CLInnerClassInfo>();
             for (int m = 0; m < numberOfClasses; m++) {
-                classes.add(new CLInnerClassInfo(in.readUnsignedShort(), in
-                        .readUnsignedShort(), in.readUnsignedShort(), in
-                        .readUnsignedShort()));
+                classes.add(new CLInnerClassInfo(in.readUnsignedShort(),
+                                                 in.readUnsignedShort(),
+                                                 in.readUnsignedShort(),
+                                                 in.readUnsignedShort()
+                            )
+                );
             }
-            attribute = new CLInnerClassesAttribute(attributeNameIndex,
-                    attributeLength, numberOfClasses, classes);
+            attribute = new CLInnerClassesAttribute(attributeNameIndex, attributeLength,
+                                                    numberOfClasses, classes
+            );
 
         } catch (IOException e) {
-            reportError("Error reading InnerClasses_attribute from file %s",
-                    className);
+            reportError("Error reading InnerClasses_attribute from file %s", className);
         }
         return attribute;
     }
@@ -418,26 +442,26 @@ public class CLAbsorber {
     /**
      * Read an EnclosingMethod attribute from the specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return an EnclosingMethod attribute.
      */
 
-    private CLEnclosingMethodAttribute readEnclosingMethodAttribute(
-            CLInputStream in, int attributeNameIndex, long attributeLength) {
+    private CLEnclosingMethodAttribute readEnclosingMethodAttribute(CLInputStream in,
+                                                                    int attributeNameIndex,
+                                                                    long attributeLength) {
         CLEnclosingMethodAttribute attribute = null;
         try {
             attribute = new CLEnclosingMethodAttribute(attributeNameIndex,
-                    attributeLength, in.readUnsignedShort(), in
-                            .readUnsignedShort());
+                                                       attributeLength,
+                                                       in.readUnsignedShort(),
+                                                       in.readUnsignedShort()
+            );
         } catch (IOException e) {
-            reportError("Error reading EnclosingMethod_attribute from file %s",
-                    className);
+            reportError("Error reading EnclosingMethod_attribute from file %s", className
+            );
         }
         return attribute;
     }
@@ -445,43 +469,39 @@ public class CLAbsorber {
     /**
      * Read a Synthetic attribute from the specified input stream, and return
      * it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a Synthetic attribute.
      */
 
     private CLSyntheticAttribute readSyntheticAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                        int attributeNameIndex,
+                                                        long attributeLength) {
         return new CLSyntheticAttribute(attributeNameIndex, attributeLength);
     }
 
     /**
      * Read a Signature attribute from the specified input stream, and return
      * it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a Signature attribute.
      */
 
     private CLSignatureAttribute readSignatureAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                        int attributeNameIndex,
+                                                        long attributeLength) {
         CLSignatureAttribute attribute = null;
         try {
-            attribute = new CLSignatureAttribute(attributeNameIndex,
-                    attributeLength, in.readUnsignedShort());
+            attribute = new CLSignatureAttribute(attributeNameIndex, attributeLength,
+                                                 in.readUnsignedShort()
+            );
         } catch (IOException e) {
-            reportError("Error reading Signature_attribute from file %s",
-                    className);
+            reportError("Error reading Signature_attribute from file %s", className);
         }
         return attribute;
     }
@@ -489,25 +509,23 @@ public class CLAbsorber {
     /**
      * Read a SourceFile attribute from the specified input stream, and return
      * it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a SourceFile attribute.
      */
 
     private CLSourceFileAttribute readSourceFileAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                          int attributeNameIndex,
+                                                          long attributeLength) {
         CLSourceFileAttribute attribute = null;
         try {
-            attribute = new CLSourceFileAttribute(attributeNameIndex,
-                    attributeLength, in.readUnsignedShort());
+            attribute = new CLSourceFileAttribute(attributeNameIndex, attributeLength,
+                                                  in.readUnsignedShort()
+            );
         } catch (IOException e) {
-            reportError("Error reading SourceFile_attribute from file %s",
-                    className);
+            reportError("Error reading SourceFile_attribute from file %s", className);
         }
         return attribute;
     }
@@ -515,13 +533,10 @@ public class CLAbsorber {
     /**
      * Read a SourceDebugExtension attribute from the specified input stream,
      * and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a SourceDebugExtension attribute.
      */
 
@@ -533,10 +548,12 @@ public class CLAbsorber {
 
             in.read(b);
             attribute = new CLSourceDebugExtensionAttribute(attributeNameIndex,
-                    attributeLength, b);
+                                                            attributeLength, b
+            );
         } catch (IOException e) {
-            reportError("Error reading SourceDebugExtension_attribute "
-                    + "from file %s", className);
+            reportError("Error reading SourceDebugExtension_attribute " + "from file %s",
+                        className
+            );
         }
         return attribute;
     }
@@ -544,31 +561,35 @@ public class CLAbsorber {
     /**
      * Read a LineNumberTable attribute from the specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a LineNumberTable attribute.
      */
 
-    private CLLineNumberTableAttribute readLineNumberTableAttribute(
-            CLInputStream in, int attributeNameIndex, long attributeLength) {
+    private CLLineNumberTableAttribute readLineNumberTableAttribute(CLInputStream in,
+                                                                    int attributeNameIndex,
+                                                                    long attributeLength) {
         CLLineNumberTableAttribute attribute = null;
         try {
             int lineNumberTableLength = in.readUnsignedShort();
-            ArrayList<CLLineNumberInfo> lineNumberTable = new ArrayList<CLLineNumberInfo>();
+            ArrayList<CLLineNumberInfo> lineNumberTable = new
+                    ArrayList<CLLineNumberInfo>();
             for (int m = 0; m < lineNumberTableLength; m++) {
-                lineNumberTable.add(new CLLineNumberInfo(
-                        in.readUnsignedShort(), in.readUnsignedShort()));
+                lineNumberTable.add(new CLLineNumberInfo(in.readUnsignedShort(),
+                                                         in.readUnsignedShort()
+                                    )
+                );
             }
             attribute = new CLLineNumberTableAttribute(attributeNameIndex,
-                    attributeLength, lineNumberTableLength, lineNumberTable);
+                                                       attributeLength,
+                                                       lineNumberTableLength,
+                                                       lineNumberTable
+            );
         } catch (IOException e) {
-            reportError("Error reading LineNumberTable_attribute from file %s",
-                    className);
+            reportError("Error reading LineNumberTable_attribute from file %s", className
+            );
         }
         return attribute;
     }
@@ -576,13 +597,10 @@ public class CLAbsorber {
     /**
      * Read a LocalVariableTable attribute from the specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a LocalVariableTable attribute.
      */
 
@@ -591,19 +609,26 @@ public class CLAbsorber {
         CLLocalVariableTableAttribute attribute = null;
         try {
             int localVariableTableLength = in.readUnsignedShort();
-            ArrayList<CLLocalVariableInfo> localVariableTable = new ArrayList<CLLocalVariableInfo>();
+            ArrayList<CLLocalVariableInfo> localVariableTable = new
+                    ArrayList<CLLocalVariableInfo>();
             for (int m = 0; m < localVariableTableLength; m++) {
-                localVariableTable.add(new CLLocalVariableInfo(in
-                        .readUnsignedShort(), in.readUnsignedShort(), in
-                        .readUnsignedShort(), in.readUnsignedShort(), in
-                        .readUnsignedShort()));
+                localVariableTable.add(new CLLocalVariableInfo(in.readUnsignedShort(),
+                                                               in.readUnsignedShort(),
+                                                               in.readUnsignedShort(),
+                                                               in.readUnsignedShort(),
+                                                               in.readUnsignedShort()
+                                       )
+                );
             }
             attribute = new CLLocalVariableTableAttribute(attributeNameIndex,
-                    attributeLength, localVariableTableLength,
-                    localVariableTable);
+                                                          attributeLength,
+                                                          localVariableTableLength,
+                                                          localVariableTable
+            );
         } catch (IOException e) {
-            reportError("Error reading LocalVariableTable_attribute "
-                    + "from file %s", className);
+            reportError("Error reading LocalVariableTable_attribute " + "from file %s",
+                        className
+            );
         }
         return attribute;
     }
@@ -611,13 +636,10 @@ public class CLAbsorber {
     /**
      * Read a LocalVariableTypeTable attribute from the specified input stream,
      * and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a LocalVariableTypeTable attribute.
      */
 
@@ -626,19 +648,27 @@ public class CLAbsorber {
         CLLocalVariableTypeTableAttribute attribute = null;
         try {
             int localVariableTypeTableLength = in.readUnsignedShort();
-            ArrayList<CLLocalVariableTypeInfo> localVariableTypeTable = new ArrayList<CLLocalVariableTypeInfo>();
+            ArrayList<CLLocalVariableTypeInfo> localVariableTypeTable = new
+                    ArrayList<CLLocalVariableTypeInfo>();
             for (int m = 0; m < localVariableTypeTableLength; m++) {
-                localVariableTypeTable.add(new CLLocalVariableTypeInfo(in
-                        .readUnsignedShort(), in.readUnsignedShort(), in
-                        .readUnsignedShort(), in.readUnsignedShort(), in
-                        .readUnsignedShort()));
+                localVariableTypeTable
+                        .add(new CLLocalVariableTypeInfo(in.readUnsignedShort(),
+                                                         in.readUnsignedShort(),
+                                                         in.readUnsignedShort(),
+                                                         in.readUnsignedShort(),
+                                                         in.readUnsignedShort()
+                             )
+                        );
             }
-            attribute = new CLLocalVariableTypeTableAttribute(
-                    attributeNameIndex, attributeLength,
-                    localVariableTypeTableLength, localVariableTypeTable);
+            attribute = new CLLocalVariableTypeTableAttribute(attributeNameIndex,
+                                                              attributeLength,
+                                                              localVariableTypeTableLength,
+                                                              localVariableTypeTable
+            );
         } catch (IOException e) {
-            reportError("Error reading LocalVariableTypeTable_attribute"
-                    + "file %s", className);
+            reportError("Error reading LocalVariableTypeTable_attribute" + "file %s",
+                        className
+            );
         }
         return attribute;
     }
@@ -646,31 +676,26 @@ public class CLAbsorber {
     /**
      * Read a Deprecated attribute from the specified input stream, and return
      * it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a Deprecated attribute.
      */
 
     private CLDeprecatedAttribute readDeprecatedAttribute(CLInputStream in,
-            int attributeNameIndex, long attributeLength) {
+                                                          int attributeNameIndex,
+                                                          long attributeLength) {
         return new CLDeprecatedAttribute(attributeNameIndex, attributeLength);
     }
 
     /**
      * Read a RuntimeVisibleAnnotations attribute from the specified input
      * stream, and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a RuntimeVisibleAnnotations attribute.
      */
 
@@ -684,12 +709,16 @@ public class CLAbsorber {
                 CLAnnotation annotation = readAnnotation(in);
                 annotations.add(annotation);
             }
-            attribute = new CLRuntimeVisibleAnnotationsAttribute(
-                    attributeNameIndex, attributeLength, numAnnotations,
-                    annotations);
+            attribute = new CLRuntimeVisibleAnnotationsAttribute(attributeNameIndex,
+                                                                 attributeLength,
+                                                                 numAnnotations,
+                                                                 annotations
+            );
         } catch (IOException e) {
-            reportError("Error reading RuntimeVisibleAnnotations_attribute"
-                    + "from file %s", className);
+            reportError(
+                    "Error reading RuntimeVisibleAnnotations_attribute" + "from file %s",
+                    className
+            );
         }
         return attribute;
     }
@@ -697,17 +726,15 @@ public class CLAbsorber {
     /**
      * Read a RuntimeInvisibleAnnotations attribute from the specified input
      * stream, and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a RuntimeInvisibleAnnotations attribute.
      */
 
-    private CLRuntimeInvisibleAnnotationsAttribute readRuntimeInvisibleAnnotationsAttribute(
+    private CLRuntimeInvisibleAnnotationsAttribute
+    readRuntimeInvisibleAnnotationsAttribute(
             CLInputStream in, int attributeNameIndex, long attributeLength) {
         CLRuntimeInvisibleAnnotationsAttribute attribute = null;
         try {
@@ -717,12 +744,15 @@ public class CLAbsorber {
                 CLAnnotation annotation = readAnnotation(in);
                 annotations.add(annotation);
             }
-            attribute = new CLRuntimeInvisibleAnnotationsAttribute(
-                    attributeNameIndex, attributeLength, numAnnotations,
-                    annotations);
+            attribute = new CLRuntimeInvisibleAnnotationsAttribute(attributeNameIndex,
+                                                                   attributeLength,
+                                                                   numAnnotations,
+                                                                   annotations
+            );
         } catch (IOException e) {
-            reportError("Error reading RuntimeInvisibleAnnotations_attribute"
-                    + "from file %s", className);
+            reportError("Error reading RuntimeInvisibleAnnotations_attribute" +
+                                "from file %s", className
+            );
         }
         return attribute;
     }
@@ -730,22 +760,21 @@ public class CLAbsorber {
     /**
      * Read a RuntimeVisibleParameterAnnotations attribute from the specified
      * input stream, and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a RuntimeVisibleParameterAnnotations attribute.
      */
 
-    private CLRuntimeVisibleParameterAnnotationsAttribute readRuntimeVisibleParameterAnnotationsAttribute(
+    private CLRuntimeVisibleParameterAnnotationsAttribute
+    readRuntimeVisibleParameterAnnotationsAttribute(
             CLInputStream in, int attributeNameIndex, long attributeLength) {
         CLRuntimeVisibleParameterAnnotationsAttribute attribute = null;
         try {
             int numParameters = in.readUnsignedByte();
-            ArrayList<CLParameterAnnotationInfo> parameterAnnotations = new ArrayList<CLParameterAnnotationInfo>();
+            ArrayList<CLParameterAnnotationInfo> parameterAnnotations = new
+                    ArrayList<CLParameterAnnotationInfo>();
             for (int i = 0; i < numParameters; i++) {
                 int numAnnotations = in.readUnsignedShort();
                 ArrayList<CLAnnotation> annotations = new ArrayList<CLAnnotation>();
@@ -753,16 +782,18 @@ public class CLAbsorber {
                     CLAnnotation annotation = readAnnotation(in);
                     annotations.add(annotation);
                 }
-                parameterAnnotations.add(new CLParameterAnnotationInfo(
-                        numAnnotations, annotations));
+                parameterAnnotations
+                        .add(new CLParameterAnnotationInfo(numAnnotations, annotations));
             }
             attribute = new CLRuntimeVisibleParameterAnnotationsAttribute(
                     attributeNameIndex, attributeLength, (short) numParameters,
-                    parameterAnnotations);
+                    parameterAnnotations
+            );
         } catch (IOException e) {
-            reportError("Error reading "
-                    + "RuntimeVisibleParameterAnnotations_attribute"
-                    + " from file %s", className);
+            reportError(
+                    "Error reading " + "RuntimeVisibleParameterAnnotations_attribute" +
+                            " from file %s", className
+            );
         }
         return attribute;
     }
@@ -770,22 +801,21 @@ public class CLAbsorber {
     /**
      * Read a RuntimeInvisibleParameterAnnotations attribute from the specified
      * input stream, and return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a RuntimeInvisibleParameterAnnotations attribute.
      */
 
-    private CLRuntimeInvisibleParameterAnnotationsAttribute readRuntimeInvisibleParameterAnnotationsAttribute(
+    private CLRuntimeInvisibleParameterAnnotationsAttribute
+    readRuntimeInvisibleParameterAnnotationsAttribute(
             CLInputStream in, int attributeNameIndex, long attributeLength) {
         CLRuntimeInvisibleParameterAnnotationsAttribute attribute = null;
         try {
             int numParameters = in.readUnsignedByte();
-            ArrayList<CLParameterAnnotationInfo> parameterAnnotations = new ArrayList<CLParameterAnnotationInfo>();
+            ArrayList<CLParameterAnnotationInfo> parameterAnnotations = new
+                    ArrayList<CLParameterAnnotationInfo>();
             for (int i = 0; i < numParameters; i++) {
                 int numAnnotations = in.readUnsignedShort();
                 ArrayList<CLAnnotation> annotations = new ArrayList<CLAnnotation>();
@@ -793,16 +823,18 @@ public class CLAbsorber {
                     CLAnnotation annotation = readAnnotation(in);
                     annotations.add(annotation);
                 }
-                parameterAnnotations.add(new CLParameterAnnotationInfo(
-                        numAnnotations, annotations));
+                parameterAnnotations
+                        .add(new CLParameterAnnotationInfo(numAnnotations, annotations));
             }
             attribute = new CLRuntimeInvisibleParameterAnnotationsAttribute(
                     attributeNameIndex, attributeLength, (short) numParameters,
-                    parameterAnnotations);
+                    parameterAnnotations
+            );
         } catch (IOException e) {
-            reportError("Error reading "
-                    + "RuntimeInvisibleParameterAnnotations_attribute"
-                    + " from file %s", className);
+            reportError(
+                    "Error reading " + "RuntimeInvisibleParameterAnnotations_attribute" +
+                            " from file %s", className
+            );
         }
         return attribute;
     }
@@ -810,27 +842,25 @@ public class CLAbsorber {
     /**
      * Read a AnnotationDefault attribute from t he specified input stream, and
      * return it.
-     * 
-     * @param in
-     *            input stream.
-     * @param attributeNameIndex
-     *            constant pool index of the attribute name.
-     * @param attributeLength
-     *            length of attribute.
+     *
+     * @param in                 input stream.
+     * @param attributeNameIndex constant pool index of the attribute name.
+     * @param attributeLength    length of attribute.
      * @return a AnnotationDefault attribute.
      */
 
-    private CLAnnotationDefaultAttribute readAnnotationDefaultAttribute(
-            CLInputStream in, int attributeNameIndex, long attributeLength) {
-        return new CLAnnotationDefaultAttribute(attributeNameIndex,
-                attributeLength, readElementValue(in));
+    private CLAnnotationDefaultAttribute readAnnotationDefaultAttribute(CLInputStream in,
+                                                                        int attributeNameIndex,
+                                                                        long attributeLength) {
+        return new CLAnnotationDefaultAttribute(attributeNameIndex, attributeLength,
+                                                readElementValue(in)
+        );
     }
 
     /**
      * Read an ElementValue from the specified input stream, and return it.
-     * 
-     * @param in
-     *            input stream.
+     *
+     * @param in input stream.
      * @return an ElemenvValue.
      */
 
@@ -839,48 +869,49 @@ public class CLAbsorber {
         try {
             int tag = in.readUnsignedByte();
             switch (tag) {
-            case ELT_B:
-            case ELT_C:
-            case ELT_D:
-            case ELT_F:
-            case ELT_I:
-            case ELT_J:
-            case ELT_S:
-            case ELT_Z:
-            case ELT_s:
-                elementValue = new CLElementValue((short) tag, in
-                        .readUnsignedShort());
-                break;
-            case ELT_e:
-                elementValue = new CLElementValue(in.readUnsignedShort(), in
-                        .readUnsignedShort());
-                break;
-            case ELT_c:
-                elementValue = new CLElementValue(in.readUnsignedShort());
-                break;
-            case ELT_ANNOTATION:
-                elementValue = new CLElementValue(readAnnotation(in));
-                break;
-            case ELT_ARRAY:
-                int numValues = in.readUnsignedShort();
-                ArrayList<CLElementValue> values = new ArrayList<CLElementValue>();
-                for (int i = 0; i < numValues; i++) {
-                    values.add(readElementValue(in));
-                }
-                elementValue = new CLElementValue(numValues, values);
+                case ELT_B:
+                case ELT_C:
+                case ELT_D:
+                case ELT_F:
+                case ELT_I:
+                case ELT_J:
+                case ELT_S:
+                case ELT_Z:
+                case ELT_s:
+                    elementValue = new CLElementValue((short) tag, in.readUnsignedShort()
+                    );
+                    break;
+                case ELT_e:
+                    elementValue = new CLElementValue(in.readUnsignedShort(),
+                                                      in.readUnsignedShort()
+                    );
+                    break;
+                case ELT_c:
+                    elementValue = new CLElementValue(in.readUnsignedShort());
+                    break;
+                case ELT_ANNOTATION:
+                    elementValue = new CLElementValue(readAnnotation(in));
+                    break;
+                case ELT_ARRAY:
+                    int numValues = in.readUnsignedShort();
+                    ArrayList<CLElementValue> values = new ArrayList<CLElementValue>();
+                    for (int i = 0; i < numValues; i++) {
+                        values.add(readElementValue(in));
+                    }
+                    elementValue = new CLElementValue(numValues, values);
             }
         } catch (IOException e) {
-            reportError("Error reading AnnotationDefault_attribute "
-                    + "from file %s", className);
+            reportError("Error reading AnnotationDefault_attribute " + "from file %s",
+                        className
+            );
         }
         return elementValue;
     }
 
     /**
      * Read an Annotation from the specified input stream, and return it.
-     * 
-     * @param in
-     *            input stream.
+     *
+     * @param in input stream.
      * @return an Annotation.
      */
 
@@ -889,15 +920,16 @@ public class CLAbsorber {
         try {
             int typeIndex = in.readUnsignedShort();
             int numElementValuePairs = in.readUnsignedShort();
-            ArrayList<CLElementValuePair> elementValuePairs = new ArrayList<CLElementValuePair>();
+            ArrayList<CLElementValuePair> elementValuePairs = new
+                    ArrayList<CLElementValuePair>();
             for (int i = 0; i < numElementValuePairs; i++) {
                 int elementNameIndex = in.readUnsignedShort();
                 CLElementValue value = readElementValue(in);
-                elementValuePairs.add(new CLElementValuePair(elementNameIndex,
-                        value));
+                elementValuePairs.add(new CLElementValuePair(elementNameIndex, value));
             }
             annotation = new CLAnnotation(typeIndex, numElementValuePairs,
-                    elementValuePairs);
+                                          elementValuePairs
+            );
         } catch (IOException e) {
             reportError("Error reading Annotation from file %s", className);
         }
@@ -907,9 +939,8 @@ public class CLAbsorber {
     /**
      * Construct a CLAbsorber object given the (fully-qualified) name of the
      * class file to read.
-     * 
-     * @param className
-     *            fully qualified name of the input class file.
+     *
+     * @param className fully qualified name of the input class file.
      */
 
     public CLAbsorber(String className) {
@@ -989,7 +1020,7 @@ public class CLAbsorber {
 
     /**
      * Return the CLFile representation of the class that was read.
-     * 
+     *
      * @return the CLFile representation of the class.
      */
 
@@ -1000,7 +1031,7 @@ public class CLAbsorber {
     /**
      * Return true if an error had occurred while reading the class; false
      * otherwise.
-     * 
+     *
      * @return true or false.
      */
 
@@ -1020,9 +1051,9 @@ public class CLAbsorber {
         if (args.length == 1) {
             classFile = args[0];
         } else {
-            String usage = "Usage: java jminusminus.CLAbsorber <class name>\n"
-                    + "Where the class name must be fully qualified; "
-                    + "eg, java/util/ArrayList";
+            String usage = "Usage: java jminusminus.CLAbsorber <class name>\n" +
+                    "Where the class name must be fully qualified; " +
+                    "eg, java/util/ArrayList";
             System.out.println(usage);
             System.exit(0);
         }
@@ -1045,9 +1076,8 @@ class CLInputStream extends DataInputStream {
 
     /**
      * Construct a CLInputStream object from the specified input stream.
-     * 
-     * @param in
-     *            input stream.
+     *
+     * @param in input stream.
      */
 
     public CLInputStream(InputStream in) {
@@ -1057,28 +1087,26 @@ class CLInputStream extends DataInputStream {
     /**
      * Read four input bytes and return a long value in the range 0 through
      * 4294967295. Let a, b, c, d be the four bytes. The value returned is:
-     * 
+     * <p>
      * <pre>
-     *   ( b[ 0 ] &amp; 0xFF ) &lt;&lt; 24 ) | 
-     *   ( ( b[ 1 ] &amp; 0xFF ) &lt;&lt; 16 ) | 
-     *   ( ( b[ 2 ] &amp; 0xFF ) &lt;&lt; 8 ) | 
+     *   ( b[ 0 ] &amp; 0xFF ) &lt;&lt; 24 ) |
+     *   ( ( b[ 1 ] &amp; 0xFF ) &lt;&lt; 16 ) |
+     *   ( ( b[ 2 ] &amp; 0xFF ) &lt;&lt; 8 ) |
      *   ( b[ 3 ] &amp; 0xFF )
      * </pre>
-     * 
+     *
      * @return the unsigned 32-bit value.
-     * @exception EOFException
-     *                if this stream reaches the end before reading all the
-     *                bytes.
-     * @exception IOException
-     *                if an I/O error occurs.
+     * @throws EOFException if this stream reaches the end before reading all the
+     *                      bytes.
+     * @throws IOException  if an I/O error occurs.
      */
 
     public final long readUnsignedInt() throws IOException {
         byte[] b = new byte[4];
         long mask = 0xFF, l;
         in.read(b);
-        l = ((b[0] & mask) << 24) | ((b[1] & mask) << 16)
-                | ((b[2] & mask) << 8) | (b[3] & mask);
+        l = ((b[0] & mask) << 24) | ((b[1] & mask) << 16) | ((b[2] & mask) << 8) |
+                (b[3] & mask);
         return l;
     }
 

@@ -10,31 +10,33 @@ import static jminusminus.CLConstants.*;
 
 class JIfStatement extends JStatement {
 
-    /** Test expression. */
+    /**
+     * Test expression.
+     */
     private JExpression condition;
 
-    /** Then clause. */
+    /**
+     * Then clause.
+     */
     private JStatement thenPart;
 
-    /** Else clause. */
+    /**
+     * Else clause.
+     */
     private JStatement elsePart;
 
     /**
      * Construct an AST node for an if-statement given its line number, the test
      * expression, the consequent, and the alternate.
-     * 
-     * @param line
-     *            line in which the if-statement occurs in the source file.
-     * @param condition
-     *            test expression.
-     * @param thenPart
-     *            then clause.
-     * @param elsePart
-     *            else clause.
+     *
+     * @param line      line in which the if-statement occurs in the source file.
+     * @param condition test expression.
+     * @param thenPart  then clause.
+     * @param elsePart  else clause.
      */
 
     public JIfStatement(int line, JExpression condition, JStatement thenPart,
-            JStatement elsePart) {
+                        JStatement elsePart) {
         super(line);
         this.condition = condition;
         this.thenPart = thenPart;
@@ -44,9 +46,8 @@ class JIfStatement extends JStatement {
     /**
      * Analyzing the if-statement means analyzing its components and checking
      * that the test is boolean.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -64,10 +65,9 @@ class JIfStatement extends JStatement {
      * Code generation for an if-statement. We generate code to branch over the
      * consequent if !test; the consequent is followed by an unconditonal branch
      * over (any) alternate.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

@@ -9,17 +9,17 @@ package jminusminus;
 
 class JStatementExpression extends JStatement {
 
-    /** The expression. */
+    /**
+     * The expression.
+     */
     JExpression expr;
 
     /**
      * Construct an AST node for a statement expression given its line number,
      * and expression.
-     * 
-     * @param line
-     *            line in which the expression occurs in the source file.
-     * @param expr
-     *            the expression.
+     *
+     * @param line line in which the expression occurs in the source file.
+     * @param expr the expression.
      */
 
     public JStatementExpression(int line, JExpression expr) {
@@ -30,9 +30,8 @@ class JStatementExpression extends JStatement {
     /**
      * Analysis involves analyzing the encapsulated expression if indeed it is a
      * statement expression, i.e., one with a side effect.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -46,10 +45,9 @@ class JStatementExpression extends JStatement {
     /**
      * Generating code for the statement expression involves simply generating
      * code for the encapsulated expression.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

@@ -4,13 +4,14 @@ package jminusminus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
  * Representation of the ClassFile structure (JVM Spec Section 4.2). An instance
  * of CLFile is created when a class is read using CLAbsorber or constructed
  * using CLEmitter.
- * 
+ * <p>
  * We have our own representation and don't use java.lang.Class because Java
  * does not offer an interface to programmatically create a class file in memory
  * other than creating it in one shot from a byte stream.
@@ -21,61 +22,91 @@ class CLFile {
     // The fields below represent the members of the ClassFile
     // structure. See JVM Spec Section 4.2 for details.
 
-    /** ClassFile.magic item. */
+    /**
+     * ClassFile.magic item.
+     */
     public long magic; // 0xCAFEBABE
 
-    /** ClassFile.minor_version item. */
+    /**
+     * ClassFile.minor_version item.
+     */
     public int minorVersion;
 
-    /** ClassFile.major_version item. */
+    /**
+     * ClassFile.major_version item.
+     */
     public int majorVersion;
 
-    /** ClassFile.constant_pool_count item. */
+    /**
+     * ClassFile.constant_pool_count item.
+     */
     public int constantPoolCount;
 
-    /** ClassFile.constant_pool item. */
+    /**
+     * ClassFile.constant_pool item.
+     */
     public CLConstantPool constantPool;
 
-    /** ClassFile.access_flags item. */
+    /**
+     * ClassFile.access_flags item.
+     */
     public int accessFlags;
 
-    /** ClassFile.this_class item. */
+    /**
+     * ClassFile.this_class item.
+     */
     public int thisClass;
 
-    /** ClassFile.super_class item. */
+    /**
+     * ClassFile.super_class item.
+     */
     public int superClass;
 
-    /** ClassFile.interfaces_count item. */
+    /**
+     * ClassFile.interfaces_count item.
+     */
     public int interfacesCount;
 
-    /** ClassFile.interfaces item. */
+    /**
+     * ClassFile.interfaces item.
+     */
     public ArrayList<Integer> interfaces;
 
-    /** ClassFile.fields_count item. */
+    /**
+     * ClassFile.fields_count item.
+     */
     public int fieldsCount;
 
-    /** ClassFile.fields item. */
+    /**
+     * ClassFile.fields item.
+     */
     public ArrayList<CLFieldInfo> fields;
 
-    /** ClassFile.methods_count item. */
+    /**
+     * ClassFile.methods_count item.
+     */
     public int methodsCount;
 
-    /** ClassFile.methods item. */
+    /**
+     * ClassFile.methods item.
+     */
     public ArrayList<CLMethodInfo> methods;
 
-    /** ClassFile.attributes_count item. */
+    /**
+     * ClassFile.attributes_count item.
+     */
     public int attributesCount;
 
-    /** ClassFile.attributes item. */
+    /**
+     * ClassFile.attributes item.
+     */
     public ArrayList<CLAttributeInfo> attributes;
 
     /**
      * Write the contents of this class to the specified output stream.
-     * 
-     * @param out
-     *            output stream.
-     * @throws IOException
-     *             if an error occurs while writing.
+     *
+     * @param out output stream.
+     * @throws IOException if an error occurs while writing.
      */
 
     public void write(CLOutputStream out) throws IOException {
@@ -158,9 +189,8 @@ class CLFile {
     /**
      * Return (as a string) the class access permissions and properties
      * contained in the specified mask of flags.
-     * 
-     * @param accessFlags
-     *            mask of access flags.
+     *
+     * @param accessFlags mask of access flags.
      * @return a string identifying class access permissions and properties.
      */
 
@@ -196,11 +226,10 @@ class CLFile {
     /**
      * Return (as a string) the inner class access permissions and properties
      * contained in the specified mask of flags.
-     * 
-     * @param accessFlags
-     *            mask of access flags.
+     *
+     * @param accessFlags mask of access flags.
      * @return a string identifying the inner class access permissions and
-     *         properties.
+     * properties.
      */
 
     public static String innerClassAccessFlagsToString(int accessFlags) {
@@ -241,9 +270,8 @@ class CLFile {
     /**
      * Return (as a string) the field access permissions and properties
      * contained in the specified mask of flags.
-     * 
-     * @param accessFlags
-     *            mask of access flags.
+     *
+     * @param accessFlags mask of access flags.
      * @return a string identifying the field access permissions and properties.
      */
 
@@ -285,11 +313,10 @@ class CLFile {
     /**
      * Return (as a string) the method access permissions and properties
      * contained in the specified mask of flags.
-     * 
-     * @param accessFlags
-     *            mask of access flags.
+     *
+     * @param accessFlags mask of access flags.
      * @return a string identifying the method access permissions and
-     *         properties.
+     * properties.
      */
 
     public static String methodAccessFlagsToString(int accessFlags) {
@@ -336,9 +363,8 @@ class CLFile {
     /**
      * Return the integer value (mask) corresponding to the specified access
      * flag.
-     * 
-     * @param accessFlag
-     *            access flag.
+     *
+     * @param accessFlag access flag.
      * @return the integer mask.
      */
 

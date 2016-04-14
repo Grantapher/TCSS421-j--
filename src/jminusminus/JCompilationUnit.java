@@ -7,27 +7,27 @@ import java.util.ArrayList;
 /**
  * The abstract syntax tree (AST) node representing a compilation unit, and so
  * the root of the AST.
- * 
+ * <p>
  * It keeps track of the name of the source file, its package name, a list of
  * imported types, a list of type (eg class) declarations, and a flag indicating
  * if a semantic error has been detected in analysis or code generation. It also
  * maintains a CompilationUnitContext (built in pre-analysis) for declaring both
  * imported and declared types.
- * 
+ * <p>
  * The AST is produced by the Parser. Once the AST has been built, three
  * successive methods are invoked:
- * 
+ * <p>
  * (1) Method preAnalyze() is invoked for making a first pass at type analysis,
  * recursively reaching down to the member headers for declaring types and
  * member interfaces in the environment (contexts). preAnalyze() also creates a
  * partial class file (in memory) for recording member header information, using
  * the partialCodegen() method.
- * 
+ * <p>
  * (2) Method analyze() is invoked for type-checking field initializations and
  * method bodies, and determining the types of all expressions. A certain amount
  * of tree surgery is also done here. And stack frame offsets are computed for
  * method parameters and local variables.
- * 
+ * <p>
  * (3) Method codegen() is invoked for generating code for the compilation unit
  * to a class file. For each type declaration, it instantiates a CLEmmiter
  * object (an abstraction of the class file) and then invokes methods on that
@@ -40,16 +40,24 @@ import java.util.ArrayList;
 
 class JCompilationUnit extends JAST {
 
-    /** Name of the source file. */
+    /**
+     * Name of the source file.
+     */
     private String fileName;
 
-    /** Package name. */
+    /**
+     * Package name.
+     */
     private TypeName packageName;
 
-    /** List of imports. */
+    /**
+     * List of imports.
+     */
     private ArrayList<TypeName> imports;
 
-    /** List of type declarations. */
+    /**
+     * List of type declarations.
+     */
     private ArrayList<JAST> typeDeclarations;
 
     /**
@@ -58,31 +66,32 @@ class JCompilationUnit extends JAST {
      */
     private ArrayList<CLFile> clFiles;
 
-    /** For imports and type declarations. */
+    /**
+     * For imports and type declarations.
+     */
     private CompilationUnitContext context;
 
-    /** Whether a semantic error has been found. */
+    /**
+     * Whether a semantic error has been found.
+     */
     private boolean isInError;
 
     /**
      * Construct an AST node for a compilation unit given a file name, class
      * directory, line number, package name, list of imports, and type
      * declarations.
-     * 
-     * @param fileName
-     *            the name of the source file.
-     * @param line
-     *            line in which the compilation unit occurs in the source file.
-     * @param packageName
-     *            package name.
-     * @param imports
-     *            a list of imports.
-     * @param typeDeclarations
-     *            type declarations.
+     *
+     * @param fileName         the name of the source file.
+     * @param line             line in which the compilation unit occurs in the source
+     *                         file.
+     * @param packageName      package name.
+     * @param imports          a list of imports.
+     * @param typeDeclarations type declarations.
      */
 
     public JCompilationUnit(String fileName, int line, TypeName packageName,
-            ArrayList<TypeName> imports, ArrayList<JAST> typeDeclarations) {
+                            ArrayList<TypeName> imports,
+                            ArrayList<JAST> typeDeclarations) {
         super(line);
         this.fileName = fileName;
         this.packageName = packageName;
@@ -94,7 +103,7 @@ class JCompilationUnit extends JAST {
 
     /**
      * The package in which this compilation unit is defined.
-     * 
+     *
      * @return the package name.
      */
 
@@ -104,7 +113,7 @@ class JCompilationUnit extends JAST {
 
     /**
      * Has a semantic error occurred up to now?
-     * 
+     *
      * @return true or false.
      */
 
@@ -114,17 +123,13 @@ class JCompilationUnit extends JAST {
 
     /**
      * Report a semantic error.
-     * 
-     * @param line
-     *            line in which the error occurred in the source file.
-     * @param message
-     *            message identifying the error.
-     * @param arguments
-     *            related values.
+     *
+     * @param line      line in which the error occurred in the source file.
+     * @param message   message identifying the error.
+     * @param arguments related values.
      */
 
-    public void reportSemanticError(int line, String message,
-            Object... arguments) {
+    public void reportSemanticError(int line, String message, Object... arguments) {
         isInError = true;
         System.err.printf("%s:%d: ", fileName, line);
         System.err.printf(message, arguments);
@@ -151,8 +156,10 @@ class JCompilationUnit extends JAST {
                 Class<?> classRep = Class.forName(imported.toString());
                 context.addType(imported.line(), Type.typeFor(classRep));
             } catch (Exception e) {
-                JAST.compilationUnit.reportSemanticError(imported.line(),
-                        "Unable to find %s", imported.toString());
+                JAST.compilationUnit
+                        .reportSemanticError(imported.line(), "Unable to find %s",
+                                             imported.toString()
+                        );
             }
         }
 
@@ -173,9 +180,8 @@ class JCompilationUnit extends JAST {
 
     /**
      * Perform semantic analysis on the AST in the specified context.
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -189,10 +195,9 @@ class JCompilationUnit extends JAST {
     /**
      * Generating code for a compilation unit means generating code for each of
      * the type declarations.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -206,7 +211,7 @@ class JCompilationUnit extends JAST {
     /**
      * Return the list of CLFile objects corresponding to the type declarations
      * in this compilation unit.
-     * 
+     *
      * @return list of CLFile objects.
      */
 

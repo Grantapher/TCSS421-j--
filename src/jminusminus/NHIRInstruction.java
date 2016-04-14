@@ -4,6 +4,7 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 import static jminusminus.NPhysicalRegister.*;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,7 @@ abstract class NHIRInstruction {
      * the opcode imul is mapped to the string "*".
      */
     protected static String[] hirMnemonic;
+
     static {
         hirMnemonic = new String[256];
         hirMnemonic[IADD] = "+";
@@ -38,28 +40,36 @@ abstract class NHIRInstruction {
         hirMnemonic[IRETURN] = "ireturn";
     }
 
-    /** The block containing this instruction. */
+    /**
+     * The block containing this instruction.
+     */
     public NBasicBlock block;
 
-    /** Unique identifier of this instruction. */
+    /**
+     * Unique identifier of this instruction.
+     */
     public int id;
 
-    /** Short type name for this instruction. */
+    /**
+     * Short type name for this instruction.
+     */
     public String sType;
 
-    /** Long type name for this instruction. */
+    /**
+     * Long type name for this instruction.
+     */
     public String lType;
 
-    /** The LIR instruction corresponding to this HIR instruction. */
+    /**
+     * The LIR instruction corresponding to this HIR instruction.
+     */
     public NLIRInstruction lir;
 
     /**
      * Construct an NHIRInstruction object.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
+     *
+     * @param block enclosing block.
+     * @param id    identifier of the instruction.
      */
 
     protected NHIRInstruction(NBasicBlock block, int id) {
@@ -68,19 +78,14 @@ abstract class NHIRInstruction {
 
     /**
      * Construct an NHIRInstruction object.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param sType
-     *            short type name of the instruction.
-     * @param lType
-     *            long type name of the instruction.
+     *
+     * @param block enclosing block.
+     * @param id    identifier of the instruction.
+     * @param sType short type name of the instruction.
+     * @param lType long type name of the instruction.
      */
 
-    protected NHIRInstruction(NBasicBlock block, int id, String sType,
-            String lType) {
+    protected NHIRInstruction(NBasicBlock block, int id, String sType, String lType) {
         this.block = block;
         this.id = id;
         this.sType = sType;
@@ -90,9 +95,8 @@ abstract class NHIRInstruction {
     /**
      * Return true if this instruction is the same as the other, false
      * otherwise. Two instructions are the same if their ids are the same.
-     * 
-     * @param other
-     *            the instruction to compare to.
+     *
+     * @param other the instruction to compare to.
      * @return true if the instructions are the same, false otherwise.
      */
 
@@ -105,7 +109,7 @@ abstract class NHIRInstruction {
      * instruction. Also adds the returned LIR instruction to the list of LIR
      * instructions for the block containing this instruction, along with any
      * other intermediate LIR instructions needed.
-     * 
+     *
      * @return LIR instruction corresponding to this HIR instruction.
      */
 
@@ -116,9 +120,9 @@ abstract class NHIRInstruction {
     /**
      * Return the identifier of this instruction with the short type name
      * prefixed.
-     * 
+     *
      * @return identifier of this IR instruction with the short type name
-     *         prefixed.
+     * prefixed.
      */
 
     public String id() {
@@ -127,7 +131,7 @@ abstract class NHIRInstruction {
 
     /**
      * Return a string representation of this instruction.
-     * 
+     *
      * @return string representation of this instruction.
      */
 
@@ -143,32 +147,32 @@ abstract class NHIRInstruction {
 
 class NHIRArithmetic extends NHIRInstruction {
 
-    /** Opcode for the arithmetic operator. */
+    /**
+     * Opcode for the arithmetic operator.
+     */
     public int opcode;
 
-    /** Lhs HIR id. */
+    /**
+     * Lhs HIR id.
+     */
     public int lhs;
 
-    /** Rhs HIR id. */
+    /**
+     * Rhs HIR id.
+     */
     public int rhs;
 
     /**
      * Construct an NHIRArithmetic instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            opcode for the arithmetic operator.
-     * @param lhs
-     *            lhs HIR id.
-     * @param rhs
-     *            rhs HIR id.
+     *
+     * @param block  enclosing block.
+     * @param id     identifier of the instruction.
+     * @param opcode opcode for the arithmetic operator.
+     * @param lhs    lhs HIR id.
+     * @param rhs    rhs HIR id.
      */
 
-    public NHIRArithmetic(NBasicBlock block, int id, int opcode, int lhs,
-            int rhs) {
+    public NHIRArithmetic(NBasicBlock block, int id, int opcode, int lhs, int rhs) {
         super(block, id, "I", "I");
         this.opcode = opcode;
         this.lhs = lhs;
@@ -185,8 +189,7 @@ class NHIRArithmetic extends NHIRInstruction {
         }
         NLIRInstruction ins1 = block.cfg.hirMap.get(lhs).toLir();
         NLIRInstruction ins2 = block.cfg.hirMap.get(rhs).toLir();
-        lir = new NLIRArithmetic(block, NControlFlowGraph.lirId++, opcode,
-                ins1, ins2);
+        lir = new NLIRArithmetic(block, NControlFlowGraph.lirId++, opcode, ins1, ins2);
         block.lir.add(lir);
         return lir;
     }
@@ -196,8 +199,8 @@ class NHIRArithmetic extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": " + block.cfg.hirMap.get(lhs).id() + " "
-                + hirMnemonic[opcode] + " " + block.cfg.hirMap.get(rhs).id();
+        return id() + ": " + block.cfg.hirMap.get(lhs).id() + " " + hirMnemonic[opcode] +
+                " " + block.cfg.hirMap.get(rhs).id();
     }
 
 }
@@ -209,18 +212,17 @@ class NHIRArithmetic extends NHIRInstruction {
 
 class NHIRIntConstant extends NHIRInstruction {
 
-    /** The constant int value. */
+    /**
+     * The constant int value.
+     */
     public int value;
 
     /**
      * Construct an NHIRIntConstant instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param value
-     *            the constant int value.
+     *
+     * @param block enclosing block.
+     * @param id    identifier of the instruction.
+     * @param value the constant int value.
      */
 
     public NHIRIntConstant(NBasicBlock block, int id, int value) {
@@ -258,18 +260,17 @@ class NHIRIntConstant extends NHIRInstruction {
 
 class NHIRStringConstant extends NHIRInstruction {
 
-    /** The constant string value. */
+    /**
+     * The constant string value.
+     */
     public String value;
 
     /**
      * Construct an NHIRStringConstant instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier for the instruction.
-     * @param value
-     *            the constant string value.
+     *
+     * @param block enclosing block.
+     * @param id    identifier for the instruction.
+     * @param value the constant string value.
      */
 
     public NHIRStringConstant(NBasicBlock block, int id, String value) {
@@ -306,43 +307,46 @@ class NHIRStringConstant extends NHIRInstruction {
 
 class NHIRConditionalJump extends NHIRInstruction {
 
-    /** Lhs HIR id. */
+    /**
+     * Lhs HIR id.
+     */
     public int lhs;
 
-    /** Rhs HIR id. */
+    /**
+     * Rhs HIR id.
+     */
     public int rhs;
 
-    /** Test expression opcode. */
+    /**
+     * Test expression opcode.
+     */
     public int opcode;
 
-    /** Block to jump to on true. */
+    /**
+     * Block to jump to on true.
+     */
     public NBasicBlock onTrueDestination;
 
-    /** Block to jump to on false. */
+    /**
+     * Block to jump to on false.
+     */
     public NBasicBlock onFalseDestination;
 
     /**
      * Construct an NHIRConditionalJump instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param lhs
-     *            Lhs HIR id.
-     * @param rhs
-     *            Rhs HIR id.
-     * @param opcode
-     *            opcode in the test.
-     * @param onTrueDestination
-     *            block to jump to on true.
-     * @param onFalseDestination
-     *            block to jump to on false.
+     *
+     * @param block              enclosing block.
+     * @param id                 identifier of the instruction.
+     * @param lhs                Lhs HIR id.
+     * @param rhs                Rhs HIR id.
+     * @param opcode             opcode in the test.
+     * @param onTrueDestination  block to jump to on true.
+     * @param onFalseDestination block to jump to on false.
      */
 
-    public NHIRConditionalJump(NBasicBlock block, int id, int lhs, int rhs,
-            int opcode, NBasicBlock onTrueDestination,
-            NBasicBlock onFalseDestination) {
+    public NHIRConditionalJump(NBasicBlock block, int id, int lhs, int rhs, int opcode,
+                               NBasicBlock onTrueDestination,
+                               NBasicBlock onFalseDestination) {
         super(block, id, "", "");
         this.lhs = lhs;
         this.rhs = rhs;
@@ -361,8 +365,9 @@ class NHIRConditionalJump extends NHIRInstruction {
         }
         NLIRInstruction ins1 = block.cfg.hirMap.get(lhs).toLir();
         NLIRInstruction ins2 = block.cfg.hirMap.get(rhs).toLir();
-        lir = new NLIRConditionalJump(block, NControlFlowGraph.lirId++, ins1,
-                ins2, opcode, onTrueDestination, onFalseDestination);
+        lir = new NLIRConditionalJump(block, NControlFlowGraph.lirId++, ins1, ins2,
+                                      opcode, onTrueDestination, onFalseDestination
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -372,10 +377,9 @@ class NHIRConditionalJump extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": if " + block.cfg.hirMap.get(lhs).id() + " "
-                + hirMnemonic[opcode] + " " + block.cfg.hirMap.get(rhs).id()
-                + " then " + onTrueDestination.id() + " else "
-                + onFalseDestination.id();
+        return id() + ": if " + block.cfg.hirMap.get(lhs).id() + " " +
+                hirMnemonic[opcode] + " " + block.cfg.hirMap.get(rhs).id() + " then " +
+                onTrueDestination.id() + " else " + onFalseDestination.id();
     }
 
 }
@@ -386,18 +390,17 @@ class NHIRConditionalJump extends NHIRInstruction {
 
 class NHIRGoto extends NHIRInstruction {
 
-    /** The destination block to unconditionally jump to. */
+    /**
+     * The destination block to unconditionally jump to.
+     */
     public NBasicBlock destination;
 
     /**
      * Construct an NHIRGoto instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param destination
-     *            the block to jump to.
+     *
+     * @param block       enclosing block.
+     * @param id          identifier of the instruction.
+     * @param destination the block to jump to.
      */
 
     public NHIRGoto(NBasicBlock block, int id, NBasicBlock destination) {
@@ -434,42 +437,41 @@ class NHIRGoto extends NHIRInstruction {
 
 class NHIRInvoke extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** Target for the method. */
+    /**
+     * Target for the method.
+     */
     public String target;
 
-    /** Name of the method being invoked. */
+    /**
+     * Name of the method being invoked.
+     */
     public String name;
 
-    /** List of HIR ids of arguments for the method. */
+    /**
+     * List of HIR ids of arguments for the method.
+     */
     public ArrayList<Integer> arguments;
 
     /**
      * Construct an NHIRInvoke instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            opcode of the JVM instruction.
-     * @param target
-     *            target of the method.
-     * @param name
-     *            name of the method.
-     * @param arguments
-     *            list of HIR ids of arguments for the method.
-     * @param sType
-     *            return type (short name) of the method.
-     * @param lType
-     *            return type (long name) of the method.
+     *
+     * @param block     enclosing block.
+     * @param id        identifier of the instruction.
+     * @param opcode    opcode of the JVM instruction.
+     * @param target    target of the method.
+     * @param name      name of the method.
+     * @param arguments list of HIR ids of arguments for the method.
+     * @param sType     return type (short name) of the method.
+     * @param lType     return type (long name) of the method.
      */
 
-    public NHIRInvoke(NBasicBlock block, int id, int opcode, String target,
-            String name, ArrayList<Integer> arguments, String sType,
-            String lType) {
+    public NHIRInvoke(NBasicBlock block, int id, int opcode, String target, String name,
+                      ArrayList<Integer> arguments, String sType, String lType) {
         super(block, id, sType, lType);
         this.opcode = opcode;
         this.target = target;
@@ -510,14 +512,15 @@ class NHIRInvoke extends NHIRInstruction {
                 String lType = block.cfg.hirMap.get(arg).lType;
                 NPhysicalRegister from = NPhysicalRegister.regInfo[A0 + i];
                 block.cfg.registers.set(A0 + i, from);
-                NVirtualRegister to = new NVirtualRegister(
-                        NControlFlowGraph.regId++, sType, lType);
+                NVirtualRegister to = new NVirtualRegister(NControlFlowGraph.regId++,
+                                                           sType, lType
+                );
                 block.cfg.registers.add(to);
-                NLIRMove move1 = new NLIRMove(block, NControlFlowGraph.lirId++,
-                        from, to);
+                NLIRMove move1 = new NLIRMove(block, NControlFlowGraph.lirId++, from, to);
                 block.lir.add(move1);
-                NLIRMove move2 = new NLIRMove(block, NControlFlowGraph.lirId++,
-                        ins.write, from);
+                NLIRMove move2 = new NLIRMove(block, NControlFlowGraph.lirId++, ins.write,
+                                              from
+                );
                 block.lir.add(move2);
                 arguments.add(NPhysicalRegister.regInfo[A0 + i]);
 
@@ -527,26 +530,29 @@ class NHIRInvoke extends NHIRInstruction {
                 froms.add(from);
                 tos.add(to);
             } else {
-                NLIRStore store = new NLIRStore(block,
-                        NControlFlowGraph.lirId++, i - 4, OffsetFrom.SP,
-                        ins.write);
+                NLIRStore store = new NLIRStore(block, NControlFlowGraph.lirId++, i - 4,
+                                                OffsetFrom.SP, ins.write
+                );
                 block.lir.add(store);
                 arguments.add(ins.write);
             }
         }
 
-        lir = new NLIRInvoke(block, NControlFlowGraph.lirId++, opcode, target,
-                name, arguments, sType, lType);
+        lir = new NLIRInvoke(block, NControlFlowGraph.lirId++, opcode, target, name,
+                             arguments, sType, lType
+        );
         block.lir.add(lir);
 
         // If the function returns a value, generate an LIR move
         // instruction to save away the value in the physical
         // register v0 into a virtual register.
         if (lir.write != null) {
-            NVirtualRegister to = new NVirtualRegister(
-                    NControlFlowGraph.regId++, sType, lType);
+            NVirtualRegister to = new NVirtualRegister(NControlFlowGraph.regId++, sType,
+                                                       lType
+            );
             NLIRMove move = new NLIRMove(block, NControlFlowGraph.lirId++,
-                    NPhysicalRegister.regInfo[V0], to);
+                                         NPhysicalRegister.regInfo[V0], to
+            );
             block.cfg.registers.add(to);
             block.lir.add(move);
             lir = move;
@@ -555,8 +561,9 @@ class NHIRInvoke extends NHIRInstruction {
         // Generate LIR move instructions to restore the a0, ..., a3
         // instructions.
         for (int i = 0; i < tos.size(); i++) {
-            NLIRMove move = new NLIRMove(block, NControlFlowGraph.lirId++, tos
-                    .get(i), froms.get(i));
+            NLIRMove move = new NLIRMove(block, NControlFlowGraph.lirId++, tos.get(i),
+                                         froms.get(i)
+            );
             block.lir.add(move);
         }
 
@@ -568,8 +575,7 @@ class NHIRInvoke extends NHIRInstruction {
      */
 
     public String toString() {
-        String s = id() + ": " + hirMnemonic[opcode] + " " + target + "."
-                + name + "( ";
+        String s = id() + ": " + hirMnemonic[opcode] + " " + target + "." + name + "( ";
         for (int arg : arguments) {
             s += block.cfg.hirMap.get(arg).id() + " ";
         }
@@ -585,29 +591,29 @@ class NHIRInvoke extends NHIRInstruction {
 
 class NHIRReturn extends NHIRInstruction {
 
-    /** JVM opcode for the return instruction. */
+    /**
+     * JVM opcode for the return instruction.
+     */
     public int opcode;
 
-    /** Return value HIR id. */
+    /**
+     * Return value HIR id.
+     */
     public int value;
 
     /**
      * Construct an NHIRReturn instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the return instruction.
-     * @param value
-     *            return value HIR id.
+     *
+     * @param block  enclosing block.
+     * @param id     identifier of the instruction.
+     * @param opcode JVM opcode for the return instruction.
+     * @param value  return value HIR id.
      */
 
     public NHIRReturn(NBasicBlock block, int id, int opcode, int value) {
-        super(block, id,
-                (value == -1) ? "" : block.cfg.hirMap.get(value).sType,
-                (value == -1) ? "" : block.cfg.hirMap.get(value).lType);
+        super(block, id, (value == -1) ? "" : block.cfg.hirMap.get(value).sType,
+              (value == -1) ? "" : block.cfg.hirMap.get(value).lType
+        );
         this.opcode = opcode;
         this.value = value;
     }
@@ -623,13 +629,15 @@ class NHIRReturn extends NHIRInstruction {
         NLIRInstruction result = null;
         if (value != -1) {
             result = block.cfg.hirMap.get(value).toLir();
-            NLIRMove move = new NLIRMove(block, NControlFlowGraph.lirId++,
-                    result.write, NPhysicalRegister.regInfo[V0]);
+            NLIRMove move = new NLIRMove(block, NControlFlowGraph.lirId++, result.write,
+                                         NPhysicalRegister.regInfo[V0]
+            );
             block.lir.add(move);
             block.cfg.registers.set(V0, NPhysicalRegister.regInfo[V0]);
         }
         lir = new NLIRReturn(block, NControlFlowGraph.lirId++, opcode,
-                (result == null) ? null : NPhysicalRegister.regInfo[V0]);
+                             (result == null) ? null : NPhysicalRegister.regInfo[V0]
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -642,8 +650,7 @@ class NHIRReturn extends NHIRInstruction {
         if (value == -1) {
             return id() + ": " + hirMnemonic[opcode];
         }
-        return id() + ": " + hirMnemonic[opcode] + " "
-                + block.cfg.hirMap.get(value).id();
+        return id() + ": " + hirMnemonic[opcode] + " " + block.cfg.hirMap.get(value).id();
     }
 
 }
@@ -654,41 +661,41 @@ class NHIRReturn extends NHIRInstruction {
 
 class NHIRPutField extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** Target for the field. */
+    /**
+     * Target for the field.
+     */
     public String target;
 
-    /** Name of the field being accessed. */
+    /**
+     * Name of the field being accessed.
+     */
     public String name;
 
-    /** HIR id of the value of the field. */
+    /**
+     * HIR id of the value of the field.
+     */
     public int value;
 
     /**
      * Construct an NHIRPutField instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the instruction.
-     * @param target
-     *            target for the field.
-     * @param name
-     *            name of the field.
-     * @param sType
-     *            type (short name) of the field.
-     * @param lType
-     *            type (long name) of the field.
-     * @param value
-     *            HIR id of the value of the field.
+     *
+     * @param block  enclosing block.
+     * @param id     identifier of the instruction.
+     * @param opcode JVM opcode for the instruction.
+     * @param target target for the field.
+     * @param name   name of the field.
+     * @param sType  type (short name) of the field.
+     * @param lType  type (long name) of the field.
+     * @param value  HIR id of the value of the field.
      */
 
-    public NHIRPutField(NBasicBlock block, int id, int opcode, String target,
-            String name, String sType, String lType, int value) {
+    public NHIRPutField(NBasicBlock block, int id, int opcode, String target, String name,
+                        String sType, String lType, int value) {
         super(block, id, sType, lType);
         this.opcode = opcode;
         this.target = target;
@@ -705,8 +712,9 @@ class NHIRPutField extends NHIRInstruction {
             return lir;
         }
         NLIRInstruction result = block.cfg.hirMap.get(value).toLir();
-        lir = new NLIRPutField(block, NControlFlowGraph.lirId++, opcode,
-                target, name, sType, lType, result);
+        lir = new NLIRPutField(block, NControlFlowGraph.lirId++, opcode, target, name,
+                               sType, lType, result
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -716,8 +724,8 @@ class NHIRPutField extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": " + hirMnemonic[opcode] + " " + target + "." + name
-                + " = " + block.cfg.hirMap.get(value).id();
+        return id() + ": " + hirMnemonic[opcode] + " " + target + "." + name + " = " +
+                block.cfg.hirMap.get(value).id();
     }
 
 }
@@ -728,36 +736,35 @@ class NHIRPutField extends NHIRInstruction {
 
 class NHIRGetField extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** Target for the field. */
+    /**
+     * Target for the field.
+     */
     public String target;
 
-    /** Name of the field being accessed. */
+    /**
+     * Name of the field being accessed.
+     */
     public String name;
 
     /**
      * Construct an NHIRGetField instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the instruction.
-     * @param target
-     *            target for the field.
-     * @param name
-     *            name of the field.
-     * @param sType
-     *            type (short name) of the field.
-     * @param lType
-     *            type (long name) of the field.
+     *
+     * @param block  enclosing block.
+     * @param id     identifier of the instruction.
+     * @param opcode JVM opcode for the instruction.
+     * @param target target for the field.
+     * @param name   name of the field.
+     * @param sType  type (short name) of the field.
+     * @param lType  type (long name) of the field.
      */
 
-    public NHIRGetField(NBasicBlock block, int id, int opcode, String target,
-            String name, String sType, String lType) {
+    public NHIRGetField(NBasicBlock block, int id, int opcode, String target, String name,
+                        String sType, String lType) {
         super(block, id, sType, lType);
         this.opcode = opcode;
         this.target = target;
@@ -772,8 +779,9 @@ class NHIRGetField extends NHIRInstruction {
         if (lir != null) {
             return lir;
         }
-        lir = new NLIRGetField(block, NControlFlowGraph.lirId++, opcode,
-                target, name, sType, lType);
+        lir = new NLIRGetField(block, NControlFlowGraph.lirId++, opcode, target, name,
+                               sType, lType
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -794,31 +802,29 @@ class NHIRGetField extends NHIRInstruction {
 
 class NHIRNewArray extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** Dimension of the array. */
+    /**
+     * Dimension of the array.
+     */
     public int dim;
 
     /**
      * Construct an NHIRNewArray instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the instruction.
-     * @param dim
-     *            dimension of the array.
-     * @param sType
-     *            type (short name) of the array.
-     * @param lType
-     *            type (long name) of the array.
+     *
+     * @param block  enclosing block.
+     * @param id     identifier of the instruction.
+     * @param opcode JVM opcode for the instruction.
+     * @param dim    dimension of the array.
+     * @param sType  type (short name) of the array.
+     * @param lType  type (long name) of the array.
      */
 
-    public NHIRNewArray(NBasicBlock block, int id, int opcode, int dim,
-            String sType, String lType) {
+    public NHIRNewArray(NBasicBlock block, int id, int opcode, int dim, String sType,
+                        String lType) {
         super(block, id, lType, sType);
         this.opcode = opcode;
         this.dim = dim;
@@ -832,8 +838,9 @@ class NHIRNewArray extends NHIRInstruction {
         if (lir != null) {
             return lir;
         }
-        lir = new NLIRNewArray(block, NControlFlowGraph.lirId++, opcode, dim,
-                sType, lType);
+        lir = new NLIRNewArray(block, NControlFlowGraph.lirId++, opcode, dim, sType,
+                               lType
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -843,8 +850,7 @@ class NHIRNewArray extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": " + hirMnemonic[opcode] + " " + lType + " [" + dim
-                + "]";
+        return id() + ": " + hirMnemonic[opcode] + " " + lType + " [" + dim + "]";
     }
 
 }
@@ -855,36 +861,35 @@ class NHIRNewArray extends NHIRInstruction {
 
 class NHIRALoad extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** HIR id of the array reference. */
+    /**
+     * HIR id of the array reference.
+     */
     public int arrayRef;
 
-    /** HIR id of the array index. */
+    /**
+     * HIR id of the array index.
+     */
     public int index;
 
     /**
      * Construct an NHIRALoad instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the instruction.
-     * @param arrayRef
-     *            HIR id of the array reference.
-     * @param index
-     *            HIR id of the the array index.
-     * @param sType
-     *            type (short name) of the array.
-     * @param lType
-     *            type (long name) of the array.
+     *
+     * @param block    enclosing block.
+     * @param id       identifier of the instruction.
+     * @param opcode   JVM opcode for the instruction.
+     * @param arrayRef HIR id of the array reference.
+     * @param index    HIR id of the the array index.
+     * @param sType    type (short name) of the array.
+     * @param lType    type (long name) of the array.
      */
 
-    public NHIRALoad(NBasicBlock block, int id, int opcode, int arrayRef,
-            int index, String sType, String lType) {
+    public NHIRALoad(NBasicBlock block, int id, int opcode, int arrayRef, int index,
+                     String sType, String lType) {
         super(block, id, sType, lType);
         this.opcode = opcode;
         this.arrayRef = arrayRef;
@@ -901,8 +906,9 @@ class NHIRALoad extends NHIRInstruction {
         }
         NLIRInstruction arrayRef = block.cfg.hirMap.get(this.arrayRef).toLir();
         NLIRInstruction index = block.cfg.hirMap.get(this.index).toLir();
-        lir = new NLIRALoad(block, NControlFlowGraph.lirId++, opcode, arrayRef,
-                index, sType, lType);
+        lir = new NLIRALoad(block, NControlFlowGraph.lirId++, opcode, arrayRef, index,
+                            sType, lType
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -912,9 +918,9 @@ class NHIRALoad extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": " + hirMnemonic[opcode] + " "
-                + block.cfg.hirMap.get(arrayRef).id() + "["
-                + block.cfg.hirMap.get(index).id() + "]";
+        return id() + ": " + hirMnemonic[opcode] + " " +
+                block.cfg.hirMap.get(arrayRef).id() + "[" +
+                block.cfg.hirMap.get(index).id() + "]";
     }
 
 }
@@ -925,41 +931,41 @@ class NHIRALoad extends NHIRInstruction {
 
 class NHIRAStore extends NHIRInstruction {
 
-    /** Opcode of the JVM instruction. */
+    /**
+     * Opcode of the JVM instruction.
+     */
     public int opcode;
 
-    /** HIR id of the array reference. */
+    /**
+     * HIR id of the array reference.
+     */
     public int arrayRef;
 
-    /** HIR id of the array index. */
+    /**
+     * HIR id of the array index.
+     */
     public int index;
 
-    /** HIR id of the value to store. */
+    /**
+     * HIR id of the value to store.
+     */
     public int value;
 
     /**
      * Construct an NHIRAStore instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param opcode
-     *            JVM opcode for the instruction.
-     * @param arrayRef
-     *            HIR id of the array reference.
-     * @param index
-     *            HIR id of the array index.
-     * @param value
-     *            HIR id of the value to store.
-     * @param sType
-     *            type (short name) of the array.
-     * @param lType
-     *            type (long name) of the array.
+     *
+     * @param block    enclosing block.
+     * @param id       identifier of the instruction.
+     * @param opcode   JVM opcode for the instruction.
+     * @param arrayRef HIR id of the array reference.
+     * @param index    HIR id of the array index.
+     * @param value    HIR id of the value to store.
+     * @param sType    type (short name) of the array.
+     * @param lType    type (long name) of the array.
      */
 
-    public NHIRAStore(NBasicBlock block, int id, int opcode, int arrayRef,
-            int index, int value, String sType, String lType) {
+    public NHIRAStore(NBasicBlock block, int id, int opcode, int arrayRef, int index,
+                      int value, String sType, String lType) {
         super(block, id, sType, lType);
         this.opcode = opcode;
         this.arrayRef = arrayRef;
@@ -978,8 +984,9 @@ class NHIRAStore extends NHIRInstruction {
         NLIRInstruction arrayRef = block.cfg.hirMap.get(this.arrayRef).toLir();
         NLIRInstruction index = block.cfg.hirMap.get(this.index).toLir();
         NLIRInstruction value = block.cfg.hirMap.get(this.value).toLir();
-        lir = new NLIRAStore(block, NControlFlowGraph.lirId++, opcode,
-                arrayRef, index, value, sType, lType);
+        lir = new NLIRAStore(block, NControlFlowGraph.lirId++, opcode, arrayRef, index,
+                             value, sType, lType
+        );
         block.lir.add(lir);
         return lir;
     }
@@ -989,10 +996,10 @@ class NHIRAStore extends NHIRInstruction {
      */
 
     public String toString() {
-        return id() + ": " + hirMnemonic[opcode] + " "
-                + block.cfg.hirMap.get(arrayRef).id() + "["
-                + block.cfg.hirMap.get(index).id() + "] = "
-                + block.cfg.hirMap.get(value).id();
+        return id() + ": " + hirMnemonic[opcode] + " " +
+                block.cfg.hirMap.get(arrayRef).id() + "[" +
+                block.cfg.hirMap.get(index).id() + "] = " +
+                block.cfg.hirMap.get(value).id();
     }
 
 }
@@ -1003,27 +1010,27 @@ class NHIRAStore extends NHIRInstruction {
 
 class NHIRPhiFunction extends NHIRInstruction {
 
-    /** List of HIR ids of arguments for the phi function. */
+    /**
+     * List of HIR ids of arguments for the phi function.
+     */
     public ArrayList<Integer> arguments;
 
-    /** Local variable index. */
+    /**
+     * Local variable index.
+     */
     public int local;
 
     /**
      * Construct an NHIRPhiFunction instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param arguments
-     *            list of HIR ids of arguments for the phi function.
-     * @param local
-     *            local variable index.
+     *
+     * @param block     enclosing block.
+     * @param id        identifier of the instruction.
+     * @param arguments list of HIR ids of arguments for the phi function.
+     * @param local     local variable index.
      */
 
-    public NHIRPhiFunction(NBasicBlock block, int id,
-            ArrayList<Integer> arguments, int local) {
+    public NHIRPhiFunction(NBasicBlock block, int id, ArrayList<Integer> arguments,
+                           int local) {
         super(block, id, "", "");
         this.arguments = arguments;
         this.local = local;
@@ -1052,8 +1059,7 @@ class NHIRPhiFunction extends NHIRInstruction {
         if (lir != null) {
             return lir;
         }
-        lir = new NLIRPhiFunction(block, NControlFlowGraph.lirId++, sType,
-                lType);
+        lir = new NLIRPhiFunction(block, NControlFlowGraph.lirId++, sType, lType);
         return lir;
     }
 
@@ -1079,26 +1085,23 @@ class NHIRPhiFunction extends NHIRInstruction {
 
 class NHIRLoadLocal extends NHIRInstruction {
 
-    /** Local variable index. */
+    /**
+     * Local variable index.
+     */
     public int local;
 
     /**
      * Construct an NHIRLoadLocal instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param local
-     *            local variable index.
-     * @param sType
-     *            short type name of the instruction.
-     * @param lType
-     *            long type name of the instruction.
+     *
+     * @param block enclosing block.
+     * @param id    identifier of the instruction.
+     * @param local local variable index.
+     * @param sType short type name of the instruction.
+     * @param lType long type name of the instruction.
      */
 
     public NHIRLoadLocal(NBasicBlock block, int id, int local, String sType,
-            String lType) {
+                         String lType) {
         super(block, id, sType, lType);
         this.local = local;
     }
@@ -1111,8 +1114,7 @@ class NHIRLoadLocal extends NHIRInstruction {
         if (lir != null) {
             return lir;
         }
-        lir = new NLIRLoadLocal(block, NControlFlowGraph.lirId++, local, sType,
-                lType);
+        lir = new NLIRLoadLocal(block, NControlFlowGraph.lirId++, local, sType, lType);
         block.lir.add(lir);
         return lir;
     }
@@ -1133,26 +1135,22 @@ class NHIRLoadLocal extends NHIRInstruction {
 
 class NHIRLocal extends NHIRInstruction {
 
-    /** Local variable index. */
+    /**
+     * Local variable index.
+     */
     public int local;
 
     /**
      * Construct an NHIRLocal instruction.
-     * 
-     * @param block
-     *            enclosing block.
-     * @param id
-     *            identifier of the instruction.
-     * @param local
-     *            local variable index.
-     * @param sType
-     *            short type name of the instruction.
-     * @param lType
-     *            long type name of the instruction.
+     *
+     * @param block enclosing block.
+     * @param id    identifier of the instruction.
+     * @param local local variable index.
+     * @param sType short type name of the instruction.
+     * @param lType long type name of the instruction.
      */
 
-    public NHIRLocal(NBasicBlock block, int id, int local, String sType,
-            String lType) {
+    public NHIRLocal(NBasicBlock block, int id, int local, String sType, String lType) {
         super(block, id, sType, lType);
         this.local = local;
     }

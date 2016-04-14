@@ -9,13 +9,19 @@ package jminusminus;
 
 class JVariableDeclarator extends JAST {
 
-    /** Variable name. */
+    /**
+     * Variable name.
+     */
     private String name;
 
-    /** Variable type. */
+    /**
+     * Variable type.
+     */
     private Type type;
 
-    /** Variable initializer. */
+    /**
+     * Variable initializer.
+     */
     private JExpression initializer;
 
     public boolean isInitialized;
@@ -23,19 +29,14 @@ class JVariableDeclarator extends JAST {
     /**
      * Construct an AST node for a variable declarator given the line number,
      * variable name, its type, and the initializer.
-     * 
-     * @param line
-     *            line in which the variable occurs in the source file.
-     * @param name
-     *            variable name.
-     * @param type
-     *            variable type.
-     * @param initializer
-     *            initializer.
+     *
+     * @param line        line in which the variable occurs in the source file.
+     * @param name        variable name.
+     * @param type        variable type.
+     * @param initializer initializer.
      */
 
-    public JVariableDeclarator(int line, String name, Type type,
-            JExpression initializer)
+    public JVariableDeclarator(int line, String name, Type type, JExpression initializer)
 
     {
         super(line);
@@ -46,7 +47,7 @@ class JVariableDeclarator extends JAST {
 
     /**
      * Return the variable name.
-     * 
+     *
      * @return the variable name.
      */
 
@@ -56,7 +57,7 @@ class JVariableDeclarator extends JAST {
 
     /**
      * Return the variable type.
-     * 
+     *
      * @return the variable type.
      */
 
@@ -66,9 +67,8 @@ class JVariableDeclarator extends JAST {
 
     /**
      * Set the declarator's type.
-     * 
-     * @param type
-     *            the new type
+     *
+     * @param type the new type
      */
 
     public void setType(Type type) {
@@ -77,7 +77,7 @@ class JVariableDeclarator extends JAST {
 
     /**
      * Return the variable initializer.
-     * 
+     *
      * @return the variable initializer.
      */
 
@@ -87,9 +87,8 @@ class JVariableDeclarator extends JAST {
 
     /**
      * Set the variable initializer.
-     * 
-     * @param initial
-     *            initializer.
+     *
+     * @param initial initializer.
      */
 
     public void setInitializer(JExpression initial) {
@@ -98,9 +97,8 @@ class JVariableDeclarator extends JAST {
 
     /**
      * No analysis is done here.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -111,10 +109,9 @@ class JVariableDeclarator extends JAST {
 
     /**
      * No code generation is done here.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -127,8 +124,9 @@ class JVariableDeclarator extends JAST {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JVariableDeclarator line=\"%d\" name=\"%s\" "
-                + "type=\"%s\">\n", line(), name, type.toString());
+        p.printf("<JVariableDeclarator line=\"%d\" name=\"%s\" " + "type=\"%s\">\n",
+                 line(), name, type.toString()
+        );
         p.indentRight();
         if (initializer != null) {
             p.println("<Initializer>");

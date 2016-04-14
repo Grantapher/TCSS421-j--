@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.Hashtable;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -12,28 +13,33 @@ import static jminusminus.CLConstants.*;
 
 class JCastOp extends JExpression {
 
-    /** The cast. */
+    /**
+     * The cast.
+     */
     private Type cast;
 
-    /** The expression we're casting. */
+    /**
+     * The expression we're casting.
+     */
     private JExpression expr;
 
-    /** The conversions table. */
+    /**
+     * The conversions table.
+     */
     private static Conversions conversions;
 
-    /** The converter to use for this cast. */
+    /**
+     * The converter to use for this cast.
+     */
     private Converter converter;
 
     /**
      * Construct an AST node for a cast operation from its line number, cast,
      * and expression.
-     * 
-     * @param line
-     *            the line in which the operation occurs in the source file.
-     * @param cast
-     *            the type we're casting our expression as.
-     * @param expr
-     *            the expression we're casting.
+     *
+     * @param line the line in which the operation occurs in the source file.
+     * @param cast the type we're casting our expression as.
+     * @param expr the expression we're casting.
      */
 
     public JCastOp(int line, Type cast, JExpression expr) {
@@ -47,9 +53,8 @@ class JCastOp extends JExpression {
      * Analyzing a cast expression means, resolving the type (to which we are
      * casting), checking the legality of the cast, and computing a (possibly
      * null) conversion for use in code generation.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -64,8 +69,10 @@ class JCastOp extends JExpression {
             converter = new NarrowReference(cast);
         } else if ((converter = conversions.get(expr.type(), cast)) != null) {
         } else {
-            JAST.compilationUnit.reportSemanticError(line, "Cannot cast a "
-                    + expr.type().toString() + " to a " + cast.toString());
+            JAST.compilationUnit.reportSemanticError(line, "Cannot cast a " +
+                                                             expr.type().toString() +
+                                                             " to a " + cast.toString()
+            );
         }
         return this;
     }
@@ -73,10 +80,9 @@ class JCastOp extends JExpression {
     /**
      * Generating code for a cast expression involves generating code for the
      * original expr, and then for any necessary conversion.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -90,7 +96,8 @@ class JCastOp extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JCastOp line=\"%d\" type=\"%s\"/>\n", line(),
-                ((cast == null) ? "" : cast.toString()));
+                 ((cast == null) ? "" : cast.toString())
+        );
         p.indentRight();
         if (expr != null) {
             p.println("<Expression>");
@@ -132,27 +139,26 @@ class Conversions {
         // Boxing
         put(Type.CHAR, Type.BOXED_CHAR, new Boxing(Type.CHAR, Type.BOXED_CHAR));
         put(Type.INT, Type.BOXED_INT, new Boxing(Type.INT, Type.BOXED_INT));
-        put(Type.BOOLEAN, Type.BOXED_BOOLEAN, new Boxing(Type.BOOLEAN,
-                Type.BOXED_BOOLEAN));
+        put(Type.BOOLEAN, Type.BOXED_BOOLEAN,
+            new Boxing(Type.BOOLEAN, Type.BOXED_BOOLEAN)
+        );
 
         // Un-boxing
-        put(Type.BOXED_CHAR, Type.CHAR, new UnBoxing(Type.BOXED_CHAR,
-                Type.CHAR, "charValue"));
-        put(Type.BOXED_INT, Type.INT, new UnBoxing(Type.BOXED_INT, Type.INT,
-                "intValue"));
-        put(Type.BOXED_BOOLEAN, Type.BOOLEAN, new UnBoxing(Type.BOXED_BOOLEAN,
-                Type.BOOLEAN, "booleanValue"));
+        put(Type.BOXED_CHAR, Type.CHAR,
+            new UnBoxing(Type.BOXED_CHAR, Type.CHAR, "charValue")
+        );
+        put(Type.BOXED_INT, Type.INT, new UnBoxing(Type.BOXED_INT, Type.INT, "intValue"));
+        put(Type.BOXED_BOOLEAN, Type.BOOLEAN,
+            new UnBoxing(Type.BOXED_BOOLEAN, Type.BOOLEAN, "booleanValue")
+        );
     }
 
     /**
      * Define a conversion. This is used locally, for populating the table.
-     * 
-     * @param source
-     *            the original type.
-     * @param target
-     *            the target type.
-     * @param c
-     *            the converter necessary.
+     *
+     * @param source the original type.
+     * @param target the target type.
+     * @param c      the converter necessary.
      */
 
     private void put(Type source, Type target, Converter c) {
@@ -163,11 +169,9 @@ class Conversions {
      * Retrieve a converter for converting from some original type to a target
      * type; the converter may be empty (requiring no code for run-time
      * execution).
-     * 
-     * @param source
-     *            the original type.
-     * @param target
-     *            the target type.
+     *
+     * @param source the original type.
+     * @param target the target type.
      * @return the converter.
      */
 
@@ -184,18 +188,21 @@ class Conversions {
 
 interface Converter {
 
-    /** For identity conversion (no run-time code needed). */
+    /**
+     * For identity conversion (no run-time code needed).
+     */
     public static Converter Identity = new Identity();
 
-    /** For widening conversion (no run-time code needed). */
+    /**
+     * For widening conversion (no run-time code needed).
+     */
     public static Converter WidenReference = Identity;
 
     /**
      * Emit code necessary to convert (cast) a source type to a target type.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output);
@@ -225,14 +232,15 @@ class Identity implements Converter {
 
 class NarrowReference implements Converter {
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
     /**
      * Construct a narrowing converter.
-     * 
-     * @param target
-     *            the target type.
+     *
+     * @param target the target type.
      */
 
     public NarrowReference(Type target) {
@@ -256,19 +264,21 @@ class NarrowReference implements Converter {
 
 class Boxing implements Converter {
 
-    /** The source type. */
+    /**
+     * The source type.
+     */
     private Type source;
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
     /**
      * Construct a Boxing converter.
-     * 
-     * @param source
-     *            the source type.
-     * @param target
-     *            the target type.
+     *
+     * @param source the source type.
+     * @param target the target type.
      */
 
     public Boxing(Type source, Type target) {
@@ -281,9 +291,10 @@ class Boxing implements Converter {
      */
 
     public void codegen(CLEmitter output) {
-        output.addMemberAccessInstruction(INVOKESTATIC, target.jvmName(),
-                "valueOf", "(" + source.toDescriptor() + ")"
-                        + target.toDescriptor());
+        output.addMemberAccessInstruction(INVOKESTATIC, target.jvmName(), "valueOf",
+                                          "(" + source.toDescriptor() + ")" +
+                                                  target.toDescriptor()
+        );
     }
 
 }
@@ -295,24 +306,27 @@ class Boxing implements Converter {
 
 class UnBoxing implements Converter {
 
-    /** The source type. */
+    /**
+     * The source type.
+     */
     private Type source;
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
-    /** The (Java) method to invoke for the conversion. */
+    /**
+     * The (Java) method to invoke for the conversion.
+     */
     private String methodName;
 
     /**
      * Construct an UnBoxing converter.
-     * 
-     * @param source
-     *            the source type.
-     * @param target
-     *            the target type.
-     * @param methodName
-     *            the (Java) method to invoke for the conversion.
+     *
+     * @param source     the source type.
+     * @param target     the target type.
+     * @param methodName the (Java) method to invoke for the conversion.
      */
 
     public UnBoxing(Type source, Type target, String methodName) {
@@ -326,8 +340,9 @@ class UnBoxing implements Converter {
      */
 
     public void codegen(CLEmitter output) {
-        output.addMemberAccessInstruction(INVOKEVIRTUAL, source.jvmName(),
-                methodName, "()" + target.toDescriptor());
+        output.addMemberAccessInstruction(INVOKEVIRTUAL, source.jvmName(), methodName,
+                                          "()" + target.toDescriptor()
+        );
     }
 
 }

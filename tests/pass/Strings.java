@@ -11,7 +11,7 @@ public class Strings {
     static String staticstrf = "bar";
 
     public String foo() {
-        String[] strs = { "cat", "fish" };
+        String[] strs = {"cat", "fish"};
         String str = "bowl";
 
         str += " and plate";

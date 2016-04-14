@@ -12,9 +12,8 @@ public class NGraphRegisterAllocator extends NRegisterAllocator {
 
     /**
      * Construct a NGraphRegisterAllocator.
-     * 
-     * @param cfg
-     *            an instance of a control flow graph.
+     *
+     * @param cfg an instance of a control flow graph.
      */
 
     public NGraphRegisterAllocator(NControlFlowGraph cfg) {

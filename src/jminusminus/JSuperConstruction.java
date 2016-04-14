@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -11,13 +12,19 @@ import static jminusminus.CLConstants.*;
 
 class JSuperConstruction extends JExpression {
 
-    /** Arguments to the constructor. */
+    /**
+     * Arguments to the constructor.
+     */
     private ArrayList<JExpression> arguments;
 
-    /** Constructor representation of the constructor. */
+    /**
+     * Constructor representation of the constructor.
+     */
     private Constructor constructor;
 
-    /** Types of arguments. */
+    /**
+     * Types of arguments.
+     */
     private Type[] argTypes;
 
     /**
@@ -29,11 +36,9 @@ class JSuperConstruction extends JExpression {
     /**
      * Construct an AST node for a super(...) constructor given its line number
      * and arguments.
-     * 
-     * @param line
-     *            line in which the constructor occurs in the source file.
-     * @param arguments
-     *            the constructor's arguments.
+     *
+     * @param line      line in which the constructor occurs in the source file.
+     * @param arguments the constructor's arguments.
      */
 
     protected JSuperConstruction(int line, ArrayList<JExpression> arguments) {
@@ -55,9 +60,8 @@ class JSuperConstruction extends JExpression {
      * (2) analyzing the actual arguments, and (3) checking that this
      * construction statement is properly invoked (as the first statement in
      * another constructor).
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -73,26 +77,35 @@ class JSuperConstruction extends JExpression {
         }
 
         if (!properUseOfConstructor) {
-            JAST.compilationUnit.reportSemanticError(line(), "super"
-                    + Type.argTypesAsString(argTypes)
-                    + " must be first statement in the constructor's body.");
+            JAST.compilationUnit.reportSemanticError(line(), "super" +
+                                                             Type.argTypesAsString(
+                                                                     argTypes
+                                                             ) +
+                                                             " must be first statement " +
+                                                             "in the constructor's body."
+            );
             return this;
         }
 
         // Get the Constructor super(...) refers to
-        Type superClass = ((JTypeDecl) context.classContext.definition())
-                .thisType().superClass();
+        Type superClass = ((JTypeDecl) context.classContext.definition()).thisType()
+                                                                         .superClass();
         if (superClass == null) {
             JAST.compilationUnit.reportSemanticError(line,
-                    ((JTypeDecl) context.classContext.definition()).thisType()
-                            + " has no super class.");
+                                                     ((JTypeDecl) context.classContext
+                                                             .definition()).thisType() +
+                                                             " has no super class."
+            );
         }
         constructor = superClass.constructorFor(argTypes);
 
         if (constructor == null) {
             JAST.compilationUnit.reportSemanticError(line(),
-                    "No such constructor: super"
-                            + Type.argTypesAsString(argTypes));
+                                                     "No such constructor: super" +
+                                                             Type.argTypesAsString(
+                                                                     argTypes
+                                                             )
+            );
 
         }
         return this;
@@ -101,10 +114,9 @@ class JSuperConstruction extends JExpression {
     /**
      * Code generation involves generating code to load the actual arguments
      * onto the stack, and then the code for invoking the constructor.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -112,9 +124,10 @@ class JSuperConstruction extends JExpression {
         for (JExpression argument : arguments) {
             argument.codegen(output);
         }
-        output.addMemberAccessInstruction(INVOKESPECIAL, constructor
-                .declaringType().jvmName(), "<init>", constructor
-                .toDescriptor());
+        output.addMemberAccessInstruction(INVOKESPECIAL,
+                                          constructor.declaringType().jvmName(), "<init>",
+                                          constructor.toDescriptor()
+        );
     }
 
     /**

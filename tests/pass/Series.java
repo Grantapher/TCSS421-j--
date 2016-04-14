@@ -45,8 +45,7 @@ public class Series {
         int d = Integer.parseInt(args[1]);
         int n = Integer.parseInt(args[2]);
         Series s = new Series(a, d, n);
-        System.out.println("Arithmetic sum = "
-                + s.computeSum(Series.ARITHMETIC));
+        System.out.println("Arithmetic sum = " + s.computeSum(Series.ARITHMETIC));
         System.out.println("Geometric sum = " + s.computeSum(Series.GEOMETRIC));
     }
 

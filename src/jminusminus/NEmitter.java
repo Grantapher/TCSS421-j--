@@ -3,6 +3,7 @@
 package jminusminus;
 
 import static jminusminus.CLConstants.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
@@ -19,7 +20,9 @@ import java.util.HashMap;
 
 public class NEmitter {
 
-    /** Source program file name. */
+    /**
+     * Source program file name.
+     */
     private String sourceFile;
 
     /**
@@ -28,7 +31,9 @@ public class NEmitter {
      */
     private HashMap<CLFile, HashMap<CLMethodInfo, NControlFlowGraph>> classes;
 
-    /** Destination directory for the native SPIM code. */
+    /**
+     * Destination directory for the native SPIM code.
+     */
     private String destDir;
 
     /**
@@ -39,11 +44,9 @@ public class NEmitter {
     /**
      * Report any error that occurs while creating/writing the spim file, to
      * STDERR.
-     * 
-     * @param message
-     *            message identifying the error.
-     * @param args
-     *            related values.
+     *
+     * @param message message identifying the error.
+     * @param args    related values.
      */
 
     private void reportEmitterError(String message, Object... args) {
@@ -58,30 +61,26 @@ public class NEmitter {
      * (fp), saving any physical registers (t0, ..., t9, s0, ..., s7) used by
      * the procedure, and setting up the new value for fp (i.e. pushing a stack
      * frame).
-     * 
-     * @param cfg
-     *            the control flow graph instance.
-     * @param out
-     *            output stream for SPIM code.
+     *
+     * @param cfg the control flow graph instance.
+     * @param out output stream for SPIM code.
      */
 
     private void pushStackFrame(NControlFlowGraph cfg, PrintWriter out) {
         int frameSize = cfg.pRegisters.size() * 4 + cfg.offset * 4 + 8;
-        out.printf(
-                "    subu    $sp,$sp,%d \t # Stack frame is %d bytes long\n",
-                frameSize, frameSize);
-        out.printf("    sw      $ra,%d($sp) \t # Save return address\n",
-                frameSize - 4);
-        out.printf("    sw      $fp,%d($sp) \t # Save frame pointer\n",
-                frameSize - 8);
+        out.printf("    subu    $sp,$sp,%d \t # Stack frame is %d bytes long\n",
+                   frameSize, frameSize
+        );
+        out.printf("    sw      $ra,%d($sp) \t # Save return address\n", frameSize - 4);
+        out.printf("    sw      $fp,%d($sp) \t # Save frame pointer\n", frameSize - 8);
         int i = 12;
         for (NPhysicalRegister pRegister : cfg.pRegisters) {
-            out.printf("    sw      %s,%d($sp) \t # Save register %s\n",
-                    pRegister, frameSize - i, pRegister);
+            out.printf("    sw      %s,%d($sp) \t # Save register %s\n", pRegister,
+                       frameSize - i, pRegister
+            );
             i += 4;
         }
-        out.printf("    addiu   $fp,$sp,%d \t # Save frame pointer\n",
-                frameSize - 4);
+        out.printf("    addiu   $fp,$sp,%d \t # Save frame pointer\n", frameSize - 4);
         out.println();
     }
 
@@ -91,24 +90,22 @@ public class NEmitter {
      * frame pointer (fp), any physical registers (t0, ..., t9, s0, ..., s7)
      * used by the procedure, setting fp to the restored value (i.e. popping the
      * stack frame), and finally jumping to ra (the caller).
-     * 
-     * @param cfg
-     *            the control flow graph instance.
-     * @param out
-     *            output stream for SPIM code.
+     *
+     * @param cfg the control flow graph instance.
+     * @param out output stream for SPIM code.
      */
 
     private void popStackFrame(NControlFlowGraph cfg, PrintWriter out) {
         int frameSize = cfg.pRegisters.size() * 4 + cfg.offset * 4 + 8;
         out.printf("%s.restore:\n", cfg.labelPrefix);
-        out.printf("    lw      $ra,%d($sp) \t # Restore return address\n",
-                frameSize - 4);
-        out.printf("    lw      $fp,%d($sp) \t # Restore frame pointer\n",
-                frameSize - 8);
+        out.printf("    lw      $ra,%d($sp) \t # Restore return address\n", frameSize - 4
+        );
+        out.printf("    lw      $fp,%d($sp) \t # Restore frame pointer\n", frameSize - 8);
         int i = 12;
         for (NPhysicalRegister pRegister : cfg.pRegisters) {
-            out.printf("    lw      %s,%d($sp) \t # Restore register %s\n",
-                    pRegister, frameSize - i, pRegister);
+            out.printf("    lw      %s,%d($sp) \t # Restore register %s\n", pRegister,
+                       frameSize - i, pRegister
+            );
             i += 4;
         }
         out.printf("    addiu   $sp,$sp,%d \t # Pop stack\n", frameSize);
@@ -118,22 +115,20 @@ public class NEmitter {
 
     /**
      * Construct an NEmitter instance.
-     * 
-     * @param sourceFile
-     *            the source j-- program file name.
-     * @param clFiles
-     *            list of CLFile objects.
-     * @param ra
-     *            register allocation scheme (naive, linear, or graph).
+     *
+     * @param sourceFile the source j-- program file name.
+     * @param clFiles    list of CLFile objects.
+     * @param ra         register allocation scheme (naive, linear, or graph).
      */
 
     public NEmitter(String sourceFile, ArrayList<CLFile> clFiles, String ra) {
-        this.sourceFile = sourceFile.substring(sourceFile
-                .lastIndexOf(File.separator) + 1);
+        this.sourceFile = sourceFile
+                .substring(sourceFile.lastIndexOf(File.separator) + 1);
         classes = new HashMap<CLFile, HashMap<CLMethodInfo, NControlFlowGraph>>();
         for (CLFile clFile : clFiles) {
             CLConstantPool cp = clFile.constantPool;
-            HashMap<CLMethodInfo, NControlFlowGraph> methods = new HashMap<CLMethodInfo, NControlFlowGraph>();
+            HashMap<CLMethodInfo, NControlFlowGraph> methods = new
+                    HashMap<CLMethodInfo, NControlFlowGraph>();
             for (int i = 0; i < clFile.methodsCount; i++) {
                 CLMethodInfo m = clFile.methods.get(i);
 
@@ -224,9 +219,8 @@ public class NEmitter {
 
     /**
      * Set the destination directory for the SPIM files to the specified value.
-     * 
-     * @param destDir
-     *            destination directory.
+     *
+     * @param destDir destination directory.
      */
 
     public void destinationDir(String destDir) {
@@ -235,7 +229,7 @@ public class NEmitter {
 
     /**
      * Has an emitter error occurred up to now?
-     * 
+     *
      * @return true or false.
      */
 
@@ -257,18 +251,17 @@ public class NEmitter {
             // Header.
             out.printf("# %s\n", file);
             out.printf("# Source file: %s\n", sourceFile);
-            out.printf("# Compiled: %s\n\n", Calendar.getInstance().getTime()
-                    .toString());
+            out.printf("# Compiled: %s\n\n", Calendar.getInstance().getTime().toString());
 
             // Translate classes and their methods to SPIM.
             for (CLFile clFile : classes.keySet()) {
-                HashMap<CLMethodInfo, NControlFlowGraph> aClass = classes
-                        .get(clFile);
+                HashMap<CLMethodInfo, NControlFlowGraph> aClass = classes.get(clFile);
                 CLConstantPool cp = clFile.constantPool;
                 int nameIndex = ((CLConstantClassInfo) cp
                         .cpItem(clFile.thisClass)).nameIndex;
-                String className = new String(((CLConstantUtf8Info) cp
-                        .cpItem(nameIndex)).b);
+                String className = new String(
+                        ((CLConstantUtf8Info) cp.cpItem(nameIndex)).b
+                );
                 for (CLMethodInfo m : aClass.keySet()) {
                     NControlFlowGraph cfg = aClass.get(m);
                     String methodName = cfg.name;
@@ -277,8 +270,8 @@ public class NEmitter {
                         continue;
                     }
                     out.printf(".text\n\n");
-                    if (methodName.equals("main")
-                            && methodDesc.equals("([Ljava/lang/String;)V")) {
+                    if (methodName.equals("main") &&
+                            methodDesc.equals("([Ljava/lang/String;)V")) {
                         out.printf("%s:\n", methodName);
                         cfg.labelPrefix = methodName;
                     } else {
@@ -314,11 +307,11 @@ public class NEmitter {
             }
 
             // Emit SPIM runtime code; just SPIM.s for now.
-            String[] libs = { "SPIM.s" };
+            String[] libs = {"SPIM.s"};
             out.printf("# SPIM Runtime\n\n");
             for (String lib : libs) {
-                file = System.getenv("j") + File.separator + "src"
-                        + File.separator + "spim" + File.separator + lib;
+                file = System.getenv("j") + File.separator + "src" + File.separator +
+                        "spim" + File.separator + lib;
                 BufferedReader in = new BufferedReader(new FileReader(file));
                 String line;
                 while ((line = in.readLine()) != null) {

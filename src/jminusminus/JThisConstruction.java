@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -11,13 +12,19 @@ import static jminusminus.CLConstants.*;
 
 class JThisConstruction extends JExpression {
 
-    /** Arguments to the constructor. */
+    /**
+     * Arguments to the constructor.
+     */
     private ArrayList<JExpression> arguments;
 
-    /** Constructor representation of the constructor. */
+    /**
+     * Constructor representation of the constructor.
+     */
     private Constructor constructor;
 
-    /** Types of arguments. */
+    /**
+     * Types of arguments.
+     */
     private Type[] argTypes;
 
     /**
@@ -29,11 +36,9 @@ class JThisConstruction extends JExpression {
     /**
      * Construct the AST node for a this(...) constructor given its line number
      * and arguments.
-     * 
-     * @param line
-     *            line in which the constructor occurs in the source file.
-     * @param arguments
-     *            the constructor's arguments.
+     *
+     * @param line      line in which the constructor occurs in the source file.
+     * @param arguments the constructor's arguments.
      */
 
     protected JThisConstruction(int line, ArrayList<JExpression> arguments) {
@@ -55,9 +60,8 @@ class JThisConstruction extends JExpression {
      * analyzing the actual arguments, (3) checking that this construction
      * statement is properly invoked (as the first statement in another
      * constructor), and (4) finding the appropriate Constructor
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -73,20 +77,28 @@ class JThisConstruction extends JExpression {
         }
 
         if (!properUseOfConstructor) {
-            JAST.compilationUnit.reportSemanticError(line(), "this"
-                    + Type.argTypesAsString(argTypes)
-                    + " must be first statement in the constructor's body.");
+            JAST.compilationUnit.reportSemanticError(line(), "this" +
+                                                             Type.argTypesAsString(
+                                                                     argTypes
+                                                             ) +
+                                                             " must be first statement " +
+                                                             "in the constructor's body."
+            );
             return this;
         }
 
         // Get the constructor this(...) refers to.
-        constructor = ((JTypeDecl) context.classContext.definition())
-                .thisType().constructorFor(argTypes);
+        constructor = ((JTypeDecl) context.classContext.definition()).thisType()
+                                                                     .constructorFor(
+                                                                             argTypes
+                                                                     );
 
         if (constructor == null) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "No such constructor: this"
-                            + Type.argTypesAsString(argTypes));
+            JAST.compilationUnit.reportSemanticError(line(), "No such constructor: this" +
+                                                             Type.argTypesAsString(
+                                                                     argTypes
+                                                             )
+            );
 
         }
         return this;
@@ -95,10 +107,9 @@ class JThisConstruction extends JExpression {
     /**
      * Code generation involves generating the code for loading the actual
      * arguments onto the stack, and then for invoking this constructor.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -106,9 +117,10 @@ class JThisConstruction extends JExpression {
         for (JExpression argument : arguments) {
             argument.codegen(output);
         }
-        output.addMemberAccessInstruction(INVOKESPECIAL, constructor
-                .declaringType().jvmName(), "<init>", constructor
-                .toDescriptor());
+        output.addMemberAccessInstruction(INVOKESPECIAL,
+                                          constructor.declaringType().jvmName(), "<init>",
+                                          constructor.toDescriptor()
+        );
     }
 
     /**

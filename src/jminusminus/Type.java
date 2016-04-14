@@ -12,52 +12,76 @@ import java.util.Hashtable;
  * For representing j-- types. All types are represented underneath (in the
  * classRep field) by Java objects of type Class. These ojects represent types
  * in Java, so this should ease our interfacing with existing Java classes.
- * 
+ * <p>
  * Class types (reference types that are represented by the identifiers
  * introduced in class declarations) are represented using TypeName. So for now,
  * every TypeName represents a class. In the future, TypeName could be extended
  * to represent interfaces or enumerations.
- * 
+ * <p>
  * IdentifierTypes must be "resolved" at some point, so that all Types having
  * the same name refer to the same Type object. resolve() does this.
  */
 
 class Type {
 
-    /** The Type's internal (Java) representation. * */
+    /**
+     * The Type's internal (Java) representation. *
+     */
     private Class<?> classRep;
 
-    /** Maps type names to their Type representations. */
+    /**
+     * Maps type names to their Type representations.
+     */
     private static Hashtable<String, Type> types = new Hashtable<String, Type>();
 
-    /** The primitive type, int. */
+    /**
+     * The primitive type, int.
+     */
     public final static Type INT = typeFor(int.class);
 
-    /** The primitive type, char. */
+    /**
+     * The primitive type, char.
+     */
     public final static Type CHAR = typeFor(char.class);
 
-    /** The primitive type, boolean. */
+    /**
+     * The primitive type, boolean.
+     */
     public final static Type BOOLEAN = typeFor(boolean.class);
 
-    /** java.lang.Integer. */
+    /**
+     * java.lang.Integer.
+     */
     public final static Type BOXED_INT = typeFor(java.lang.Integer.class);
 
-    /** java.lang.Character. */
+    /**
+     * java.lang.Character.
+     */
     public final static Type BOXED_CHAR = typeFor(java.lang.Character.class);
 
-    /** java.lang.Boolean. */
+    /**
+     * java.lang.Boolean.
+     */
     public final static Type BOXED_BOOLEAN = typeFor(java.lang.Boolean.class);
 
-    /** The type java.lang.String. */
+    /**
+     * The type java.lang.String.
+     */
     public static Type STRING = typeFor(java.lang.String.class);
 
-    /** The type java.lang.Object. */
+    /**
+     * The type java.lang.Object.
+     */
     public static Type OBJECT = typeFor(java.lang.Object.class);
 
-    /** The void type. */
+    /**
+     * The void type.
+     */
     public final static Type VOID = typeFor(void.class);
 
-    /** The null void. */
+    /**
+     * The null void.
+     */
     public final static Type NULLTYPE = new Type(java.lang.Object.class);
 
     /**
@@ -65,23 +89,26 @@ class Type {
      */
     public final static Type CONSTRUCTOR = new Type(null);
 
-    /** The "any" type (denotes wild expressions). */
+    /**
+     * The "any" type (denotes wild expressions).
+     */
     public final static Type ANY = new Type(null);
 
     /**
      * Construct a Type representation for a type from its Java (Class)
      * representation. Use typeFor() -- that maps types having like classReps to
      * like Types.
-     * 
-     * @param classRep
-     *            the Java representation.
+     *
+     * @param classRep the Java representation.
      */
 
     private Type(Class<?> classRep) {
         this.classRep = classRep;
     }
 
-    /** This constructor is to keep the compiler happy. */
+    /**
+     * This constructor is to keep the compiler happy.
+     */
 
     protected Type() {
         super();
@@ -90,9 +117,8 @@ class Type {
     /**
      * Construct a Type representation for a type from its (Java) Class
      * representation. Make sure there is a unique Type for each unique type.
-     * 
-     * @param classRep
-     *            the Java representation.
+     *
+     * @param classRep the Java representation.
      */
 
     public static Type typeFor(Class<?> classRep) {
@@ -105,7 +131,7 @@ class Type {
     /**
      * Return the class representation for a type, appropriate for dealing with
      * the Java reflection API.
-     * 
+     *
      * @return the Class representation for this type.
      */
 
@@ -116,9 +142,8 @@ class Type {
     /**
      * This setter is used by JCompilationUnit.preAnalyze() to set the classRep
      * to the specified partial class, computed during pre-analysis.
-     * 
-     * @param classRep
-     *            the partial class.
+     *
+     * @param classRep the partial class.
      */
 
     public void setClassRep(Class<?> classRep) {
@@ -127,9 +152,8 @@ class Type {
 
     /**
      * Type equality is based on the equality of descriptors.
-     * 
-     * @param that
-     *            the other Type.
+     *
+     * @param that the other Type.
      * @return true iff the two types are equal.
      */
 
@@ -139,7 +163,7 @@ class Type {
 
     /**
      * Is this an Array type?
-     * 
+     *
      * @return true or false.
      */
 
@@ -149,7 +173,7 @@ class Type {
 
     /**
      * An array type's component type. Meaningful only for array types.
-     * 
+     *
      * @return the component type.
      */
 
@@ -160,7 +184,7 @@ class Type {
     /**
      * Return the Type's super type (or null if there is none). Meaningful only
      * to class Types.
-     * 
+     *
      * @return the super type.
      */
 
@@ -171,7 +195,7 @@ class Type {
 
     /**
      * Is this a primitive type?
-     * 
+     *
      * @return true or false.
      */
 
@@ -181,7 +205,7 @@ class Type {
 
     /**
      * Is this an interface type?
-     * 
+     *
      * @return true or false.
      */
 
@@ -191,7 +215,7 @@ class Type {
 
     /**
      * Is this a reference type?
-     * 
+     *
      * @return true or false.
      */
 
@@ -201,7 +225,7 @@ class Type {
 
     /**
      * Is this type declared final?
-     * 
+     *
      * @return true or false.
      */
 
@@ -211,7 +235,7 @@ class Type {
 
     /**
      * Is this type declared abstract?
-     * 
+     *
      * @return true or false.
      */
 
@@ -221,9 +245,8 @@ class Type {
 
     /**
      * Is this a supertype of that?
-     * 
-     * @param that
-     *            the candidate subtype.
+     *
+     * @param that the candidate subtype.
      * @return true iff this is a supertype of that.
      */
 
@@ -235,20 +258,21 @@ class Type {
      * Return a list of this class' abstract methods? It does has abstract
      * methods if (1) Any method declared in the class is abstract, or (2) Its
      * superclass has an abstract method which is not overridden here.
-     * 
+     *
      * @return a list of abstract methods.
      */
 
     public ArrayList<Method> abstractMethods() {
-        ArrayList<Method> inheritedAbstractMethods = superClass() == null ? new ArrayList<Method>()
-                : superClass().abstractMethods();
+        ArrayList<Method> inheritedAbstractMethods =
+                superClass() == null ? new ArrayList<Method>()
+                        : superClass().abstractMethods();
         ArrayList<Method> abstractMethods = new ArrayList<Method>();
         ArrayList<Method> declaredConcreteMethods = declaredConcreteMethods();
         ArrayList<Method> declaredAbstractMethods = declaredAbstractMethods();
         abstractMethods.addAll(declaredAbstractMethods);
         for (Method method : inheritedAbstractMethods) {
-            if (!declaredConcreteMethods.contains(method)
-                    && !declaredAbstractMethods.contains(method)) {
+            if (!declaredConcreteMethods.contains(method) &&
+                    !declaredAbstractMethods.contains(method)) {
                 abstractMethods.add(method);
             }
         }
@@ -257,7 +281,7 @@ class Type {
 
     /**
      * Return a list of this class' declared abstract methods.
-     * 
+     *
      * @return a list of declared abstract methods.
      */
 
@@ -273,7 +297,7 @@ class Type {
 
     /**
      * Return a list of this class' declared concrete methods.
-     * 
+     *
      * @return a list of declared concrete methods.
      */
 
@@ -290,78 +314,73 @@ class Type {
     /**
      * An assertion that this type matches one of the specified types. If there
      * is no match, an error message is returned.
-     * 
-     * @param line
-     *            the line near which the mismatch occurs.
-     * @param expectedTypes
-     *            expected types.
+     *
+     * @param line          the line near which the mismatch occurs.
+     * @param expectedTypes expected types.
      */
 
     public void mustMatchOneOf(int line, Type... expectedTypes) {
-        if (this == Type.ANY)
-            return;
+        if (this == Type.ANY) return;
         for (int i = 0; i < expectedTypes.length; i++) {
             if (matchesExpected(expectedTypes[i])) {
                 return;
             }
         }
         JAST.compilationUnit.reportSemanticError(line,
-                "Type %s doesn't match any of the expected types %s", this,
-                Arrays.toString(expectedTypes));
+                                                 "Type %s doesn't match any of the " +
+                                                         "expected types %s",
+                                                 this, Arrays.toString(expectedTypes)
+        );
     }
 
     /**
      * An assertion that this type matches the specified type. If there is no
      * match, an error message is written.
-     * 
-     * @param line
-     *            the line near which the mismatch occurs.
-     * @param expectedType
-     *            type with which to match.
+     *
+     * @param line         the line near which the mismatch occurs.
+     * @param expectedType type with which to match.
      */
 
     public void mustMatchExpected(int line, Type expectedType) {
         if (!matchesExpected(expectedType)) {
-            JAST.compilationUnit.reportSemanticError(line,
-                    "Type %s doesn't match type %s", this, expectedType);
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Type %s doesn't match type %s", this,
+                                         expectedType
+                    );
         }
     }
 
     /**
      * Does this type match the expected type? For now, "matches" means
      * "equals".
-     * 
-     * @param expected
-     *            the type that this might match.
+     *
+     * @param expected the type that this might match.
      * @return true or false.
      */
 
     public boolean matchesExpected(Type expected) {
-        return this == Type.ANY || expected == Type.ANY
-                || (this == Type.NULLTYPE && expected.isReference())
-                || this.equals(expected);
+        return this == Type.ANY || expected == Type.ANY ||
+                (this == Type.NULLTYPE && expected.isReference()) ||
+                this.equals(expected);
     }
 
     /**
      * Do argument types match? A helper used for finding candidate methods and
      * constructors.
-     * 
-     * @param argTypes1
-     *            arguments (classReps) of one method.
-     * @param argTypes2
-     *            arguments (classReps) of another method.
+     *
+     * @param argTypes1 arguments (classReps) of one method.
+     * @param argTypes2 arguments (classReps) of another method.
      * @return true iff all corresponding types of argTypes1 and argTypes2
-     *         match.
+     * match.
      */
 
-    public static boolean argTypesMatch(Class<?>[] argTypes1,
-            Class<?>[] argTypes2) {
+    public static boolean argTypesMatch(Class<?>[] argTypes1, Class<?>[] argTypes2) {
         if (argTypes1.length != argTypes2.length) {
             return false;
         }
         for (int i = 0; i < argTypes1.length; i++) {
-            if (!Type.descriptorFor(argTypes1[i]).equals(
-                    Type.descriptorFor(argTypes2[i]))) {
+            if (!Type.descriptorFor(argTypes1[i])
+                     .equals(Type.descriptorFor(argTypes2[i]))) {
                 return false;
             }
         }
@@ -371,7 +390,7 @@ class Type {
     /**
      * Return the simple (unqualified) name for this Type. Eg, String in place
      * of java.lang.String.
-     * 
+     *
      * @return the simple name.
      */
 
@@ -382,7 +401,7 @@ class Type {
     /**
      * A printable (j--) string representation of this type. Eg, int[],
      * java.lang.String.
-     * 
+     *
      * @return the string representation.
      */
 
@@ -393,7 +412,7 @@ class Type {
     /**
      * The JVM descriptor for this type. Eg, Ljava/lang/String; for
      * java.lang.String, [[Z for boolean[][].
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -404,9 +423,8 @@ class Type {
     /**
      * A helper translating a type's internal representation to its (JVM)
      * descriptor.
-     * 
-     * @param cls
-     *            internal representation whose descriptor is required.
+     *
+     * @param cls internal representation whose descriptor is required.
      * @return the JVM descriptor.
      */
 
@@ -422,7 +440,7 @@ class Type {
     /**
      * The JVM representation for this type's name. This is also called the
      * internal form of the name. Eg, java/lang/String for java.lang.String.
-     * 
+     *
      * @return the type's name in internal form.
      */
 
@@ -434,10 +452,9 @@ class Type {
     /**
      * Return the Java (and so j--) denotation for the specified type. Eg,
      * int[], java.lang.String.
-     * 
-     * @param classRep
-     *            the internal representation of type whose Java denotation is
-     *            required.
+     *
+     * @param classRep the internal representation of type whose Java denotation is
+     *                 required.
      * @return the Java denotation.
      */
 
@@ -448,20 +465,20 @@ class Type {
 
     /**
      * Return the type's package name. Eg, java.lang for java.lang.String.
-     * 
+     *
      * @return the package name.
      */
 
     public String packageName() {
         String name = toString();
-        return name.lastIndexOf('.') == -1 ? "" : name.substring(0, name
-                .lastIndexOf('.') - 1);
+        return name.lastIndexOf('.') == -1 ? ""
+                : name.substring(0, name.lastIndexOf('.') - 1);
     }
 
     /**
      * The String representation for a type being appended to a StringBuffer for
      * + and += over strings.
-     * 
+     *
      * @return a string representation of the type.
      */
 
@@ -475,11 +492,9 @@ class Type {
      * and it's argument types. This is pretty easy given our (current)
      * restriction that the types of the actual arguments must exactly match the
      * types of the formal parameters. Returns null if it cannot find one.
-     * 
-     * @param name
-     *            the method name.
-     * @param argTypes
-     *            the argument types.
+     *
+     * @param name     the method name.
+     * @param argTypes the argument types.
      * @return Method with given name and argument types, or null.
      */
 
@@ -494,9 +509,8 @@ class Type {
         while (cls != null) {
             java.lang.reflect.Method[] methods = cls.getDeclaredMethods();
             for (java.lang.reflect.Method method : methods) {
-                if (method.getName().equals(name)
-                        && Type.argTypesMatch(classes, method
-                                .getParameterTypes())) {
+                if (method.getName().equals(name) &&
+                        Type.argTypesMatch(classes, method.getParameterTypes())) {
                     return new Method(method);
                 }
             }
@@ -510,9 +524,8 @@ class Type {
      * This is pretty easy given our (current) restriction that the types of the
      * actual arguments must exactly match the types of the formal parameters.
      * Returns null if it cannot find one.
-     * 
-     * @param argTypes
-     *            the argument types.
+     *
+     * @param argTypes the argument types.
      * @return Constructor with the specified argument types, or null.
      */
 
@@ -523,8 +536,7 @@ class Type {
         }
 
         // Search only this class (we don't inherit constructors)
-        java.lang.reflect.Constructor[] constructors = classRep
-                .getDeclaredConstructors();
+        java.lang.reflect.Constructor[] constructors = classRep.getDeclaredConstructors();
         for (java.lang.reflect.Constructor constructor : constructors) {
             if (argTypesMatch(classes, constructor.getParameterTypes())) {
                 return new Constructor(constructor);
@@ -535,9 +547,8 @@ class Type {
 
     /**
      * Return the Field having this name.
-     * 
-     * @param name
-     *            the name of the field we want.
+     *
+     * @param name the name of the field we want.
      * @return the Field or null if it's not there.
      */
 
@@ -558,9 +569,8 @@ class Type {
     /**
      * Convert an array of argument types to a string representation of a
      * parenthesized list of the types, eg, (int, boolean, java.lang.String).
-     * 
-     * @param argTypes
-     *            the array of argument types.
+     *
+     * @param argTypes the array of argument types.
      * @return the string representation.
      */
 
@@ -580,11 +590,9 @@ class Type {
     /**
      * Check the accessibility of a member from this type (that is, this type is
      * the referencing type).
-     * 
-     * @param line
-     *            the line in which the access occurs.
-     * @param member
-     *            the member being accessed.
+     *
+     * @param line   the line in which the access occurs.
+     * @param member the member being accessed.
      * @return true if access is valid; false otherwise.
      */
 
@@ -599,31 +607,32 @@ class Type {
         }
         java.lang.Package p1 = classRep.getPackage();
         java.lang.Package p2 = member.declaringType().classRep.getPackage();
-        if ((p1 == null ? "" : p1.getName()).equals((p2 == null ? "" : p2
-                .getName()))) {
+        if ((p1 == null ? "" : p1.getName()).equals((p2 == null ? "" : p2.getName()))) {
             return true;
         }
         if (member.isProtected()) {
-            if (classRep.getPackage().getName().equals(
-                    member.declaringType().classRep.getPackage().getName())
-                    || typeFor(member.getClass().getDeclaringClass())
+            if (classRep.getPackage().getName()
+                        .equals(member.declaringType().classRep.getPackage().getName()) ||
+                    typeFor(member.getClass().getDeclaringClass())
                             .isJavaAssignableFrom(this)) {
                 return true;
             } else {
-                JAST.compilationUnit.reportSemanticError(line,
-                        "The protected member, " + member.name()
-                                + ", is not accessible.");
+                JAST.compilationUnit.reportSemanticError(line, "The protected member, " +
+                                                                 member.name() +
+                                                                 ", is not accessible."
+                );
                 return false;
             }
         }
         if (member.isPrivate()) {
-            if (descriptorFor(classRep).equals(
-                    descriptorFor(member.member().getDeclaringClass()))) {
+            if (descriptorFor(classRep)
+                    .equals(descriptorFor(member.member().getDeclaringClass()))) {
                 return true;
             } else {
-                JAST.compilationUnit.reportSemanticError(line,
-                        "The private member, " + member.name()
-                                + ", is not accessible.");
+                JAST.compilationUnit.reportSemanticError(line, "The private member, " +
+                                                                 member.name() +
+                                                                 ", is not accessible."
+                );
                 return false;
             }
         }
@@ -632,21 +641,22 @@ class Type {
         if (packageName().equals(member.declaringType().packageName())) {
             return true;
         } else {
-            JAST.compilationUnit.reportSemanticError(line, "The member, "
-                    + member.name()
-                    + ", is not accessible because it's in a different "
-                    + "package.");
+            JAST.compilationUnit.reportSemanticError(line,
+                                                     "The member, " + member.name() +
+                                                             ", is not accessible " +
+                                                             "because it's in a " +
+                                                             "different " +
+                                                             "package."
+            );
             return false;
         }
     }
 
     /**
      * Check the accesibility of a target type (from this type)
-     * 
-     * @param line
-     *            line in which the access occurs.
-     * @param targetType
-     *            the type being accessed.
+     *
+     * @param line       line in which the access occurs.
+     * @param targetType the type being accessed.
      * @return true if access is valid; false otherwise.
      */
 
@@ -662,28 +672,26 @@ class Type {
 
     /**
      * Check the accessibility of a type.
-     * 
-     * @param line
-     *            the line in which the access occurs.
-     * @param referencingType
-     *            the type attempting the access.
-     * @param type
-     *            the type that we want to access.
+     *
+     * @param line            the line in which the access occurs.
+     * @param referencingType the type attempting the access.
+     * @param type            the type that we want to access.
      * @return true if access is valid; false otherwise.
      */
 
-    public static boolean checkAccess(int line, Class referencingType,
-            Class type) {
+    public static boolean checkAccess(int line, Class referencingType, Class type) {
         java.lang.Package p1 = referencingType.getPackage();
         java.lang.Package p2 = type.getPackage();
-        if (Modifier.isPublic(type.getModifiers())
-                || (p1 == null ? "" : p1.getName()).equals((p2 == null ? ""
-                        : p2.getName()))) {
+        if (Modifier.isPublic(type.getModifiers()) || (p1 == null ? "" : p1.getName())
+                .equals((p2 == null ? "" : p2.getName()))) {
             return true;
         } else {
-            JAST.compilationUnit.reportSemanticError(line, "The type, "
-                    + type.getCanonicalName() + ", is not accessible from "
-                    + referencingType.getCanonicalName());
+            JAST.compilationUnit.reportSemanticError(line, "The type, " +
+                                                             type.getCanonicalName() +
+                                                             ", is not accessible from " +
+                                                             referencingType
+                                                                     .getCanonicalName()
+            );
             return false;
         }
     }
@@ -692,9 +700,8 @@ class Type {
      * Resolve this type in the given context. Notice that this has meaning only
      * for TypeName and ArrayTypeName, where names are replaced by real types.
      * Names are looked up in the context.
-     * 
-     * @param context
-     *            context in which the names are resolved.
+     *
+     * @param context context in which the names are resolved.
      * @return the resolved type.
      */
 
@@ -705,11 +712,9 @@ class Type {
     /**
      * A helper for constructing method signatures for reporting unfound methods
      * and constructors.
-     * 
-     * @param name
-     *            the message or Type name.
-     * @param argTypes
-     *            the actual argument types.
+     *
+     * @param name     the message or Type name.
+     * @param argTypes the actual argument types.
      * @return a printable signature.
      */
 
@@ -739,17 +744,17 @@ class TypeName extends Type {
      */
     private int line;
 
-    /** The identifier's name. */
+    /**
+     * The identifier's name.
+     */
     private String name;
 
     /**
      * Construct an TypeName given its line number, and string spelling out its
      * fully qualified name.
-     * 
-     * @param line
-     *            the line in which the identifier occurs in the source file.
-     * @param name
-     *            fully qualified name for the identifier.
+     *
+     * @param line the line in which the identifier occurs in the source file.
+     * @param name fully qualified name for the identifier.
      */
 
     public TypeName(int line, String name) {
@@ -759,7 +764,7 @@ class TypeName extends Type {
 
     /**
      * Return the line in which the identifier occurs in the source file.
-     * 
+     *
      * @return the line number.
      */
 
@@ -769,7 +774,7 @@ class TypeName extends Type {
 
     /**
      * Return the JVM name for this (identifier) type.
-     * 
+     *
      * @return the JVM name.
      */
 
@@ -779,7 +784,7 @@ class TypeName extends Type {
 
     /**
      * Return the JVM descriptor for this type.
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -789,7 +794,7 @@ class TypeName extends Type {
 
     /**
      * Return the Java representation of this type. Eg, java.lang.String.
-     * 
+     *
      * @return the qualified name.
      */
 
@@ -799,7 +804,7 @@ class TypeName extends Type {
 
     /**
      * Return the simple name for this type. Eg, String for java.lang.String.
-     * 
+     *
      * @return simple name.
      */
 
@@ -811,9 +816,8 @@ class TypeName extends Type {
      * Resolve this type in the given context. Notice that this has meaning only
      * for TypeName and ArrayTypeName, where names are replaced by real types.
      * Names are looked up in the context.
-     * 
-     * @param context
-     *            context in which the names are resolved.
+     *
+     * @param context context in which the names are resolved.
      * @return the resolved type.
      */
 
@@ -828,16 +832,17 @@ class TypeName extends Type {
                 // resolvedType.toString(),
                 // new TypeNameDefn(resolvedType));
             } catch (Exception e) {
-                JAST.compilationUnit.reportSemanticError(line,
-                        "Unable to locate a type named %s", name);
+                JAST.compilationUnit
+                        .reportSemanticError(line, "Unable to locate a type named %s",
+                                             name
+                        );
                 resolvedType = Type.ANY;
             }
         }
         if (resolvedType != Type.ANY) {
-            Type referencingType = ((JTypeDecl) (context.classContext
-                    .definition())).thisType();
-            Type.checkAccess(line, referencingType.classRep(), resolvedType
-                    .classRep());
+            Type referencingType = ((JTypeDecl) (context.classContext.definition()))
+                    .thisType();
+            Type.checkAccess(line, referencingType.classRep(), resolvedType.classRep());
         }
         return resolvedType;
     }
@@ -851,14 +856,15 @@ class TypeName extends Type {
 
 class ArrayTypeName extends Type {
 
-    /** The array's base or component type. */
+    /**
+     * The array's base or component type.
+     */
     private Type componentType;
 
     /**
      * Construct an array's type given its component type.
-     * 
-     * @param componentType
-     *            the type of its elements.
+     *
+     * @param componentType the type of its elements.
      */
 
     public ArrayTypeName(Type componentType) {
@@ -867,7 +873,7 @@ class ArrayTypeName extends Type {
 
     /**
      * Return the (component) type of its elements.
-     * 
+     *
      * @return the component type.
      */
 
@@ -877,7 +883,7 @@ class ArrayTypeName extends Type {
 
     /**
      * Return the JVM descriptor for this type.
-     * 
+     *
      * @return the descriptor.
      */
 
@@ -887,7 +893,7 @@ class ArrayTypeName extends Type {
 
     /**
      * A string representation of the type in Java form.
-     * 
+     *
      * @return the representation in Java form.
      */
 
@@ -897,9 +903,8 @@ class ArrayTypeName extends Type {
 
     /**
      * Resolve this type in the given context.
-     * 
-     * @param context
-     *            context in which the names are resolved.
+     *
+     * @param context context in which the names are resolved.
      * @return the resolved type.
      */
 
@@ -908,8 +913,7 @@ class ArrayTypeName extends Type {
 
         // The API forces us to make an instance and get its
         // type.
-        Class classRep = Array.newInstance(componentType().classRep(), 0)
-                .getClass();
+        Class classRep = Array.newInstance(componentType().classRep(), 0).getClass();
         return Type.typeFor(classRep);
     }
 

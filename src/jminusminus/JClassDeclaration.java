@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -14,52 +15,65 @@ import static jminusminus.CLConstants.*;
 
 class JClassDeclaration extends JAST implements JTypeDecl {
 
-    /** Class modifiers. */
+    /**
+     * Class modifiers.
+     */
     private ArrayList<String> mods;
 
-    /** Class name. */
+    /**
+     * Class name.
+     */
     private String name;
 
-    /** Class block. */
+    /**
+     * Class block.
+     */
     private ArrayList<JMember> classBlock;
 
-    /** Super class type. */
+    /**
+     * Super class type.
+     */
     private Type superType;
 
-    /** This class type. */
+    /**
+     * This class type.
+     */
     private Type thisType;
 
-    /** Context for this class. */
+    /**
+     * Context for this class.
+     */
     private ClassContext context;
 
-    /** Whether this class has an explicit constructor. */
+    /**
+     * Whether this class has an explicit constructor.
+     */
     private boolean hasExplicitConstructor;
 
-    /** Instance fields of this class. */
+    /**
+     * Instance fields of this class.
+     */
     private ArrayList<JFieldDeclaration> instanceFieldInitializations;
 
-    /** Static (class) fields of this class. */
+    /**
+     * Static (class) fields of this class.
+     */
     private ArrayList<JFieldDeclaration> staticFieldInitializations;
 
     /**
      * Construct an AST node for a class declaration given the line number, list
      * of class modifiers, name of the class, its super class type, and the
      * class block.
-     * 
-     * @param line
-     *            line in which the class declaration occurs in the source file.
-     * @param mods
-     *            class modifiers.
-     * @param name
-     *            class name.
-     * @param superType
-     *            super class type.
-     * @param classBlock
-     *            class block.
+     *
+     * @param line       line in which the class declaration occurs in the source file.
+     * @param mods       class modifiers.
+     * @param name       class name.
+     * @param superType  super class type.
+     * @param classBlock class block.
      */
 
     public JClassDeclaration(int line, ArrayList<String> mods, String name,
-            Type superType, ArrayList<JMember> classBlock) {
+                             Type superType, ArrayList<JMember> classBlock) {
         super(line);
         this.mods = mods;
         this.name = name;
@@ -72,7 +86,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /**
      * Return the class name.
-     * 
+     *
      * @return the class name.
      */
 
@@ -82,7 +96,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /**
      * Return the class' super class type.
-     * 
+     *
      * @return the super class type.
      */
 
@@ -92,7 +106,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /**
      * Return the type that this class declaration defines.
-     * 
+     *
      * @return the defined type.
      */
 
@@ -103,7 +117,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /**
      * The initializations for instance fields (now expressed as assignment
      * statments).
-     * 
+     *
      * @return the field declarations having initializations.
      */
 
@@ -113,17 +127,16 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /**
      * Declare this class in the parent (compilation unit) context.
-     * 
-     * @param context
-     *            the parent (compilation unit) context.
+     *
+     * @param context the parent (compilation unit) context.
      */
 
     public void declareThisType(Context context) {
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
         CLEmitter partial = new CLEmitter(false);
-        partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null,
-                false); // Object for superClass, just for now
+        partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null, false
+        ); // Object for superClass, just for now
         thisType = Type.typeFor(partial.toClass());
         context.addType(line, thisType);
     }
@@ -132,9 +145,8 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      * Pre-analyze the members of this declaration in the parent context.
      * Pre-analysis extends to the member headers (including method headers) but
      * not into the bodies.
-     * 
-     * @param context
-     *            the parent (compilation unit) context.
+     *
+     * @param context the parent (compilation unit) context.
      */
 
     public void preAnalyze(Context context) {
@@ -149,8 +161,10 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // violated, so we can't defer these checks to analyze()
         thisType.checkAccess(line, superType);
         if (superType.isFinal()) {
-            JAST.compilationUnit.reportSemanticError(line,
-                    "Cannot extend a final type: %s", superType.toString());
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Cannot extend a final type: %s",
+                                         superType.toString()
+                    );
         }
 
         // Create the (partial) class
@@ -165,8 +179,8 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // class
         for (JMember member : classBlock) {
             member.preAnalyze(this.context, partial);
-            if (member instanceof JConstructorDeclaration
-                    && ((JConstructorDeclaration) member).params.size() == 0) {
+            if (member instanceof JConstructorDeclaration &&
+                    ((JConstructorDeclaration) member).params.size() == 0) {
                 hasExplicitConstructor = true;
             }
         }
@@ -189,9 +203,8 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      * Perform semantic analysis on the class and all of its members within the
      * given context. Analysis includes field initializations and the method
      * bodies.
-     * 
-     * @param context
-     *            the parent (compilation unit) context. Ignored here.
+     *
+     * @param context the parent (compilation unit) context. Ignored here.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -221,8 +234,12 @@ class JClassDeclaration extends JAST implements JTypeDecl {
                 methods += "\n" + method;
             }
             JAST.compilationUnit.reportSemanticError(line,
-                    "Class must be declared abstract since it defines "
-                            + "the following abstract methods: %s", methods);
+                                                     "Class must be declared abstract " +
+                                                             "since it defines " +
+                                                             "the following abstract " +
+                                                             "methods: %s",
+                                                     methods
+            );
 
         }
         return this;
@@ -230,10 +247,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /**
      * Generate code for the class declaration.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -263,8 +279,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JClassDeclaration line=\"%d\" name=\"%s\""
-                + " super=\"%s\">\n", line(), name, superType.toString());
+        p.printf("<JClassDeclaration line=\"%d\" name=\"%s\"" + " super=\"%s\">\n",
+                 line(), name, superType.toString()
+        );
         p.indentRight();
         if (context != null) {
             context.writeToStdOut(p);
@@ -292,10 +309,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /**
      * Generate code for an implicit empty constructor. (Necessary only if there
      * is not already an explicit one.)
-     * 
-     * @param partial
-     *            the code emitter (basically an abstraction for producing a
-     *            Java class).
+     *
+     * @param partial the code emitter (basically an abstraction for producing a
+     *                Java class).
      */
 
     private void codegenPartialImplicitConstructor(CLEmitter partial) {
@@ -304,8 +320,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         mods.add("public");
         partial.addMethod(mods, "<init>", "()V", null, false);
         partial.addNoArgInstruction(ALOAD_0);
-        partial.addMemberAccessInstruction(INVOKESPECIAL, superType.jvmName(),
-                "<init>", "()V");
+        partial.addMemberAccessInstruction(INVOKESPECIAL, superType.jvmName(), "<init>",
+                                           "()V"
+        );
 
         // Return
         partial.addNoArgInstruction(RETURN);
@@ -314,10 +331,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /**
      * Generate code for an implicit empty constructor. (Necessary only if there
      * is not already an explicit one.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     private void codegenImplicitConstructor(CLEmitter output) {
@@ -326,8 +342,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         mods.add("public");
         output.addMethod(mods, "<init>", "()V", null, false);
         output.addNoArgInstruction(ALOAD_0);
-        output.addMemberAccessInstruction(INVOKESPECIAL, superType.jvmName(),
-                "<init>", "()V");
+        output.addMemberAccessInstruction(INVOKESPECIAL, superType.jvmName(), "<init>",
+                                          "()V"
+        );
 
         // If there are instance field initializations, generate
         // code for them
@@ -342,10 +359,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /**
      * Generate code for class initialization, in j-- this means static field
      * initializations.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     private void codegenClassInit(CLEmitter output) {

@@ -12,9 +12,8 @@ class JLiteralNull extends JExpression {
 
     /**
      * Construct an AST node for the null literal given its line number.
-     * 
-     * @param line
-     *            line in which the literal occurs in the source file.
+     *
+     * @param line line in which the literal occurs in the source file.
      */
 
     public JLiteralNull(int line) {
@@ -23,9 +22,8 @@ class JLiteralNull extends JExpression {
 
     /**
      * Analyzing the null literal is trivial.
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -37,10 +35,9 @@ class JLiteralNull extends JExpression {
     /**
      * Generating code for a null literal means generating code to push it onto
      * the stack.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -53,7 +50,8 @@ class JLiteralNull extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JLiteralNull line=\"%d\" type=\"%s\"/>\n", line(),
-                ((type == null) ? "" : type.toString()));
+                 ((type == null) ? "" : type.toString())
+        );
     }
 
 }

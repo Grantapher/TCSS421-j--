@@ -11,19 +11,21 @@ import java.util.Collections;
 
 abstract class NRegister {
 
-    /** Register number. */
+    /**
+     * Register number.
+     */
     protected int number;
 
-    /** Register name. */
+    /**
+     * Register name.
+     */
     protected String name;
 
     /**
      * Construct an NRegister.
-     * 
-     * @param number
-     *            register number.
-     * @param name
-     *            register name.
+     *
+     * @param number register number.
+     * @param name   register name.
      */
 
     protected NRegister(int number, String name) {
@@ -33,7 +35,7 @@ abstract class NRegister {
 
     /**
      * Return the number of this register.
-     * 
+     *
      * @return register number.
      */
 
@@ -43,7 +45,7 @@ abstract class NRegister {
 
     /**
      * Return the name of this register.
-     * 
+     *
      * @return register name.
      */
 
@@ -59,21 +61,22 @@ abstract class NRegister {
 
 class NVirtualRegister extends NRegister {
 
-    /** Type (short name) of value in register. */
+    /**
+     * Type (short name) of value in register.
+     */
     private String sType;
 
-    /** Type (long name) of value in register. */
+    /**
+     * Type (long name) of value in register.
+     */
     private String lType;
 
     /**
      * Construct an NVirutalRegister.
-     * 
-     * @param number
-     *            register number.
-     * @param sType
-     *            type (short name) of value in register.
-     * @param lType
-     *            type (long name) of value in register.
+     *
+     * @param number register number.
+     * @param sType  type (short name) of value in register.
+     * @param lType  type (long name) of value in register.
      */
 
     public NVirtualRegister(int number, String sType, String lType) {
@@ -84,7 +87,7 @@ class NVirtualRegister extends NRegister {
 
     /**
      * Return a string representation of this virtual register.
-     * 
+     *
      * @return string representation.
      */
 
@@ -110,130 +113,193 @@ class NPhysicalRegister extends NRegister {
     // to access the representations of the corresponding
     // registers.
 
-    /** Constant 0. */
+    /**
+     * Constant 0.
+     */
     public static final int ZERO = 0;
 
-    /** Reserved for assembler. */
+    /**
+     * Reserved for assembler.
+     */
     public static final int AT = 1;
 
-    /** Expression evaluation and results of a function. */
+    /**
+     * Expression evaluation and results of a function.
+     */
     public static final int V0 = 2;
 
-    /** Expression evaluation and results of a function. */
+    /**
+     * Expression evaluation and results of a function.
+     */
     public static final int V1 = 3;
 
-    /** Argument 1. */
+    /**
+     * Argument 1.
+     */
     public static final int A0 = 4;
 
-    /** Argument 2. */
+    /**
+     * Argument 2.
+     */
     public static final int A1 = 5;
 
-    /** Argument 3. */
+    /**
+     * Argument 3.
+     */
     public static final int A2 = 6;
 
-    /** Argument 4. */
+    /**
+     * Argument 4.
+     */
     public static final int A3 = 7;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T0 = 8;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T1 = 9;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T2 = 10;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T3 = 11;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T4 = 12;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T5 = 13;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T6 = 14;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T7 = 15;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S0 = 16;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S1 = 17;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S2 = 18;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S3 = 19;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S4 = 20;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S5 = 21;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S6 = 22;
 
-    /** Temporary (preserved across call). */
+    /**
+     * Temporary (preserved across call).
+     */
     public static final int S7 = 23;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T8 = 24;
 
-    /** Temporary (not preserved across call). */
+    /**
+     * Temporary (not preserved across call).
+     */
     public static final int T9 = 25;
 
-    /** Reserved for OS kernel. */
+    /**
+     * Reserved for OS kernel.
+     */
     public static final int K0 = 26;
 
-    /** Reserved for OS kernel. */
+    /**
+     * Reserved for OS kernel.
+     */
     public static final int K1 = 27;
 
-    /** Pointer to global area. */
+    /**
+     * Pointer to global area.
+     */
     public static final int GP = 28;
 
-    /** Stack pointer. */
+    /**
+     * Stack pointer.
+     */
     public static final int SP = 29;
 
-    /** Frame pointer. */
+    /**
+     * Frame pointer.
+     */
     public static final int FP = 30;
 
-    /** Return address (used by function call). */
+    /**
+     * Return address (used by function call).
+     */
     public static final int RA = 31;
 
     /**
      * Maps register number to the register's representation.
      */
-    public static final NPhysicalRegister[] regInfo = {
-            new NPhysicalRegister(0, "zero"), new NPhysicalRegister(1, "at"),
-            new NPhysicalRegister(2, "v0"), new NPhysicalRegister(3, "v1"),
-            new NPhysicalRegister(4, "a0"), new NPhysicalRegister(5, "a1"),
-            new NPhysicalRegister(6, "a2"), new NPhysicalRegister(7, "a3"),
-            new NPhysicalRegister(8, "t0"), new NPhysicalRegister(9, "t1"),
-            new NPhysicalRegister(10, "t2"), new NPhysicalRegister(11, "t3"),
-            new NPhysicalRegister(12, "t4"), new NPhysicalRegister(13, "t5"),
-            new NPhysicalRegister(14, "t6"), new NPhysicalRegister(15, "t7"),
-            new NPhysicalRegister(16, "s0"), new NPhysicalRegister(17, "s1"),
-            new NPhysicalRegister(18, "s2"), new NPhysicalRegister(19, "s3"),
-            new NPhysicalRegister(20, "s4"), new NPhysicalRegister(21, "s5"),
-            new NPhysicalRegister(22, "s6"), new NPhysicalRegister(23, "s7"),
-            new NPhysicalRegister(24, "t8"), new NPhysicalRegister(25, "t9"),
-            new NPhysicalRegister(26, "k0"), new NPhysicalRegister(27, "k1"),
-            new NPhysicalRegister(28, "gp"), new NPhysicalRegister(29, "sp"),
-            new NPhysicalRegister(30, "fp"), new NPhysicalRegister(31, "ra"), };
+    public static final NPhysicalRegister[] regInfo = {new NPhysicalRegister(0, "zero"),
+            new NPhysicalRegister(1, "at"), new NPhysicalRegister(2, "v0"),
+            new NPhysicalRegister(3, "v1"), new NPhysicalRegister(4, "a0"),
+            new NPhysicalRegister(5, "a1"), new NPhysicalRegister(6, "a2"),
+            new NPhysicalRegister(7, "a3"), new NPhysicalRegister(8, "t0"),
+            new NPhysicalRegister(9, "t1"), new NPhysicalRegister(10, "t2"),
+            new NPhysicalRegister(11, "t3"), new NPhysicalRegister(12, "t4"),
+            new NPhysicalRegister(13, "t5"), new NPhysicalRegister(14, "t6"),
+            new NPhysicalRegister(15, "t7"), new NPhysicalRegister(16, "s0"),
+            new NPhysicalRegister(17, "s1"), new NPhysicalRegister(18, "s2"),
+            new NPhysicalRegister(19, "s3"), new NPhysicalRegister(20, "s4"),
+            new NPhysicalRegister(21, "s5"), new NPhysicalRegister(22, "s6"),
+            new NPhysicalRegister(23, "s7"), new NPhysicalRegister(24, "t8"),
+            new NPhysicalRegister(25, "t9"), new NPhysicalRegister(26, "k0"),
+            new NPhysicalRegister(27, "k1"), new NPhysicalRegister(28, "gp"),
+            new NPhysicalRegister(29, "sp"), new NPhysicalRegister(30, "fp"),
+            new NPhysicalRegister(31, "ra"),
+    };
 
     /**
      * Construct an NPhysicalRegister.
-     * 
-     * @param number
-     *            number of the register.
-     * @param name
-     *            name of the register.
+     *
+     * @param number number of the register.
+     * @param name   name of the register.
      */
 
     public NPhysicalRegister(int number, String name) {
@@ -242,7 +308,7 @@ class NPhysicalRegister extends NRegister {
 
     /**
      * Return a string representation of this physical register.
-     * 
+     *
      * @return string representation.
      */
 

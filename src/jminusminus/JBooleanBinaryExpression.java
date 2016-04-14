@@ -23,8 +23,8 @@ abstract class JBooleanBinaryExpression extends JBinaryExpression {
      * @param rhs      rhs operand.
      */
 
-    protected JBooleanBinaryExpression(int line, String operator,
-                                       JExpression lhs, JExpression rhs) {
+    protected JBooleanBinaryExpression(int line, String operator, JExpression lhs,
+                                       JExpression rhs) {
         super(line, operator, lhs, rhs);
     }
 

@@ -28,9 +28,8 @@ class CLPath {
 
     /**
      * Return a list of conceptual directories defining the class path.
-     * 
-     * @param classPath
-     *            the directory names defining the class path.
+     *
+     * @param classPath the directory names defining the class path.
      * @return a list of conceptual directories defining the class path.
      */
 
@@ -38,26 +37,25 @@ class CLPath {
         ArrayList<String> container = new ArrayList<String>();
 
         // Add directories/jars/zips from the classpath
-        StringTokenizer entries = new StringTokenizer(classPath,
-                File.pathSeparator);
+        StringTokenizer entries = new StringTokenizer(classPath, File.pathSeparator);
         while (entries.hasMoreTokens()) {
             container.add(entries.nextToken());
         }
 
         // Add system directories
         if (System.getProperty("sun.boot.class.path") != null) {
-            entries = new StringTokenizer(System
-                    .getProperty("sun.boot.class.path"), File.pathSeparator);
+            entries = new StringTokenizer(System.getProperty("sun.boot.class.path"),
+                                          File.pathSeparator
+            );
             while (entries.hasMoreTokens()) {
                 container.add(entries.nextToken());
             }
         } else {
-            float version = Float
-                    .parseFloat(System.getProperty("java.version"));
+            float version = Float.parseFloat(System.getProperty("java.version"));
             if (version > 1.1) {
-                String dir = System.getProperty("java.home")
-                        + File.separatorChar + "lib" + File.separatorChar
-                        + "rt.jar";
+                String dir =
+                        System.getProperty("java.home") + File.separatorChar + "lib" +
+                                File.separatorChar + "rt.jar";
                 container.add(dir);
             }
         }
@@ -74,12 +72,10 @@ class CLPath {
 
     /**
      * Construct a CLPath object.
-     * 
-     * @param path
-     *            the directory names defining the class path, separated by path
-     *            separator.
-     * @param extdir
-     *            the directory for the Java extension classes.
+     *
+     * @param path   the directory names defining the class path, separated by path
+     *               separator.
+     * @param extdir the directory for the Java extension classes.
      */
 
     public CLPath(String path, String extdir) {
@@ -102,9 +98,8 @@ class CLPath {
                 File[] extFiles = extDirectory.listFiles();
                 for (int i = 0; i < extFiles.length; i++) {
                     File file = extFiles[i];
-                    if (file.isFile()
-                            && (file.getName().endsWith(".zip") || file
-                                    .getName().endsWith(".jar"))) {
+                    if (file.isFile() && (file.getName().endsWith(".zip") ||
+                            file.getName().endsWith(".jar"))) {
                         dirs.add(file.getName());
                     } else {
                         // Wrong suffix; ignore
@@ -118,12 +113,11 @@ class CLPath {
      * Return a CLInputStream instance for the class with specified name
      * (fully-qualified; tokens separated by '/') or null if the class was not
      * found.
-     * 
-     * @param name
-     *            the fully-qualified name of the class -- java/util/ArrayList
-     *            for example.
+     *
+     * @param name the fully-qualified name of the class -- java/util/ArrayList
+     *             for example.
      * @return a CLInputStream instance for the class with specified name or
-     *         null if the class was not found.
+     * null if the class was not found.
      */
 
     public CLInputStream loadClass(String name) {
@@ -132,13 +126,14 @@ class CLPath {
             String dir = dirs.get(i);
             File file = new File(dir);
             if (file.isDirectory()) {
-                File theClass = new File(dir, name.replace('/',
-                        File.separatorChar)
-                        + ".class");
+                File theClass = new File(dir,
+                                         name.replace('/', File.separatorChar) + ".class"
+                );
                 if (theClass.canRead()) {
                     try {
-                        reader = new CLInputStream(new BufferedInputStream(
-                                new FileInputStream(theClass)));
+                        reader = new CLInputStream(
+                                new BufferedInputStream(new FileInputStream(theClass))
+                        );
                     } catch (FileNotFoundException e) {
                         // Ignore
                     }

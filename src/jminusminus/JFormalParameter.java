@@ -9,22 +9,23 @@ package jminusminus;
 
 class JFormalParameter extends JAST {
 
-    /** Parameter name. */
+    /**
+     * Parameter name.
+     */
     private String name;
 
-    /** Parameter type. */
+    /**
+     * Parameter type.
+     */
     private Type type;
 
     /**
      * Construct an AST node for a formal parameter declaration given its line
      * number, name, and type.
-     * 
-     * @param line
-     *            line in which the parameter occurs in the source file.
-     * @param name
-     *            parameter name.
-     * @param type
-     *            parameter type.
+     *
+     * @param line line in which the parameter occurs in the source file.
+     * @param name parameter name.
+     * @param type parameter type.
      */
 
     public JFormalParameter(int line, String name, Type type) {
@@ -35,7 +36,7 @@ class JFormalParameter extends JAST {
 
     /**
      * Return the parameter's name.
-     * 
+     *
      * @return the parameter's name.
      */
 
@@ -45,7 +46,7 @@ class JFormalParameter extends JAST {
 
     /**
      * Return the parameter's type.
-     * 
+     *
      * @return the parameter's type.
      */
 
@@ -55,9 +56,8 @@ class JFormalParameter extends JAST {
 
     /**
      * Set the type to the specified type.
-     * 
-     * @param newType
-     *            the new type.
+     *
+     * @param newType the new type.
      * @return return the new type.
      */
 
@@ -67,9 +67,8 @@ class JFormalParameter extends JAST {
 
     /**
      * No analysis done here.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -80,10 +79,9 @@ class JFormalParameter extends JAST {
 
     /**
      * No code generated here.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -95,9 +93,9 @@ class JFormalParameter extends JAST {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JFormalParameter line=\"%d\" name=\"%s\" "
-                + "type=\"%s\"/>\n", line(), name, (type == null) ? "" : type
-                .toString());
+        p.printf("<JFormalParameter line=\"%d\" name=\"%s\" " + "type=\"%s\"/>\n", line(),
+                 name, (type == null) ? "" : type.toString()
+        );
     }
 
 }

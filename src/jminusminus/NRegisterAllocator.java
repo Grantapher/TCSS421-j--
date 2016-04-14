@@ -13,15 +13,16 @@ import java.util.BitSet;
 
 public abstract class NRegisterAllocator {
 
-    /** The control flow graph for a method. */
+    /**
+     * The control flow graph for a method.
+     */
     protected NControlFlowGraph cfg;
 
     /**
      * Construct an NRegisterAllocator object given the control flow graph for
      * method.
-     * 
-     * @param cfg
-     *            control flow graph for a method.
+     *
+     * @param cfg control flow graph for a method.
      */
 
     protected NRegisterAllocator(NControlFlowGraph cfg) {
@@ -55,26 +56,25 @@ public abstract class NRegisterAllocator {
             int blockStart = currBlock.lir.get(0).id;
             int blockEnd = currBlock.lir.get(currBlock.lir.size() - 1).id;
             BitSet liveOut = currBlock.liveOut;
-            for (int idx = liveOut.nextSetBit(0); idx >= 0; idx = liveOut
-                    .nextSetBit(idx + 1)) {
-                cfg.intervals.get(idx).addOrExtendNRange(
-                        new NRange(blockStart, blockEnd));
+            for (int idx = liveOut.nextSetBit(0); idx >= 0;
+                 idx = liveOut.nextSetBit(idx + 1)) {
+                cfg.intervals.get(idx)
+                             .addOrExtendNRange(new NRange(blockStart, blockEnd));
             }
             for (int j = currBlock.lir.size() - 1; j >= 0; j--) {
                 int currLIRid = currBlock.lir.get(j).id;
                 NRegister output = currBlock.lir.get(j).write;
                 if (output != null) {
-                    cfg.intervals.get(output.number).newFirstRangeStart(
-                            currLIRid);
-                    cfg.intervals.get(output.number).addUsePosition(currLIRid,
-                            InstructionType.write);
+                    cfg.intervals.get(output.number).newFirstRangeStart(currLIRid);
+                    cfg.intervals.get(output.number)
+                                 .addUsePosition(currLIRid, InstructionType.write);
                 }
                 ArrayList<NRegister> inputs = currBlock.lir.get(j).reads;
                 for (NRegister reg : inputs) {
-                    cfg.intervals.get(reg.number).addOrExtendNRange(
-                            new NRange(blockStart, currLIRid));
-                    cfg.intervals.get(reg.number).addUsePosition(currLIRid,
-                            InstructionType.read);
+                    cfg.intervals.get(reg.number)
+                                 .addOrExtendNRange(new NRange(blockStart, currLIRid));
+                    cfg.intervals.get(reg.number)
+                                 .addUsePosition(currLIRid, InstructionType.read);
                 }
             }
         }

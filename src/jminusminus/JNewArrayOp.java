@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -12,21 +13,22 @@ import static jminusminus.CLConstants.*;
 
 class JNewArrayOp extends JExpression {
 
-    /** The base (component) type of the array. */
+    /**
+     * The base (component) type of the array.
+     */
     private Type typeSpec;
 
-    /** Dimensions of the array. */
+    /**
+     * Dimensions of the array.
+     */
     private ArrayList<JExpression> dimExprs;
 
     /**
      * Construct an AST node for a "new" array operation.
-     * 
-     * @param line
-     *            the line in which the operation occurs in the source file.
-     * @param typeSpec
-     *            the type of the array being created.
-     * @param dimExprs
-     *            a list of dimension expressions.
+     *
+     * @param line     the line in which the operation occurs in the source file.
+     * @param typeSpec the type of the array being created.
+     * @param dimExprs a list of dimension expressions.
      */
 
     public JNewArrayOp(int line, Type typeSpec, ArrayList<JExpression> dimExprs) {
@@ -38,9 +40,8 @@ class JNewArrayOp extends JExpression {
     /**
      * Analysis of a new array operation involves resolving its type and
      * analyzing the array bounds and checking their types.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -56,10 +57,9 @@ class JNewArrayOp extends JExpression {
     /**
      * Generate code to push the bounds on the stack and then generate the
      * appropriate array creation instruction.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -72,10 +72,10 @@ class JNewArrayOp extends JExpression {
         if (dimExprs.size() == 1) {
             output.addArrayInstruction(
                     type.componentType().isReference() ? ANEWARRAY : NEWARRAY,
-                    type.componentType().jvmName());
+                    type.componentType().jvmName()
+            );
         } else {
-            output.addMULTIANEWARRAYInstruction(type.toDescriptor(), dimExprs
-                    .size());
+            output.addMULTIANEWARRAYInstruction(type.toDescriptor(), dimExprs.size());
         }
     }
 
@@ -85,7 +85,8 @@ class JNewArrayOp extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JNewArrayOp line=\"%d\" type=\"%s\"/>\n", line(),
-                ((type == null) ? "" : type.toString()));
+                 ((type == null) ? "" : type.toString())
+        );
         p.indentRight();
         p.println("<Dimensions>");
         if (dimExprs != null) {

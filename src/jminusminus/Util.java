@@ -11,9 +11,8 @@ class Util {
     /**
      * Escape the special XML characters in the specified string and return the
      * escaped string.
-     * 
-     * @param s
-     *            string to escape.
+     *
+     * @param s string to escape.
      * @return the escaped string.
      */
 
@@ -29,9 +28,8 @@ class Util {
     /**
      * Unescape the escaped characters in the specified string and return the
      * unescaped string.
-     * 
-     * @param s
-     *            string to unescape.
+     *
+     * @param s string to unescape.
      * @return the unescaped string.
      */
 
@@ -46,30 +44,30 @@ class Util {
                 }
                 c = s.charAt(i);
                 switch (c) {
-                case 'b':
-                    b.append('\b');
-                    break;
-                case 't':
-                    b.append('\t');
-                    break;
-                case 'n':
-                    b.append('\n');
-                    break;
-                case 'f':
-                    b.append('\f');
-                    break;
-                case 'r':
-                    b.append('\r');
-                    break;
-                case '"':
-                    b.append('"');
-                    break;
-                case '\'':
-                    b.append('\'');
-                    break;
-                case '\\':
-                    b.append('\\');
-                    break;
+                    case 'b':
+                        b.append('\b');
+                        break;
+                    case 't':
+                        b.append('\t');
+                        break;
+                    case 'n':
+                        b.append('\n');
+                        break;
+                    case 'f':
+                        b.append('\f');
+                        break;
+                    case 'r':
+                        b.append('\r');
+                        break;
+                    case '"':
+                        b.append('"');
+                        break;
+                    case '\'':
+                        b.append('\'');
+                        break;
+                    case '\\':
+                        b.append('\\');
+                        break;
                 }
             } else {
                 b.append(c);
@@ -86,10 +84,14 @@ class Util {
 
 class PrettyPrinter {
 
-    /** Width of an indentation. */
+    /**
+     * Width of an indentation.
+     */
     private int indentWidth;
 
-    /** Current indentation (number of blank spaces). */
+    /**
+     * Current indentation (number of blank spaces).
+     */
     private int indent;
 
     /**
@@ -102,9 +104,8 @@ class PrettyPrinter {
 
     /**
      * Construct a PrettyPrinter given the indentation width.
-     * 
-     * @param indentWidth
-     *            number of blank spaces for an indent.
+     *
+     * @param indentWidth number of blank spaces for an indent.
      */
 
     public PrettyPrinter(int indentWidth) {
@@ -141,9 +142,8 @@ class PrettyPrinter {
 
     /**
      * Print the specified string (followed by a newline) to STDOUT.
-     * 
-     * @param s
-     *            string to print.
+     *
+     * @param s string to print.
      */
 
     public void println(String s) {
@@ -153,9 +153,8 @@ class PrettyPrinter {
 
     /**
      * Print the specified string to STDOUT.
-     * 
-     * @param s
-     *            string to print.
+     *
+     * @param s string to print.
      */
 
     public void print(String s) {
@@ -165,11 +164,9 @@ class PrettyPrinter {
 
     /**
      * Print args to STDOUT according to the pecified format.
-     * 
-     * @param format
-     *            format specifier.
-     * @param args
-     *            values to print.
+     *
+     * @param format format specifier.
+     * @param args   values to print.
      */
 
     public void printf(String format, Object... args) {

@@ -11,10 +11,9 @@ class JWildExpression extends JExpression {
 
     /**
      * Construct an AST node for a "wild" expression given its line number.
-     * 
-     * @param line
-     *            line in which the "wild" expression occurs occurs in the
-     *            source file.
+     *
+     * @param line line in which the "wild" expression occurs occurs in the
+     *             source file.
      */
 
     public JWildExpression(int line) {
@@ -23,9 +22,8 @@ class JWildExpression extends JExpression {
 
     /**
      * Simply set the type to ANY (a wild type matching everything).
-     * 
-     * @param context
-     *            context in which names are resolved (ignored here).
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -36,10 +34,9 @@ class JWildExpression extends JExpression {
 
     /**
      * No code generation.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

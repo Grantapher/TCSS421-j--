@@ -3,6 +3,7 @@
 package junit;
 
 import java.io.File;
+
 import junit.framework.TestCase;
 import jminusminus.JavaCCMain;
 
@@ -34,12 +35,12 @@ public class JMinusMinusTestJavaCC extends TestCase {
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
-                System.out
-                        .printf("Running j-- (with "
-                                + "javacc frontend) on %s ...\n\n", files[i]
-                                .toString());
-                args = new String[] { "-d", genClassDir.getAbsolutePath(),
-                        files[i].toString() };
+                System.out.printf("Running j-- (with " + "javacc frontend) on %s ...\n\n",
+                                  files[i].toString()
+                );
+                args = new String[]{"-d", genClassDir.getAbsolutePath(),
+                        files[i].toString()
+                };
                 JavaCCMain.main(args);
                 System.out.printf("\n\n");
 
@@ -65,12 +66,12 @@ public class JMinusMinusTestJavaCC extends TestCase {
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
-                System.out
-                        .printf("Running j-- (with "
-                                + "javacc frontend) on %s ...\n\n", files[i]
-                                .toString());
-                args = new String[] { "-d", genClassDir.getAbsolutePath(),
-                        files[i].toString() };
+                System.out.printf("Running j-- (with " + "javacc frontend) on %s ...\n\n",
+                                  files[i].toString()
+                );
+                args = new String[]{"-d", genClassDir.getAbsolutePath(),
+                        files[i].toString()
+                };
                 JavaCCMain.main(args);
                 System.out.printf("\n\n");
 
@@ -85,9 +86,8 @@ public class JMinusMinusTestJavaCC extends TestCase {
 
     /**
      * Entry point.
-     * 
-     * @param args
-     *            command-line arguments.
+     *
+     * @param args command-line arguments.
      */
 
     public static void main(String[] args) {

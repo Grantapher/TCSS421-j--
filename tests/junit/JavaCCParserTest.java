@@ -4,6 +4,7 @@ package junit;
 
 import junit.framework.TestCase;
 import jminusminus.JavaCCMain;
+
 import java.io.File;
 
 /**
@@ -33,8 +34,9 @@ public class JavaCCParserTest extends TestCase {
             if (files[i].toString().endsWith(".java")) {
                 String[] args = null;
                 System.out.printf("Running javacc parser on %s ...\n\n",
-                        files[i].toString());
-                args = new String[] { "-p", files[i].toString() };
+                                  files[i].toString()
+                );
+                args = new String[]{"-p", files[i].toString()};
                 JavaCCMain.main(args);
                 System.out.printf("\n\n");
 
@@ -49,9 +51,8 @@ public class JavaCCParserTest extends TestCase {
 
     /**
      * Entry point.
-     * 
-     * @param args
-     *            command-line arguments.
+     *
+     * @param args command-line arguments.
      */
 
     public static void main(String[] args) {

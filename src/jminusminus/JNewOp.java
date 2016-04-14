@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -12,25 +13,28 @@ import static jminusminus.CLConstants.*;
 
 class JNewOp extends JExpression {
 
-    /** The constructor representing this "new" expression. */
+    /**
+     * The constructor representing this "new" expression.
+     */
     private Constructor constructor;
 
-    /** The arguments to the constructor. */
+    /**
+     * The arguments to the constructor.
+     */
     private ArrayList<JExpression> arguments;
 
-    /** Types of the arguments. */
+    /**
+     * Types of the arguments.
+     */
     private Type[] argTypes;
 
     /**
      * Construct an AST node for a "new" expression.
-     * 
-     * @param line
-     *            the line in which the "new" expression occurs in the source
-     *            file.
-     * @param type
-     *            the type being constructed.
-     * @param arguments
-     *            arguments to the constructor.
+     *
+     * @param line      the line in which the "new" expression occurs in the source
+     *                  file.
+     * @param type      the type being constructed.
+     * @param arguments arguments to the constructor.
      */
 
     public JNewOp(int line, Type type, ArrayList<JExpression> arguments) {
@@ -43,9 +47,8 @@ class JNewOp extends JExpression {
      * To analyze the new operation, we (1) resolve the type, (2) analyze its
      * arguments, (3) check accessibility of the type, (3) find the appropriate
      * Constructor.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -64,7 +67,10 @@ class JNewOp extends JExpression {
         // Can't instantiate an abstract type
         if (type.isAbstract()) {
             JAST.compilationUnit.reportSemanticError(line(),
-                    "Cannot instantiate an abstract type:" + type.toString());
+                                                     "Cannot instantiate an abstract " +
+                                                             "type:" +
+                                                             type.toString()
+            );
         }
 
         // Where are we now? Check accessability of type
@@ -77,9 +83,12 @@ class JNewOp extends JExpression {
         constructor = type.constructorFor(argTypes);
 
         if (constructor == null) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Cannot find constructor: "
-                            + Type.signatureFor(type.toString(), argTypes));
+            JAST.compilationUnit.reportSemanticError(line(), "Cannot find constructor: " +
+                                                             Type.signatureFor(
+                                                                     type.toString(),
+                                                                     argTypes
+                                                             )
+            );
         }
         return this;
     }
@@ -89,10 +98,9 @@ class JNewOp extends JExpression {
      * instruction for creating the object on the stack, then gnerating the code
      * for the actual arguments, and then code for invoking the constructor (the
      * initialization method).
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -101,8 +109,9 @@ class JNewOp extends JExpression {
         for (JExpression argument : arguments) {
             argument.codegen(output);
         }
-        output.addMemberAccessInstruction(INVOKESPECIAL, type.jvmName(),
-                "<init>", constructor.toDescriptor());
+        output.addMemberAccessInstruction(INVOKESPECIAL, type.jvmName(), "<init>",
+                                          constructor.toDescriptor()
+        );
     }
 
     /**
@@ -111,7 +120,8 @@ class JNewOp extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JNewOp line=\"%d\" type=\"%s\"/>\n", line(),
-                ((type == null) ? "" : type.toString()));
+                 ((type == null) ? "" : type.toString())
+        );
         p.indentRight();
         if (arguments != null) {
             p.println("<Arguments>");

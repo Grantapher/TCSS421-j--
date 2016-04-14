@@ -10,30 +10,33 @@ import java.util.ArrayList;
 
 class JFieldDeclaration extends JAST implements JMember {
 
-    /** Field modifiers. */
+    /**
+     * Field modifiers.
+     */
     private ArrayList<String> mods;
 
-    /** Variable declarators. */
+    /**
+     * Variable declarators.
+     */
     private ArrayList<JVariableDeclarator> decls;
 
-    /** Variable initializations. */
+    /**
+     * Variable initializations.
+     */
     private ArrayList<JStatement> initializations;
 
     /**
      * Construct an AST node for a field declaration given the line number,
      * modifiers, and the variable declarators.
-     * 
-     * @param line
-     *            line in which the variable declaration occurs in the source
-     *            file.
-     * @param mods
-     *            field modifiers.
-     * @param decls
-     *            variable declarators.
+     *
+     * @param line  line in which the variable declaration occurs in the source
+     *              file.
+     * @param mods  field modifiers.
+     * @param decls variable declarators.
      */
 
     public JFieldDeclaration(int line, ArrayList<String> mods,
-            ArrayList<JVariableDeclarator> decls) {
+                             ArrayList<JVariableDeclarator> decls) {
         super(line);
         this.mods = mods;
         this.decls = decls;
@@ -42,7 +45,7 @@ class JFieldDeclaration extends JAST implements JMember {
 
     /**
      * Return the list of modifiers.
-     * 
+     *
      * @return list of modifiers.
      */
 
@@ -52,35 +55,31 @@ class JFieldDeclaration extends JAST implements JMember {
 
     /**
      * Declare fields in the parent's (partial) class.
-     * 
-     * @param context
-     *            the parent (class) context.
-     * @param partial
-     *            the code emitter (basically an abstraction for producing the
-     *            partial class).
+     *
+     * @param context the parent (class) context.
+     * @param partial the code emitter (basically an abstraction for producing the
+     *                partial class).
      */
 
     public void preAnalyze(Context context, CLEmitter partial) {
         // Fields may not be declared abstract.
         if (mods.contains("abstract")) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Field cannot be declared abstract");
+            JAST.compilationUnit
+                    .reportSemanticError(line(), "Field cannot be declared abstract");
         }
 
         for (JVariableDeclarator decl : decls) {
             // Add field to (partial) class
             decl.setType(decl.type().resolve(context));
-            partial.addField(mods, decl.name(), decl.type().toDescriptor(),
-                    false);
+            partial.addField(mods, decl.name(), decl.type().toDescriptor(), false);
         }
     }
 
     /**
      * Analysis of field declaration involves rewriting initializations (if any)
      * as assignment statements.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed JFieldDeclaration subtree.
      */
 
@@ -89,11 +88,14 @@ class JFieldDeclaration extends JAST implements JMember {
             // All initializations must be turned into assignment
             // statements and analyzed
             if (decl.initializer() != null) {
-                JAssignOp assignOp = new JAssignOp(decl.line(), new JVariable(
-                        decl.line(), decl.name()), decl.initializer());
+                JAssignOp assignOp = new JAssignOp(decl.line(), new JVariable(decl.line(),
+                                                                              decl.name()
+                ), decl.initializer()
+                );
                 assignOp.isStatementExpression = true;
-                initializations.add(new JStatementExpression(decl.line(),
-                        assignOp).analyze(context));
+                initializations.add(new JStatementExpression(decl.line(), assignOp)
+                                            .analyze(context)
+                );
             }
         }
         return this;
@@ -102,10 +104,9 @@ class JFieldDeclaration extends JAST implements JMember {
     /**
      * Generate code for any field initializations (now rewritten as assignment
      * statements).
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegenInitializations(CLEmitter output) {
@@ -116,17 +117,15 @@ class JFieldDeclaration extends JAST implements JMember {
 
     /**
      * Code generation for field declaration involves generate field the header.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
         for (JVariableDeclarator decl : decls) {
             // Add field to class
-            output.addField(mods, decl.name(), decl.type().toDescriptor(),
-                    false);
+            output.addField(mods, decl.name(), decl.type().toDescriptor(), false);
         }
     }
 

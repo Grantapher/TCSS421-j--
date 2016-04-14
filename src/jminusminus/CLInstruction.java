@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+
 import static jminusminus.CLConstants.*;
 import static jminusminus.CLConstants.Category.*;
 
@@ -21,10 +22,14 @@ import static jminusminus.CLConstants.Category.*;
 
 abstract class CLInstruction {
 
-    /** Opcode for this instruction. */
+    /**
+     * Opcode for this instruction.
+     */
     protected int opcode;
 
-    /** Mnemonic for this instruction. */
+    /**
+     * Mnemonic for this instruction.
+     */
     protected String mnemonic;
 
     /**
@@ -60,8 +65,7 @@ abstract class CLInstruction {
      */
     public static final CLInsInfo[] instructionInfo = {
             new CLInsInfo(NOP, "nop", 0, IRRELEVANT, 0, MISC),
-            new CLInsInfo(ACONST_NULL, "aconst_null", 0, IRRELEVANT, 1,
-                    LOAD_STORE1),
+            new CLInsInfo(ACONST_NULL, "aconst_null", 0, IRRELEVANT, 1, LOAD_STORE1),
             new CLInsInfo(ICONST_M1, "iconst_m1", 0, IRRELEVANT, 1, LOAD_STORE1),
             new CLInsInfo(ICONST_0, "iconst_0", 0, IRRELEVANT, 1, LOAD_STORE1),
             new CLInsInfo(ICONST_1, "iconst_1", 0, IRRELEVANT, 1, LOAD_STORE1),
@@ -219,78 +223,60 @@ abstract class CLInstruction {
             new CLInsInfo(IFGE, "ifge", 2, IRRELEVANT, -1, FLOW_CONTROL1),
             new CLInsInfo(IFGT, "ifgt", 2, IRRELEVANT, -1, FLOW_CONTROL1),
             new CLInsInfo(IFLE, "ifle", 2, IRRELEVANT, -1, FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPEQ, "if_icmpeq", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPNE, "if_icmpne", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPLT, "if_icmplt", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPGE, "if_icmpge", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPGT, "if_icmpgt", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ICMPLE, "if_icmple", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ACMPEQ, "if_acmpeq", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
-            new CLInsInfo(IF_ACMPNE, "if_acmpne", 2, IRRELEVANT, -2,
-                    FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPEQ, "if_icmpeq", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPNE, "if_icmpne", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPLT, "if_icmplt", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPGE, "if_icmpge", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPGT, "if_icmpgt", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ICMPLE, "if_icmple", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ACMPEQ, "if_acmpeq", 2, IRRELEVANT, -2, FLOW_CONTROL1),
+            new CLInsInfo(IF_ACMPNE, "if_acmpne", 2, IRRELEVANT, -2, FLOW_CONTROL1),
             new CLInsInfo(GOTO, "goto", 2, IRRELEVANT, 0, FLOW_CONTROL1),
             new CLInsInfo(JSR, "jsr", 2, IRRELEVANT, 1, FLOW_CONTROL1),
             new CLInsInfo(RET, "ret", 1, IRRELEVANT, 0, FLOW_CONTROL2),
             new CLInsInfo(TABLESWITCH, "tableswitch", DYNAMIC, IRRELEVANT, -1,
-                    FLOW_CONTROL3),
-            new CLInsInfo(LOOKUPSWITCH, "lookupswitch", DYNAMIC, IRRELEVANT,
-                    -1, FLOW_CONTROL4),
-            new CLInsInfo(IRETURN, "ireturn", 0, IRRELEVANT, EMPTY_STACK,
-                    METHOD2),
-            new CLInsInfo(LRETURN, "lreturn", 0, IRRELEVANT, EMPTY_STACK,
-                    METHOD2),
-            new CLInsInfo(FRETURN, "freturn", 0, IRRELEVANT, EMPTY_STACK,
-                    METHOD2),
-            new CLInsInfo(DRETURN, "dreturn", 0, IRRELEVANT, EMPTY_STACK,
-                    METHOD2),
-            new CLInsInfo(ARETURN, "areturn", 0, IRRELEVANT, EMPTY_STACK,
-                    METHOD2),
+                          FLOW_CONTROL3
+            ), new CLInsInfo(LOOKUPSWITCH, "lookupswitch", DYNAMIC, IRRELEVANT, -1,
+                             FLOW_CONTROL4
+    ), new CLInsInfo(IRETURN, "ireturn", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
+            new CLInsInfo(LRETURN, "lreturn", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
+            new CLInsInfo(FRETURN, "freturn", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
+            new CLInsInfo(DRETURN, "dreturn", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
+            new CLInsInfo(ARETURN, "areturn", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
             new CLInsInfo(RETURN, "return", 0, IRRELEVANT, EMPTY_STACK, METHOD2),
             new CLInsInfo(GETSTATIC, "getstatic", 2, IRRELEVANT, DYNAMIC, FIELD),
             new CLInsInfo(PUTSTATIC, "putstatic", 2, IRRELEVANT, DYNAMIC, FIELD),
             new CLInsInfo(GETFIELD, "getfield", 2, IRRELEVANT, DYNAMIC, FIELD),
             new CLInsInfo(PUTFIELD, "putfield", 2, IRRELEVANT, DYNAMIC, FIELD),
-            new CLInsInfo(INVOKEVIRTUAL, "invokevirtual", 2, IRRELEVANT,
-                    DYNAMIC, METHOD1),
-            new CLInsInfo(INVOKESPECIAL, "invokespecial", 2, IRRELEVANT,
-                    DYNAMIC, METHOD1),
-            new CLInsInfo(INVOKESTATIC, "invokestatic", 2, IRRELEVANT, DYNAMIC,
-                    METHOD1),
-            new CLInsInfo(INVOKEINTERFACE, "invokeinterface", 4, IRRELEVANT,
-                    DYNAMIC, METHOD1),
-            new CLInsInfo(INVOKEDYNAMIC, "invokedynamic", 2, IRRELEVANT,
-                    DYNAMIC, METHOD1),
-            new CLInsInfo(NEW, "new", 2, IRRELEVANT, 1, OBJECT),
+            new CLInsInfo(INVOKEVIRTUAL, "invokevirtual", 2, IRRELEVANT, DYNAMIC, METHOD1
+            ), new CLInsInfo(INVOKESPECIAL, "invokespecial", 2, IRRELEVANT, DYNAMIC,
+                             METHOD1
+    ), new CLInsInfo(INVOKESTATIC, "invokestatic", 2, IRRELEVANT, DYNAMIC, METHOD1),
+            new CLInsInfo(INVOKEINTERFACE, "invokeinterface", 4, IRRELEVANT, DYNAMIC,
+                          METHOD1
+            ), new CLInsInfo(INVOKEDYNAMIC, "invokedynamic", 2, IRRELEVANT, DYNAMIC,
+                             METHOD1
+    ), new CLInsInfo(NEW, "new", 2, IRRELEVANT, 1, OBJECT),
             new CLInsInfo(NEWARRAY, "newarray", 1, IRRELEVANT, 0, ARRAY1),
             new CLInsInfo(ANEWARRAY, "anewarray", 2, IRRELEVANT, 0, ARRAY1),
             new CLInsInfo(ARRAYLENGTH, "arraylength", 0, IRRELEVANT, 0, ARRAY2),
-            new CLInsInfo(ATHROW, "athrow", 0, IRRELEVANT, UNIT_SIZE_STACK,
-                    MISC),
+            new CLInsInfo(ATHROW, "athrow", 0, IRRELEVANT, UNIT_SIZE_STACK, MISC),
             new CLInsInfo(CHECKCAST, "checkcast", 2, IRRELEVANT, 0, OBJECT),
             new CLInsInfo(INSTANCEOF, "instanceof", 2, IRRELEVANT, 0, OBJECT),
             new CLInsInfo(MONITORENTER, "monitorenter", 0, IRRELEVANT, -1, MISC),
             new CLInsInfo(MONITOREXIT, "monitorexit", 0, IRRELEVANT, -1, MISC),
             new CLInsInfo(WIDE, "wide", 3, IRRELEVANT, 0, LOAD_STORE1),
-            new CLInsInfo(MULTIANEWARRAY, "multianewarray", 3, IRRELEVANT, 0,
-                    ARRAY3),
+            new CLInsInfo(MULTIANEWARRAY, "multianewarray", 3, IRRELEVANT, 0, ARRAY3),
             new CLInsInfo(IFNULL, "ifnull", 2, IRRELEVANT, -1, FLOW_CONTROL1),
-            new CLInsInfo(IFNONNULL, "ifnonnull", 2, IRRELEVANT, -1,
-                    FLOW_CONTROL1),
+            new CLInsInfo(IFNONNULL, "ifnonnull", 2, IRRELEVANT, -1, FLOW_CONTROL1),
             new CLInsInfo(GOTO_W, "goto_w", 4, IRRELEVANT, 0, FLOW_CONTROL1),
-            new CLInsInfo(JSR_W, "jsr_w", 4, IRRELEVANT, 1, FLOW_CONTROL1) };
+            new CLInsInfo(JSR_W, "jsr_w", 4, IRRELEVANT, 1, FLOW_CONTROL1)
+    };
 
     /**
      * Return true if the opcode is valid; false otherwise.
-     * 
-     * @param opcode
-     *            instruction opcode.
+     *
+     * @param opcode instruction opcode.
      * @return true or false.
      */
 
@@ -300,7 +286,7 @@ abstract class CLInstruction {
 
     /**
      * Return the opcode for this instruction.
-     * 
+     *
      * @return the opcode.
      */
 
@@ -310,7 +296,7 @@ abstract class CLInstruction {
 
     /**
      * Return the mnemonic for this instruction.
-     * 
+     *
      * @return the mnemonic.
      */
 
@@ -320,7 +306,7 @@ abstract class CLInstruction {
 
     /**
      * Return the number of operands for this instruction.
-     * 
+     *
      * @return number of operands.
      */
 
@@ -330,7 +316,7 @@ abstract class CLInstruction {
 
     /**
      * Return the pc for this instruction.
-     * 
+     *
      * @return the pc.
      */
 
@@ -340,7 +326,7 @@ abstract class CLInstruction {
 
     /**
      * Return the stack units for this instruction.
-     * 
+     *
      * @return the stack units.
      */
 
@@ -350,7 +336,7 @@ abstract class CLInstruction {
 
     /**
      * Return the local variable index for this instruction.
-     * 
+     *
      * @return the local variable index.
      */
 
@@ -360,7 +346,7 @@ abstract class CLInstruction {
 
     /**
      * Return the bytecode for this instruction.
-     * 
+     *
      * @return bytecode.
      */
 
@@ -368,29 +354,27 @@ abstract class CLInstruction {
 
     /**
      * Return the byte from i at position byteNum.
-     * 
-     * @param i
-     *            number whose individual byte is required.
-     * @param byteNum
-     *            the byte to return; 1 (lower) - 4 (higher) instructions.
+     *
+     * @param i       number whose individual byte is required.
+     * @param byteNum the byte to return; 1 (lower) - 4 (higher) instructions.
      * @return the byte at the specified position.
      */
 
     protected int byteAt(int i, int byteNum) {
         int j = 0, mask = 0xFF;
         switch (byteNum) {
-        case 1: // lower order
-            j = i & mask;
-            break;
-        case 2:
-            j = (i >> 8) & mask;
-            break;
-        case 3:
-            j = (i >> 16) & mask;
-            break;
-        case 4: // higher order
-            j = (i >> 24) & mask;
-            break;
+            case 1: // lower order
+                j = i & mask;
+                break;
+            case 2:
+                j = (i >> 8) & mask;
+                break;
+            case 3:
+                j = (i >> 16) & mask;
+                break;
+            case 4: // higher order
+                j = (i >> 24) & mask;
+                break;
         }
         return j;
     }
@@ -411,14 +395,11 @@ class CLObjectInstruction extends CLInstruction {
 
     /**
      * Construct a CLObjectInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param index
-     *            index into the constant pool, the item at which identifies the
-     *            object.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
+     * @param index  index into the constant pool, the item at which identifies the
+     *               object.
      */
 
     public CLObjectInstruction(int opcode, int pc, int index) {
@@ -459,17 +440,13 @@ class CLFieldInstruction extends CLInstruction {
 
     /**
      * Construct a CLFieldInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param index
-     *            index into the constant pool, the item at which contains the
-     *            name and descriptor of the field.
-     * @param stackUnits
-     *            words produced - words consumed from the operand stack by this
-     *            instruction.
+     *
+     * @param opcode     the opcode for this instruction.
+     * @param pc         index of this instruction within the code array of a method.
+     * @param index      index into the constant pool, the item at which contains the
+     *                   name and descriptor of the field.
+     * @param stackUnits words produced - words consumed from the operand stack by this
+     *                   instruction.
      */
 
     public CLFieldInstruction(int opcode, int pc, int index, int stackUnits) {
@@ -515,17 +492,13 @@ class CLMethodInstruction extends CLInstruction {
 
     /**
      * Construct a CLMethodInstruction object for METHOD1 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param index
-     *            index into the constant pool, the item at which contains the
-     *            name and descriptor of the method.
-     * @param stackUnits
-     *            words produced - words consumed from the operand stack by this
-     *            instruction.
+     *
+     * @param opcode     the opcode for this instruction.
+     * @param pc         index of this instruction within the code array of a method.
+     * @param index      index into the constant pool, the item at which contains the
+     *                   name and descriptor of the method.
+     * @param stackUnits words produced - words consumed from the operand stack by this
+     *                   instruction.
      */
 
     public CLMethodInstruction(int opcode, int pc, int index, int stackUnits) {
@@ -540,11 +513,9 @@ class CLMethodInstruction extends CLInstruction {
 
     /**
      * Construct a CLMethodInstruction object for METHOD2 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLMethodInstruction(int opcode, int pc) {
@@ -559,9 +530,8 @@ class CLMethodInstruction extends CLInstruction {
     /**
      * Set the number of arguments for the method for INVOKEINTERFACE
      * instruction.
-     * 
-     * @param nArgs
-     *            number of arguments for the method.
+     *
+     * @param nArgs number of arguments for the method.
      */
 
     public void setArgumentCount(int nArgs) {
@@ -605,18 +575,17 @@ class CLArrayInstruction extends CLInstruction {
      */
     private int type;
 
-    /** Number of dimensions in case of a multi-dimensional array. */
+    /**
+     * Number of dimensions in case of a multi-dimensional array.
+     */
     private int dim;
 
     /**
      * Construct a CLArrayInstruction object for ARRAY1 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param type
-     *            number identifying the type.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
+     * @param type   number identifying the type.
      */
 
     public CLArrayInstruction(int opcode, int pc, int type) {
@@ -631,15 +600,11 @@ class CLArrayInstruction extends CLInstruction {
 
     /**
      * Construct a CLArrayInstruction object for ARRAY2 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param type
-     *            number identifying the type.
-     * @param dim
-     *            number of dimensions.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
+     * @param type   number identifying the type.
+     * @param dim    number of dimensions.
      */
 
     public CLArrayInstruction(int opcode, int pc, int type, int dim) {
@@ -655,11 +620,9 @@ class CLArrayInstruction extends CLInstruction {
 
     /**
      * Construct a CLArrayInstruction object for ARRAY3 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLArrayInstruction(int opcode, int pc) {
@@ -679,18 +642,18 @@ class CLArrayInstruction extends CLInstruction {
         ArrayList<Integer> bytes = new ArrayList<Integer>();
         bytes.add(opcode);
         switch (opcode) {
-        case NEWARRAY:
-            bytes.add(byteAt(type, 1));
-            break;
-        case ANEWARRAY:
-            bytes.add(byteAt(type, 2));
-            bytes.add(byteAt(type, 1));
-            break;
-        case MULTIANEWARRAY:
-            bytes.add(byteAt(type, 2));
-            bytes.add(byteAt(type, 1));
-            bytes.add(byteAt(dim, 1));
-            break;
+            case NEWARRAY:
+                bytes.add(byteAt(type, 1));
+                break;
+            case ANEWARRAY:
+                bytes.add(byteAt(type, 2));
+                bytes.add(byteAt(type, 1));
+                break;
+            case MULTIANEWARRAY:
+                bytes.add(byteAt(type, 2));
+                bytes.add(byteAt(type, 1));
+                bytes.add(byteAt(dim, 1));
+                break;
         }
         return bytes;
     }
@@ -709,16 +672,16 @@ class CLArithmeticInstruction extends CLInstruction {
      */
     private boolean isWidened;
 
-    /** Increment value for IINC instruction. */
+    /**
+     * Increment value for IINC instruction.
+     */
     private int constVal;
 
     /**
      * Construct a CLArithmeticInstruction object for ARITHMETIC1 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLArithmeticInstruction(int opcode, int pc) {
@@ -732,22 +695,19 @@ class CLArithmeticInstruction extends CLInstruction {
 
     /**
      * Construct a CLArithmeticInstruction object for IINC instruction.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param localVariableIndex
-     *            index of the local variable to increment.
-     * @param constVal
-     *            increment value.
-     * @param isWidened
-     *            whether this instruction is preceeded by the WIDE (widening)
-     *            instruction.
+     *
+     * @param opcode             the opcode for this instruction.
+     * @param pc                 index of this instruction within the code array of a
+     *                           method.
+     * @param localVariableIndex index of the local variable to increment.
+     * @param constVal           increment value.
+     * @param isWidened          whether this instruction is preceeded by the WIDE
+     *                           (widening)
+     *                           instruction.
      */
 
     public CLArithmeticInstruction(int opcode, int pc, int localVariableIndex,
-            int constVal, boolean isWidened) {
+                                   int constVal, boolean isWidened) {
         super.opcode = opcode;
         super.pc = pc;
         super.localVariableIndex = localVariableIndex;
@@ -789,11 +749,9 @@ class CLBitInstruction extends CLInstruction {
 
     /**
      * Construct a CLBitInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLBitInstruction(int opcode, int pc) {
@@ -825,11 +783,9 @@ class CLComparisonInstruction extends CLInstruction {
 
     /**
      * Construct a CLComparisonInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLComparisonInstruction(int opcode, int pc) {
@@ -861,11 +817,9 @@ class CLConversionInstruction extends CLInstruction {
 
     /**
      * Construct a CLConversionInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLConversionInstruction(int opcode, int pc) {
@@ -902,7 +856,9 @@ class CLFlowControlInstruction extends CLInstruction {
      */
     private String jumpToLabel;
 
-    /** jumpLabel is resolved to this offset. */
+    /**
+     * jumpLabel is resolved to this offset.
+     */
     private int jumpToOffset;
 
     /**
@@ -929,7 +885,9 @@ class CLFlowControlInstruction extends CLInstruction {
      */
     private String defaultLabel;
 
-    /** defaultLabel is resolved to this offset. */
+    /**
+     * defaultLabel is resolved to this offset.
+     */
     private int defaultOffset;
 
     /**
@@ -937,7 +895,9 @@ class CLFlowControlInstruction extends CLInstruction {
      */
     private int numPairs;
 
-    /** Key and label table for LOOKUPSWITCH instruction. */
+    /**
+     * Key and label table for LOOKUPSWITCH instruction.
+     */
     private TreeMap<Integer, String> matchLabelPairs;
 
     /**
@@ -946,10 +906,14 @@ class CLFlowControlInstruction extends CLInstruction {
      */
     private TreeMap<Integer, Integer> matchOffsetPairs;
 
-    /** Smallest value of index for TABLESWITCH instruction. */
+    /**
+     * Smallest value of index for TABLESWITCH instruction.
+     */
     private int low;
 
-    /** Highest value of index for TABLESWITCH instruction. */
+    /**
+     * Highest value of index for TABLESWITCH instruction.
+     */
     private int high;
 
     /**
@@ -967,13 +931,10 @@ class CLFlowControlInstruction extends CLInstruction {
     /**
      * Construct a CLFlowControlInstruction object for FLOW_CONTROL1
      * instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param jumpToLabel
-     *            the label to jump to.
+     *
+     * @param opcode      the opcode for this instruction.
+     * @param pc          index of this instruction within the code array of a method.
+     * @param jumpToLabel the label to jump to.
      */
 
     public CLFlowControlInstruction(int opcode, int pc, String jumpToLabel) {
@@ -988,14 +949,11 @@ class CLFlowControlInstruction extends CLInstruction {
 
     /**
      * Construct a CLFlowControlInstruction object for RET instruction.
-     * 
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param index
-     *            index of the local variable containing the return address.
-     * @param isWidened
-     *            whether this instruction is preceeded by the WIDE (widening)
-     *            instruction.
+     *
+     * @param pc        index of this instruction within the code array of a method.
+     * @param index     index of the local variable containing the return address.
+     * @param isWidened whether this instruction is preceeded by the WIDE (widening)
+     *                  instruction.
      */
 
     public CLFlowControlInstruction(int pc, int index, boolean isWidened) {
@@ -1011,24 +969,18 @@ class CLFlowControlInstruction extends CLInstruction {
 
     /**
      * Construct a CLFlowControlInstruction object for TABLESWITCH instruction.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param defaultLabel
-     *            jump label for default value.
-     * @param low
-     *            smallest value of index.
-     * @param high
-     *            highest value of index.
-     * @param labels
-     *            list of jump labels for each index value from low to high, end
-     *            values included.
+     *
+     * @param opcode       the opcode for this instruction.
+     * @param pc           index of this instruction within the code array of a method.
+     * @param defaultLabel jump label for default value.
+     * @param low          smallest value of index.
+     * @param high         highest value of index.
+     * @param labels       list of jump labels for each index value from low to high, end
+     *                     values included.
      */
 
-    public CLFlowControlInstruction(int opcode, int pc, String defaultLabel,
-            int low, int high, ArrayList<String> labels) {
+    public CLFlowControlInstruction(int opcode, int pc, String defaultLabel, int low,
+                                    int high, ArrayList<String> labels) {
         super.opcode = opcode;
         super.pc = pc;
         mnemonic = instructionInfo[opcode].mnemonic;
@@ -1044,21 +996,16 @@ class CLFlowControlInstruction extends CLInstruction {
 
     /**
      * Construct a CLFlowControlInstruction object for LOOKUPSWITCH instruction.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param defaultLabel
-     *            jump label for default value.
-     * @param numPairs
-     *            number of pairs in the match table.
-     * @param matchLabelPairs
-     *            key match table.
+     *
+     * @param opcode          the opcode for this instruction.
+     * @param pc              index of this instruction within the code array of a method.
+     * @param defaultLabel    jump label for default value.
+     * @param numPairs        number of pairs in the match table.
+     * @param matchLabelPairs key match table.
      */
 
-    public CLFlowControlInstruction(int opcode, int pc, String defaultLabel,
-            int numPairs, TreeMap<Integer, String> matchLabelPairs) {
+    public CLFlowControlInstruction(int opcode, int pc, String defaultLabel, int numPairs,
+                                    TreeMap<Integer, String> matchLabelPairs) {
         super.opcode = opcode;
         super.pc = pc;
         mnemonic = instructionInfo[opcode].mnemonic;
@@ -1075,9 +1022,8 @@ class CLFlowControlInstruction extends CLInstruction {
      * Resolve the jump labels to the corresponding offset values using the
      * given label to pc mapping. If unable to resolve a label, the offset is
      * set such that the next instruction will be executed.
-     * 
-     * @param labelToPC
-     *            label to pc mapping.
+     *
+     * @param labelToPC label to pc mapping.
      * @return true if all labels were resolved successfully; false otherwise.
      */
 
@@ -1133,7 +1079,7 @@ class CLFlowControlInstruction extends CLInstruction {
 
     /**
      * Return the pc of instruction to jump to.
-     * 
+     *
      * @return pc to jump to.
      */
 
@@ -1149,76 +1095,76 @@ class CLFlowControlInstruction extends CLInstruction {
         ArrayList<Integer> bytes = new ArrayList<Integer>();
         bytes.add(opcode);
         switch (opcode) {
-        case RET:
-            if (isWidened) {
-                bytes.add(byteAt(index, 2));
-                bytes.add(byteAt(index, 1));
-            } else {
-                bytes.add(byteAt(index, 1));
-            }
-            break;
-        case TABLESWITCH:
-            for (int i = 0; i < pad; i++) {
-                bytes.add(0);
-            }
-            bytes.add(byteAt(defaultOffset, 4));
-            bytes.add(byteAt(defaultOffset, 3));
-            bytes.add(byteAt(defaultOffset, 2));
-            bytes.add(byteAt(defaultOffset, 1));
-            bytes.add(byteAt(low, 4));
-            bytes.add(byteAt(low, 3));
-            bytes.add(byteAt(low, 2));
-            bytes.add(byteAt(low, 1));
-            bytes.add(byteAt(high, 4));
-            bytes.add(byteAt(high, 3));
-            bytes.add(byteAt(high, 2));
-            bytes.add(byteAt(high, 1));
-            for (int i = 0; i < offsets.size(); i++) {
-                int jumpOffset = offsets.get(i);
-                bytes.add(byteAt(jumpOffset, 4));
-                bytes.add(byteAt(jumpOffset, 3));
-                bytes.add(byteAt(jumpOffset, 2));
-                bytes.add(byteAt(jumpOffset, 1));
-            }
-            break;
-        case LOOKUPSWITCH:
-            for (int i = 0; i < pad; i++) {
-                bytes.add(0);
-            }
-            bytes.add(byteAt(defaultOffset, 4));
-            bytes.add(byteAt(defaultOffset, 3));
-            bytes.add(byteAt(defaultOffset, 2));
-            bytes.add(byteAt(defaultOffset, 1));
-            bytes.add(byteAt(numPairs, 4));
-            bytes.add(byteAt(numPairs, 3));
-            bytes.add(byteAt(numPairs, 2));
-            bytes.add(byteAt(numPairs, 1));
-            Set<Entry<Integer, Integer>> matches = matchOffsetPairs.entrySet();
-            Iterator<Entry<Integer, Integer>> iter = matches.iterator();
-            while (iter.hasNext()) {
-                Entry<Integer, Integer> entry = iter.next();
-                int match = entry.getKey();
-                int offset = entry.getValue();
-                bytes.add(byteAt(match, 4));
-                bytes.add(byteAt(match, 3));
-                bytes.add(byteAt(match, 2));
-                bytes.add(byteAt(match, 1));
-                bytes.add(byteAt(offset, 4));
-                bytes.add(byteAt(offset, 3));
-                bytes.add(byteAt(offset, 2));
-                bytes.add(byteAt(offset, 1));
-            }
-            break;
-        case GOTO_W:
-        case JSR_W:
-            bytes.add(byteAt(jumpToOffset, 4));
-            bytes.add(byteAt(jumpToOffset, 3));
-            bytes.add(byteAt(jumpToOffset, 2));
-            bytes.add(byteAt(jumpToOffset, 1));
-            break;
-        default:
-            bytes.add(byteAt(jumpToOffset, 2));
-            bytes.add(byteAt(jumpToOffset, 1));
+            case RET:
+                if (isWidened) {
+                    bytes.add(byteAt(index, 2));
+                    bytes.add(byteAt(index, 1));
+                } else {
+                    bytes.add(byteAt(index, 1));
+                }
+                break;
+            case TABLESWITCH:
+                for (int i = 0; i < pad; i++) {
+                    bytes.add(0);
+                }
+                bytes.add(byteAt(defaultOffset, 4));
+                bytes.add(byteAt(defaultOffset, 3));
+                bytes.add(byteAt(defaultOffset, 2));
+                bytes.add(byteAt(defaultOffset, 1));
+                bytes.add(byteAt(low, 4));
+                bytes.add(byteAt(low, 3));
+                bytes.add(byteAt(low, 2));
+                bytes.add(byteAt(low, 1));
+                bytes.add(byteAt(high, 4));
+                bytes.add(byteAt(high, 3));
+                bytes.add(byteAt(high, 2));
+                bytes.add(byteAt(high, 1));
+                for (int i = 0; i < offsets.size(); i++) {
+                    int jumpOffset = offsets.get(i);
+                    bytes.add(byteAt(jumpOffset, 4));
+                    bytes.add(byteAt(jumpOffset, 3));
+                    bytes.add(byteAt(jumpOffset, 2));
+                    bytes.add(byteAt(jumpOffset, 1));
+                }
+                break;
+            case LOOKUPSWITCH:
+                for (int i = 0; i < pad; i++) {
+                    bytes.add(0);
+                }
+                bytes.add(byteAt(defaultOffset, 4));
+                bytes.add(byteAt(defaultOffset, 3));
+                bytes.add(byteAt(defaultOffset, 2));
+                bytes.add(byteAt(defaultOffset, 1));
+                bytes.add(byteAt(numPairs, 4));
+                bytes.add(byteAt(numPairs, 3));
+                bytes.add(byteAt(numPairs, 2));
+                bytes.add(byteAt(numPairs, 1));
+                Set<Entry<Integer, Integer>> matches = matchOffsetPairs.entrySet();
+                Iterator<Entry<Integer, Integer>> iter = matches.iterator();
+                while (iter.hasNext()) {
+                    Entry<Integer, Integer> entry = iter.next();
+                    int match = entry.getKey();
+                    int offset = entry.getValue();
+                    bytes.add(byteAt(match, 4));
+                    bytes.add(byteAt(match, 3));
+                    bytes.add(byteAt(match, 2));
+                    bytes.add(byteAt(match, 1));
+                    bytes.add(byteAt(offset, 4));
+                    bytes.add(byteAt(offset, 3));
+                    bytes.add(byteAt(offset, 2));
+                    bytes.add(byteAt(offset, 1));
+                }
+                break;
+            case GOTO_W:
+            case JSR_W:
+                bytes.add(byteAt(jumpToOffset, 4));
+                bytes.add(byteAt(jumpToOffset, 3));
+                bytes.add(byteAt(jumpToOffset, 2));
+                bytes.add(byteAt(jumpToOffset, 1));
+                break;
+            default:
+                bytes.add(byteAt(jumpToOffset, 2));
+                bytes.add(byteAt(jumpToOffset, 1));
         }
         return bytes;
     }
@@ -1247,11 +1193,9 @@ class CLLoadStoreInstruction extends CLInstruction {
 
     /**
      * Construct a CLLoadStoreInstruction object for LOAD_STORE1 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLLoadStoreInstruction(int opcode, int pc) {
@@ -1265,20 +1209,18 @@ class CLLoadStoreInstruction extends CLInstruction {
 
     /**
      * Construct a CLLoadStoreInstruction object for LOAD_STORE2 instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param localVariableIndex
-     *            index of the local variable to increment.
-     * @param isWidened
-     *            whether this instruction is preceeded by the WIDE (widening)
-     *            instruction.
+     *
+     * @param opcode             the opcode for this instruction.
+     * @param pc                 index of this instruction within the code array of a
+     *                           method.
+     * @param localVariableIndex index of the local variable to increment.
+     * @param isWidened          whether this instruction is preceeded by the WIDE
+     *                           (widening)
+     *                           instruction.
      */
 
     public CLLoadStoreInstruction(int opcode, int pc, int localVariableIndex,
-            boolean isWidened) {
+                                  boolean isWidened) {
         super.opcode = opcode;
         super.pc = pc;
         mnemonic = instructionInfo[opcode].mnemonic;
@@ -1291,14 +1233,11 @@ class CLLoadStoreInstruction extends CLInstruction {
     /**
      * Construct a CLLoadStoreInstruction object for LOAD_STORE3 and LOAD_STORE4
      * instructions.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
-     * @param constVal
-     *            a byte (for BIPUSH), a short (for SIPUSH), or a constant pool
-     *            index for LDC instructions.
+     *
+     * @param opcode   the opcode for this instruction.
+     * @param pc       index of this instruction within the code array of a method.
+     * @param constVal a byte (for BIPUSH), a short (for SIPUSH), or a constant pool
+     *                 index for LDC instructions.
      */
 
     public CLLoadStoreInstruction(int opcode, int pc, int constVal) {
@@ -1326,15 +1265,15 @@ class CLLoadStoreInstruction extends CLInstruction {
                 bytes.add(byteAt(localVariableIndex, 1));
             } else {
                 switch (opcode) {
-                case BIPUSH:
-                case LDC:
-                    bytes.add(byteAt(constVal, 1));
-                    break;
-                case SIPUSH:
-                case LDC_W:
-                case LDC2_W:
-                    bytes.add(byteAt(constVal, 2));
-                    bytes.add(byteAt(constVal, 1));
+                    case BIPUSH:
+                    case LDC:
+                        bytes.add(byteAt(constVal, 1));
+                        break;
+                    case SIPUSH:
+                    case LDC_W:
+                    case LDC2_W:
+                        bytes.add(byteAt(constVal, 2));
+                        bytes.add(byteAt(constVal, 1));
                 }
             }
         }
@@ -1351,11 +1290,9 @@ class CLStackInstruction extends CLInstruction {
 
     /**
      * Construct a CLStackInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLStackInstruction(int opcode, int pc) {
@@ -1387,11 +1324,9 @@ class CLMiscInstruction extends CLInstruction {
 
     /**
      * Construct a CLMiscInstruction object.
-     * 
-     * @param opcode
-     *            the opcode for this instruction.
-     * @param pc
-     *            index of this instruction within the code array of a method.
+     *
+     * @param opcode the opcode for this instruction.
+     * @param pc     index of this instruction within the code array of a method.
      */
 
     public CLMiscInstruction(int opcode, int pc) {
@@ -1421,13 +1356,19 @@ class CLMiscInstruction extends CLInstruction {
 
 class CLInsInfo {
 
-    /** Opcode for this instruction. */
+    /**
+     * Opcode for this instruction.
+     */
     public int opcode;
 
-    /** Mnemonic for this instruction. */
+    /**
+     * Mnemonic for this instruction.
+     */
     public String mnemonic;
 
-    /** Number of operands for this instruction. */
+    /**
+     * Number of operands for this instruction.
+     */
     public int operandCount;
 
     /**
@@ -1442,29 +1383,27 @@ class CLInsInfo {
      */
     public int localVariableIndex;
 
-    /** The category under which instruction belongs. */
+    /**
+     * The category under which instruction belongs.
+     */
     public Category category;
 
     /**
      * Construct a CLInsInfo object.
-     * 
-     * @param opcode
-     *            opcode for this instruction.
-     * @param mnemonic
-     *            name for this instruction.
-     * @param operandCount
-     *            number of operands for this instruction.
-     * @param localVariableIndex
-     *            index of the local variable that this instruction refers to.
-     * @param stackUnits
-     *            words produced - words consumed from the operand stack by this
-     *            instruction.
-     * @param category
-     *            category under which this instruction belogs.
+     *
+     * @param opcode             opcode for this instruction.
+     * @param mnemonic           name for this instruction.
+     * @param operandCount       number of operands for this instruction.
+     * @param localVariableIndex index of the local variable that this instruction
+     *                           refers to.
+     * @param stackUnits         words produced - words consumed from the operand stack
+     *                           by this
+     *                           instruction.
+     * @param category           category under which this instruction belogs.
      */
 
     public CLInsInfo(int opcode, String mnemonic, int operandCount,
-            int localVariableIndex, int stackUnits, Category category) {
+                     int localVariableIndex, int stackUnits, Category category) {
         this.opcode = opcode;
         this.mnemonic = mnemonic;
         this.operandCount = operandCount;

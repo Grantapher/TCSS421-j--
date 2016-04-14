@@ -11,9 +11,8 @@ abstract class JStatement extends JAST {
 
     /**
      * Construct an AST node for a statement given its line number.
-     * 
-     * @param line
-     *            line in which the statement occurs in the source file.
+     *
+     * @param line line in which the statement occurs in the source file.
      */
 
     protected JStatement(int line) {
