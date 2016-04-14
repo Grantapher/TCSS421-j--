@@ -1058,7 +1058,7 @@ public class Parser {
      * <p>
      * <pre>
      *   relationalExpression ::= additiveExpression  // level 5
-     *                              [(GT | LE) additiveExpression
+     *                              [(GT | LT | GEQ | LEQ) additiveExpression
      *                              | INSTANCEOF referenceType]
      * </pre>
      *
@@ -1070,8 +1070,12 @@ public class Parser {
         JExpression lhs = additiveExpression();
         if (have(GT)) {
             return new JGreaterThanOp(line, lhs, additiveExpression());
+        } else if (have(LT)) {
+            return new JLessThanOp(line, lhs, additiveExpression());
         } else if (have(LEQ)) {
             return new JLessEqualOp(line, lhs, additiveExpression());
+        } else if (have(GEQ)) {
+            return new JGreaterEqualOp(line, lhs, additiveExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
@@ -1279,8 +1283,7 @@ public class Parser {
                 String name = scanner.previousToken().image();
                 JExpression newTarget = new JSuper(line);
                 if (see(LPAREN)) {
-                    return new JMessageExpression(line, newTarget, null, name,
-                                                  arguments()
+                    return new JMessageExpression(line, newTarget, null, name, arguments()
                     );
                 } else {
                     return new JFieldSelection(line, newTarget, name);

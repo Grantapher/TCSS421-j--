@@ -375,7 +375,6 @@ class Scanner {
                     }
                 } else if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(GEQ);
                     return new TokenInfo(GEQ, line);
                 } else {
                     return new TokenInfo(GT, line);
@@ -396,7 +395,6 @@ class Scanner {
                     nextCh();
                     return new TokenInfo(LEQ, line);
                 } else {
-                    reportUnimplementedError(LT);
                     return new TokenInfo(LT, line);
                 }
             case '\'':
