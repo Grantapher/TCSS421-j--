@@ -91,7 +91,8 @@
 
     <target name="jar">
         <echo message="Bundling class files into jar files..."/>
-        <jar destfile="${LIB_DIR}/j--.jar" basedir="${CLASS_DIR}" includes="jminusminus/**"/>
+        <jar destfile="${LIB_DIR}/j--.jar" basedir="${CLASS_DIR}"
+             includes="jminusminus/**"/>
         <jar destfile="${LIB_DIR}/spim.jar" basedir="${CLASS_DIR}" includes="spim/**"/>
     </target>
 
@@ -104,7 +105,8 @@
                  sourcepath="${SRC_DIR}" destdir="${JAVADOC_DIR}"
                  packagenames="jminusminus.*,spim.*"
                  windowtitle="${APP_FULL_NAME}"
-                 doctitle="${APP_FULL_NAME}">
+                 doctitle="${APP_FULL_NAME}"
+                 additionalparam="">
             <link href="http://java.sun.com/javase/6/docs/api/"/>
         </javadoc>
     </target>
