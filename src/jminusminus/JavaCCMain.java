@@ -167,8 +167,7 @@ public class JavaCCMain {
         // JVM instructions to SPIM using the specified register
         // allocation scheme.
         if (spimOutput) {
-            NEmitter nEmitter = new NEmitter(sourceFile, ast.clFiles(),
-                                             registerAllocation
+            NEmitter nEmitter = new NEmitter(sourceFile, ast.clFiles(), registerAllocation
             );
             nEmitter.destinationDir(outputDir);
             nEmitter.write();

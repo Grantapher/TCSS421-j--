@@ -40,6 +40,11 @@ class Type {
     public final static Type INT = typeFor(int.class);
 
     /**
+     * The primitive type, long.
+     */
+    public final static Type LONG = typeFor(long.class);
+
+    /**
      * The primitive type, char.
      */
     public final static Type CHAR = typeFor(char.class);
@@ -53,6 +58,11 @@ class Type {
      * java.lang.Integer.
      */
     public final static Type BOXED_INT = typeFor(java.lang.Integer.class);
+
+    /**
+     * java.lang.Long.
+     */
+    public final static Type BOXED_LONG = typeFor(java.lang.Long.class);
 
     /**
      * java.lang.Character.
@@ -328,8 +338,8 @@ class Type {
         }
         JAST.compilationUnit.reportSemanticError(line,
                                                  "Type %s doesn't match any of the " +
-                                                         "expected types %s",
-                                                 this, Arrays.toString(expectedTypes)
+                                                         "expected types %s", this,
+                                                 Arrays.toString(expectedTypes)
         );
     }
 
@@ -432,8 +442,8 @@ class Type {
         return cls == null ? "V" : cls == void.class ? "V"
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
                         : cls.isPrimitive() ? (cls == int.class ? "I"
-                                : cls == char.class ? "C"
-                                        : cls == boolean.class ? "Z" : "?")
+                                : cls == char.class ? "C" : cls == boolean.class ? "Z"
+                                        : cls == long.class ? "J" : "?")
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
 
@@ -641,13 +651,13 @@ class Type {
         if (packageName().equals(member.declaringType().packageName())) {
             return true;
         } else {
-            JAST.compilationUnit.reportSemanticError(line,
-                                                     "The member, " + member.name() +
-                                                             ", is not accessible " +
-                                                             "because it's in a " +
-                                                             "different " +
-                                                             "package."
-            );
+            JAST.compilationUnit
+                    .reportSemanticError(line, "The member, " + member.name() +
+                                                 ", is not accessible " +
+                                                 "because it's in a " +
+                                                 "different " +
+                                                 "package."
+                    );
             return false;
         }
     }

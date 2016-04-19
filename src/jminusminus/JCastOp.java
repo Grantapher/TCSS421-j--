@@ -139,6 +139,7 @@ class Conversions {
         // Boxing
         put(Type.CHAR, Type.BOXED_CHAR, new Boxing(Type.CHAR, Type.BOXED_CHAR));
         put(Type.INT, Type.BOXED_INT, new Boxing(Type.INT, Type.BOXED_INT));
+        put(Type.LONG, Type.BOXED_LONG, new Boxing(Type.LONG, Type.BOXED_LONG));
         put(Type.BOOLEAN, Type.BOXED_BOOLEAN,
             new Boxing(Type.BOOLEAN, Type.BOXED_BOOLEAN)
         );
@@ -148,6 +149,7 @@ class Conversions {
             new UnBoxing(Type.BOXED_CHAR, Type.CHAR, "charValue")
         );
         put(Type.BOXED_INT, Type.INT, new UnBoxing(Type.BOXED_INT, Type.INT, "intValue"));
+        put(Type.BOXED_LONG, Type.LONG, new UnBoxing(Type.BOXED_LONG, Type.LONG, "longValue"));
         put(Type.BOXED_BOOLEAN, Type.BOOLEAN,
             new UnBoxing(Type.BOXED_BOOLEAN, Type.BOOLEAN, "booleanValue")
         );

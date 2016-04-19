@@ -145,7 +145,6 @@ class Scanner {
         putUnimplemented(GOTO);
         putUnimplemented(IMPLEMENTS);
         putUnimplemented(INTERFACE);
-        putUnimplemented(LONG);
         putUnimplemented(NATIVE);
         putUnimplemented(SHORT);
         putUnimplemented(STRICTFP);
@@ -592,7 +591,6 @@ class Scanner {
                                 reportScannerError("malformed integer literal");
                                 return getNextToken();
                             }
-                            reportUnimplementedError(LONG_LITERAL);
                             literalType = LONG_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -618,7 +616,6 @@ class Scanner {
                         //optional suffix
                         TokenKind literalType = INT_LITERAL;
                         if (ch == 'l' || ch == 'L') {
-                            reportUnimplementedError(LONG_LITERAL);
                             literalType = LONG_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -642,7 +639,6 @@ class Scanner {
 
                         TokenKind literalType = INT_LITERAL;
                         if (ch == 'l' || ch == 'L') {
-                            reportUnimplementedError(LONG_LITERAL);
                             literalType = LONG_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -674,7 +670,6 @@ class Scanner {
                         nextCh();
                         return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
                     } else if (ch == 'l' || ch == 'L') {
-                        reportUnimplementedError(LONG_LITERAL);
                         buffer.append(ch);
                         nextCh();
                         return new TokenInfo(LONG_LITERAL, buffer.toString(), line);
@@ -737,7 +732,6 @@ class Scanner {
                     buffer.append(ch);
                     nextCh();
                 } else if (ch == 'l' || ch == 'L') {
-                    reportUnimplementedError(LONG_LITERAL);
                     literalType = LONG_LITERAL;
                     buffer.append(ch);
                     nextCh();

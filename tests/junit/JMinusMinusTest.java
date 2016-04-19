@@ -29,6 +29,8 @@ public class JMinusMinusTest extends TestCase {
      */
 
     public void testPass() {
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append("Files in error:\n");
         File passTestsDir = new File(System.getProperty("PASS_TESTS_DIR"));
         File genClassDir = new File(System.getProperty("GEN_CLASS_DIR"));
         File[] files = passTestsDir.listFiles();
@@ -46,9 +48,10 @@ public class JMinusMinusTest extends TestCase {
                 Main.main(args);
 
                 if (Main.errorHasOccurred()) {
-                    System.out.println(
-                            files[i] + " failed to compile when it should have!"
-                    );
+                    System.out
+                            .println(files[i] + " failed to compile when it should have!"
+                            );
+                    errorMessage.append(files[i]).append('\n');
                 }
 
                 System.out.printf("\n");
@@ -58,7 +61,7 @@ public class JMinusMinusTest extends TestCase {
         }
 
         // We want all tests to pass
-        assertFalse(errorHasOccurred);
+        assertFalse(errorMessage.toString(), errorHasOccurred);
     }
 
     /**
@@ -68,6 +71,8 @@ public class JMinusMinusTest extends TestCase {
      */
 
     public void testFail() {
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append("Files not in error:\n");
         File failTestsDir = new File(System.getProperty("FAIL_TESTS_DIR"));
         File genClassDir = new File(System.getProperty("GEN_CLASS_DIR"));
         File[] files = failTestsDir.listFiles();
@@ -86,6 +91,7 @@ public class JMinusMinusTest extends TestCase {
 
                 if (!Main.errorHasOccurred()) {
                     System.out.println(files[i] + " compiled when it shouldn't have!");
+                    errorMessage.append(files[i]).append('\n');
                 }
 
                 System.out.printf("\n");
@@ -95,7 +101,7 @@ public class JMinusMinusTest extends TestCase {
         }
 
         // We want all tests to fail
-        assertTrue(errorHasOccurred);
+        assertTrue(errorMessage.toString(), errorHasOccurred);
     }
 
     /**
