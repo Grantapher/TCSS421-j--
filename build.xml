@@ -164,7 +164,8 @@
                 <pathelement location="${LIB_DIR}/junit.jar"/>
             </classpath>
         </javac>
-        <junit printsummary="yes" haltonfailure="no" showoutput="no">
+        <junit printsummary="yes" haltonfailure="no" showoutput="no"
+               failureproperty="test.compilefailed">
             <sysproperty key="PASS_TESTS_DIR" value="${PASS_TESTS_DIR}"/>
             <sysproperty key="FAIL_TESTS_DIR" value="${FAIL_TESTS_DIR}"/>
             <sysproperty key="GEN_CLASS_DIR" value="${GEN_CLASS_DIR}"/>
@@ -177,6 +178,7 @@
                 <formatter type="plain" usefile="false"/>
             </test>
         </junit>
+        <fail message="j-- compile failed!" if="test.compilefailed"/>
         <javac srcdir="${basedir}/tests"
                sourcepath=""
                destdir="${CLASS_DIR}"
@@ -439,6 +441,20 @@
                 <formatter type="plain" usefile="false"/>
             </test>
         </junit>
+    </target>
+
+    <!-- shortclean: Removes generated files and folders, none from src -->
+    <target name="shortclean">
+        <echo message="Removing generated files and folders..."/>
+        <delete>
+            <fileset dir="${basedir}" includes="**/*.class"/>
+        </delete>
+        <delete file="j--.zip"/>
+        <delete file="${LIB_DIR}/j--.jar"/>
+        <delete file="${LIB_DIR}/spim.jar"/>
+        <delete dir="${CLASS_DIR}"/>
+        <delete dir="${JAVADOC_DIR}"/>
+        <delete dir="${J2H_DIR}"/>
     </target>
 
     <!-- clean: Removes generated files and folders. -->
