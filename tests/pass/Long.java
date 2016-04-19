@@ -2,7 +2,7 @@ package pass;
 
 import java.lang.System;
 
-public class Literals {
+public class Long {
 
     public static long smallLong() {
         return 1L;

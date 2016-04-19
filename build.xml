@@ -178,7 +178,7 @@
                 <formatter type="plain" usefile="false"/>
             </test>
         </junit>
-        <fail message="j-- compile failed!" if="test.compilefailed"/>
+        <fail message="At least one j-- compile failed!" if="test.compilefailed"/>
         <javac srcdir="${basedir}/tests"
                sourcepath=""
                destdir="${CLASS_DIR}"
@@ -193,7 +193,8 @@
                 <pathelement location="${basedir}/${CLASS_DIR}"/>
             </classpath>
         </javac>
-        <junit printsummary="yes" haltonfailure="no" showoutput="yes">
+        <junit printsummary="yes" haltonfailure="no" showoutput="yes"
+               failureproperty="test.junitfailed">
             <classpath>
                 <pathelement location="${LIB_DIR}/junit.jar"/>
                 <pathelement location="${basedir}/${CLASS_DIR}"/>
@@ -203,6 +204,7 @@
                 <formatter type="plain" usefile="false"/>
             </test>
         </junit>
+        <fail message="At least one junit test failed!" if="test.junitfailed"/>
     </target>
 
     <!-- 
