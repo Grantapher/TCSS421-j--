@@ -491,7 +491,6 @@ class Scanner {
                     } else {
                         literalType = DOUBLE_LITERAL;
                     }
-                    reportUnimplementedError(literalType);
                     return new TokenInfo(literalType, buffer.toString(), line);
                 } else {
                     return new TokenInfo(DOT, line);
@@ -530,7 +529,7 @@ class Scanner {
                             nextCh();
                             // optional hex digits following dot (not optional if no
                             // digits preceding dot)
-                            if (buffer.length() > 3 && !isHexDigit(ch)) {
+                            if (buffer.length() == 3 && !isHexDigit(ch)) {
                                 reportScannerError("Malformed floating point literal");
                                 return getNextToken();
                             }
@@ -549,12 +548,12 @@ class Scanner {
                                 buffer.append(ch);
                                 nextCh();
                             }
-                            // hex digits
-                            if (!isHexDigit(ch)) {
+                            // digits
+                            if (!isDigit(ch)) {
                                 reportScannerError("Malformed floating point literal");
                                 return getNextToken();
                             }
-                            while (isHexDigit(ch)) {
+                            while (isDigit(ch)) {
                                 buffer.append(ch);
                                 nextCh();
                             }
@@ -588,12 +587,7 @@ class Scanner {
                             literalType = LONG_LITERAL;
                             buffer.append(ch);
                             nextCh();
-                        } else {
-                            reportScannerError(
-                                    "Hex numbers are not yet implemented in j--."
-                            );
                         }
-
                         return new TokenInfo(literalType, buffer.toString(), line);
                     } else if (ch == 'b' || ch == 'B') {
                         //bin int

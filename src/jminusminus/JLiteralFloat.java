@@ -49,17 +49,17 @@ class JLiteralFloat extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        //TODO float codegen
-        //        long i = Long.parseLong(text.substring(0, text.length() - 1));
-        //
-        //        if (i == 0) {
-        //            output.addNoArgInstruction(LCONST_0);
-        //        } else if (i == 1) {
-        //            output.addNoArgInstruction(LCONST_1);
-        //        } else {
-        //            output.addLDCInstruction(i);
-        //        }
-        //TODO tests in LiteralsTest and pass/Literals
+        float i = Float.parseFloat(text);
+
+        if (i == 0.0f) {
+            output.addNoArgInstruction(FCONST_0);
+        } else if (i == 1f) {
+            output.addNoArgInstruction(FCONST_1);
+        } else if (i == 2f) {
+            output.addNoArgInstruction(FCONST_2);
+        } else {
+            output.addLDCInstruction(i);
+        }
     }
 
     /**
