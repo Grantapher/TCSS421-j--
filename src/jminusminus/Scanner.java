@@ -562,6 +562,12 @@ class Scanner {
                             return getNextToken();
                         }
 
+                        // not just "0x"
+                        if (buffer.length() == 2) {
+                            reportScannerError("Malformed Hex literal");
+                            return getNextToken();
+                        }
+
                         // optional suffixes
                         if (ch == 'f' || ch == 'F') {
                             if (literalType == INT_LITERAL) {
@@ -591,14 +597,23 @@ class Scanner {
                         return new TokenInfo(literalType, buffer.toString(), line);
                     } else if (ch == 'b' || ch == 'B') {
                         //bin int
-                        reportScannerError("Binary ints are not yet implemented in j--.");
                         // the b
                         buffer.append(ch);
                         nextCh();
-                        //digits
+                        //at least 1 digit
+                        if (ch != '0' && ch != '1') {
+                            reportScannerError("Malformed binary literal");
+                            return getNextToken();
+                        }
                         while (ch == '0' || ch == '1') {
                             buffer.append(ch);
                             nextCh();
+                        }
+
+                        //no nonbinary digits
+                        if (ch >= '2' && ch <= '9') {
+                            reportScannerError("Malformed binary literal");
+                            return getNextToken();
                         }
 
                         //optional suffix
@@ -611,7 +626,6 @@ class Scanner {
                         return new TokenInfo(literalType, buffer.toString(), line);
                     } else if (isDigit(ch)) {
                         // octal
-                        reportScannerError("Octal ints are not yet implemented in j--.");
                         boolean isAboveOctal = false;
                         boolean isFloatingPoint = false;
                         while (isDigit(ch)) {
@@ -641,7 +655,7 @@ class Scanner {
                                 nextCh();
                             }
                             reportScannerError(
-                                    "Integer number too large: " + buffer.toString()
+                                    "Malformed octal integer: " + buffer.toString()
                             );
                             return getNextToken();
                         } else {

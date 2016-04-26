@@ -26,6 +26,8 @@ class JLiteralInt extends JExpression {
     public JLiteralInt(int line, String text) {
         super(line);
         this.text = text;
+        //todo in all numeric literal classes, create an out of bounds exception and check in constructors
+        //todo catch the above exception in scanner
     }
 
     /**
@@ -49,7 +51,7 @@ class JLiteralInt extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        int i = Integer.parseInt(text);
+        int i = parse(text);
         switch (i) {
             case 0:
                 output.addNoArgInstruction(ICONST_0);
@@ -88,6 +90,35 @@ class JLiteralInt extends JExpression {
         p.printf("<JLiteralInt line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
                  ((type == null) ? "" : type.toString()), text
         );
+    }
+
+    private int parse(String str) {
+        if (str.charAt(0) != '0') {
+            //regular ol' integer
+            return Integer.parseInt(str);
+        } else {
+            if (str.length() == 1) {
+                //just 0
+                return 0;
+            }
+
+            //second char determines format of int
+            char secondChar = str.charAt(1);
+            if (secondChar == 'x') {
+                //hex
+                return Integer.parseInt(str.substring(2), 16);
+            } else if (secondChar == 'b') {
+                //binary
+                return Integer.parseInt(str.substring(2), 2);
+            } else if (secondChar >= '0' && secondChar <= '7') {
+                //octal 
+                return Integer.parseInt(str.substring(1), 8);
+            } else {
+                throw new AssertionError(
+                        "Scanner failed to catch an improperly formatted int"
+                );
+            }
+        }
     }
 
 }

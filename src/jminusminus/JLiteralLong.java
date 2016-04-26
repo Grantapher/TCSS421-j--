@@ -50,7 +50,7 @@ class JLiteralLong extends JExpression {
 
     public void codegen(CLEmitter output) {
         //last character is an L
-        long i = Long.parseLong(text.substring(0, text.length() - 1));
+        long i = parse(text.substring(0, text.length() - 1));
 
         if (i == 0) {
             output.addNoArgInstruction(LCONST_0);
@@ -69,6 +69,35 @@ class JLiteralLong extends JExpression {
         p.printf("<JLiteralLong line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
                  ((type == null) ? "" : type.toString()), text
         );
+    }
+
+    private long parse(String str) {
+        if (str.charAt(0) != '0') {
+            //regular ol' integer
+            return Long.parseLong(str);
+        } else {
+            if (str.length() == 1) {
+                //just 0
+                return 0;
+            }
+
+            //second char determines format of int
+            char secondChar = str.charAt(1);
+            if (secondChar == 'x') {
+                //hex
+                return Long.parseLong(str.substring(2), 16);
+            } else if (secondChar == 'b') {
+                //binary
+                return Long.parseLong(str.substring(2), 2);
+            } else if (secondChar >= '0' && secondChar <= '7') {
+                //octal
+                return Long.parseLong(str.substring(1), 8);
+            } else {
+                throw new AssertionError(
+                        "Scanner failed to catch an improperly formatted long"
+                );
+            }
+        }
     }
 
 }
