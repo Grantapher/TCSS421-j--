@@ -137,10 +137,8 @@ class Scanner {
         putUnimplemented(CONTINUE);
         putUnimplemented(DEFAULT);
         putUnimplemented(DO);
-        putUnimplemented(DOUBLE);
         putUnimplemented(FINAL);
         putUnimplemented(FINALLY);
-        putUnimplemented(FLOAT);
         putUnimplemented(FOR);
         putUnimplemented(GOTO);
         putUnimplemented(IMPLEMENTS);
@@ -527,7 +525,6 @@ class Scanner {
                         }
                         //optional dot
                         if (ch == '.') {
-                            reportUnimplementedError(DOUBLE_LITERAL);
                             literalType = DOUBLE_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -544,7 +541,6 @@ class Scanner {
                         }
                         // required p if floating point
                         if (ch == 'p' || ch == 'P') {
-                            reportUnimplementedError(DOUBLE_LITERAL);
                             literalType = DOUBLE_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -573,7 +569,6 @@ class Scanner {
                                 reportScannerError("malformed floating point literal");
                                 return getNextToken();
                             }
-                            reportUnimplementedError(FLOAT_LITERAL);
                             literalType = FLOAT_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -582,7 +577,6 @@ class Scanner {
                                 reportScannerError("malformed floating point literal");
                                 return getNextToken();
                             }
-                            reportUnimplementedError(DOUBLE_LITERAL);
                             literalType = DOUBLE_LITERAL;
                             buffer.append(ch);
                             nextCh();
@@ -660,12 +654,10 @@ class Scanner {
                             return new TokenInfo(literalType, buffer.toString(), line);
                         }
                     } else if (ch == 'f' || ch == 'F') {
-                        reportUnimplementedError(FLOAT_LITERAL);
                         buffer.append(ch);
                         nextCh();
                         return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
                     } else if (ch == 'd' || ch == 'D') {
-                        reportUnimplementedError(DOUBLE_LITERAL);
                         buffer.append(ch);
                         nextCh();
                         return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
@@ -691,7 +683,6 @@ class Scanner {
                 }
                 // optional dot
                 if (ch == '.') {
-                    reportUnimplementedError(DOUBLE_LITERAL);
                     literalType = DOUBLE_LITERAL;
                     buffer.append(ch);
                     nextCh();
@@ -703,7 +694,6 @@ class Scanner {
                 }
                 // optional exponent
                 if (ch == 'e' || ch == 'E') {
-                    reportUnimplementedError(DOUBLE_LITERAL);
                     literalType = DOUBLE_LITERAL;
                     // exponent indicator
                     buffer.append(ch);
@@ -722,12 +712,10 @@ class Scanner {
 
                 // optional suffixes
                 if (ch == 'f' || ch == 'F') {
-                    reportUnimplementedError(FLOAT_LITERAL);
                     literalType = FLOAT_LITERAL;
                     buffer.append(ch);
                     nextCh();
                 } else if (ch == 'd' || ch == 'D') {
-                    reportUnimplementedError(DOUBLE_LITERAL);
                     literalType = DOUBLE_LITERAL;
                     buffer.append(ch);
                     nextCh();

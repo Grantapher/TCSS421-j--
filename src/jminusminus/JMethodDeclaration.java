@@ -207,6 +207,12 @@ class JMethodDeclaration extends JAST implements JMember {
         } else if (returnType == Type.LONG) {
             partial.addNoArgInstruction(LCONST_0);
             partial.addNoArgInstruction(LRETURN);
+        } else if (returnType == Type.FLOAT) {
+            partial.addNoArgInstruction(FCONST_0);
+            partial.addNoArgInstruction(FRETURN);
+        } else if (returnType == Type.DOUBLE) {
+            partial.addNoArgInstruction(DCONST_0);
+            partial.addNoArgInstruction(DRETURN);
         } else {
             // A reference type.
             partial.addNoArgInstruction(ACONST_NULL);

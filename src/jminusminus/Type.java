@@ -45,6 +45,16 @@ class Type {
     public final static Type LONG = typeFor(long.class);
 
     /**
+     * The primitive type, float.
+     */
+    public final static Type FLOAT = typeFor(float.class);
+
+    /**
+     * The primitive type, double.
+     */
+    public final static Type DOUBLE = typeFor(double.class);
+
+    /**
      * The primitive type, char.
      */
     public final static Type CHAR = typeFor(char.class);
@@ -63,6 +73,16 @@ class Type {
      * java.lang.Long.
      */
     public final static Type BOXED_LONG = typeFor(java.lang.Long.class);
+
+    /**
+     * java.lang.Float.
+     */
+    public final static Type BOXED_FLOAT = typeFor(java.lang.Float.class);
+
+    /**
+     * java.lang.Double.
+     */
+    public final static Type BOXED_DOUBLE = typeFor(java.lang.Double.class);
 
     /**
      * java.lang.Character.
@@ -443,7 +463,9 @@ class Type {
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
                         : cls.isPrimitive() ? (cls == int.class ? "I"
                                 : cls == char.class ? "C" : cls == boolean.class ? "Z"
-                                        : cls == long.class ? "J" : "?")
+                                        : cls == long.class ? "J"
+                                                : cls == float.class ? "F"
+                                                        : cls == double.class ? "D" : "?")
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
 

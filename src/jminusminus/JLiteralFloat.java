@@ -5,43 +5,43 @@ package jminusminus;
 import static jminusminus.CLConstants.*;
 
 /**
- * The AST node for an long literal.
+ * The AST node for an float literal.
  */
 
-class JLiteralLong extends JExpression {
+class JLiteralFloat extends JExpression {
 
     /**
-     * String representation of the long.
+     * String representation of the float.
      */
     private String text;
 
     /**
-     * Construct an AST node for a long literal given its line number and string
+     * Construct an AST node for a float literal given its line number and string
      * representation.
      *
      * @param line line in which the literal occurs in the source file.
      * @param text string representation of the literal.
      */
 
-    public JLiteralLong(int line, String text) {
+    public JLiteralFloat(int line, String text) {
         super(line);
         this.text = text;
     }
 
     /**
-     * Analyzing a long literal is trivial.
+     * Analyzing a float literal is trivial.
      *
      * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JExpression analyze(Context context) {
-        type = Type.LONG;
+        type = Type.FLOAT;
         return this;
     }
 
     /**
-     * Generating code for a long literal means generating code to push it onto
+     * Generating code for a float literal means generating code to push it onto
      * the stack.
      *
      * @param output the code emitter (basically an abstraction for producing the
@@ -49,16 +49,17 @@ class JLiteralLong extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        //last character is an L
-        long i = Long.parseLong(text.substring(0, text.length() - 1));
-
-        if (i == 0) {
-            output.addNoArgInstruction(LCONST_0);
-        } else if (i == 1) {
-            output.addNoArgInstruction(LCONST_1);
-        } else {
-            output.addLDCInstruction(i);
-        }
+        //TODO float codegen
+        //        long i = Long.parseLong(text.substring(0, text.length() - 1));
+        //
+        //        if (i == 0) {
+        //            output.addNoArgInstruction(LCONST_0);
+        //        } else if (i == 1) {
+        //            output.addNoArgInstruction(LCONST_1);
+        //        } else {
+        //            output.addLDCInstruction(i);
+        //        }
+        //TODO tests in LiteralsTest and pass/Literals
     }
 
     /**
@@ -66,7 +67,7 @@ class JLiteralLong extends JExpression {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JLiteralLong line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
+        p.printf("<JLiteralFloat line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
                  ((type == null) ? "" : type.toString()), text
         );
     }

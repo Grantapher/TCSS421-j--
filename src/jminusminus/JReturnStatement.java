@@ -113,6 +113,10 @@ class JReturnStatement extends JStatement {
                 output.addNoArgInstruction(IRETURN);
             } else if (expr.type() == Type.LONG) {
                 output.addNoArgInstruction(LRETURN);
+            } else if (expr.type() == Type.FLOAT) {
+                output.addNoArgInstruction(FRETURN);
+            } else if (expr.type() == Type.DOUBLE) {
+                output.addNoArgInstruction(DRETURN);
             } else {
                 output.addNoArgInstruction(ARETURN);
             }

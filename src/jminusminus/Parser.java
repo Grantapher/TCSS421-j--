@@ -302,7 +302,8 @@ public class Parser {
             return true;
         } else {
             scanner.recordPosition();
-            if (have(BOOLEAN) || have(CHAR) || have(INT) || have(LONG)) {
+            if (have(BOOLEAN) || have(CHAR) || have(INT) || have(LONG) || have(FLOAT) ||
+                    have(DOUBLE)) {
                 if (have(LBRACK) && see(RBRACK)) {
                     scanner.returnToPosition();
                     return true;
@@ -899,6 +900,10 @@ public class Parser {
             return Type.INT;
         } else if (have(LONG)) {
             return Type.LONG;
+        } else if (have(FLOAT)) {
+            return Type.FLOAT;
+        } else if (have(DOUBLE)) {
+            return Type.DOUBLE;
         } else {
             reportParserError("Type sought where %s found", scanner.token().image());
             return Type.ANY;
@@ -1403,6 +1408,10 @@ public class Parser {
             return new JLiteralInt(line, scanner.previousToken().image());
         } else if (have(LONG_LITERAL)) {
             return new JLiteralLong(line, scanner.previousToken().image());
+        } else if (have(FLOAT_LITERAL)) {
+            return new JLiteralFloat(line, scanner.previousToken().image());
+        } else if (have(DOUBLE_LITERAL)) {
+            return new JLiteralDouble(line, scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());
         } else if (have(STRING_LITERAL)) {

@@ -134,14 +134,34 @@ class Conversions {
         // Populate the table
 
         put(Type.CHAR, Type.INT, Converter.Identity);
+        //TODO more char casts?
+
+
+        put(Type.DOUBLE, Type.FLOAT, new D2F());
+        put(Type.DOUBLE, Type.INT, new D2I());
+        put(Type.DOUBLE, Type.LONG, new D2L());
+
+        put(Type.FLOAT, Type.DOUBLE, new F2D());
+        put(Type.FLOAT, Type.INT, new F2I());
+        put(Type.FLOAT, Type.LONG, new F2L());
+
         put(Type.INT, Type.CHAR, new I2C());
+        put(Type.INT, Type.FLOAT, new I2F());
+        put(Type.INT, Type.DOUBLE, new I2D());
+        put(Type.INT, Type.LONG, new I2L());
+
+        put(Type.LONG, Type.DOUBLE, new L2D());
+        put(Type.LONG, Type.FLOAT, new L2F());
+        put(Type.LONG, Type.INT, new L2I());
 
         // Boxing
         put(Type.CHAR, Type.BOXED_CHAR, new Boxing(Type.CHAR, Type.BOXED_CHAR));
         put(Type.INT, Type.BOXED_INT, new Boxing(Type.INT, Type.BOXED_INT));
         put(Type.LONG, Type.BOXED_LONG, new Boxing(Type.LONG, Type.BOXED_LONG));
-        put(Type.BOOLEAN, Type.BOXED_BOOLEAN,
-            new Boxing(Type.BOOLEAN, Type.BOXED_BOOLEAN)
+        put(Type.FLOAT, Type.BOXED_FLOAT, new Boxing(Type.FLOAT, Type.BOXED_FLOAT));
+        put(Type.DOUBLE, Type.BOXED_DOUBLE, new Boxing(Type.DOUBLE, Type.BOXED_DOUBLE));
+        put(Type.LONG, Type.BOXED_LONG, new Boxing(Type.LONG, Type.BOXED_LONG));
+        put(Type.BOOLEAN, Type.BOXED_BOOLEAN, new Boxing(Type.BOOLEAN, Type.BOXED_BOOLEAN)
         );
 
         // Un-boxing
@@ -149,7 +169,15 @@ class Conversions {
             new UnBoxing(Type.BOXED_CHAR, Type.CHAR, "charValue")
         );
         put(Type.BOXED_INT, Type.INT, new UnBoxing(Type.BOXED_INT, Type.INT, "intValue"));
-        put(Type.BOXED_LONG, Type.LONG, new UnBoxing(Type.BOXED_LONG, Type.LONG, "longValue"));
+        put(Type.BOXED_LONG, Type.LONG,
+            new UnBoxing(Type.BOXED_LONG, Type.LONG, "longValue")
+        );
+        put(Type.BOXED_FLOAT, Type.FLOAT,
+            new UnBoxing(Type.BOXED_FLOAT, Type.FLOAT, "floatValue")
+        );
+        put(Type.BOXED_DOUBLE, Type.DOUBLE,
+            new UnBoxing(Type.BOXED_DOUBLE, Type.DOUBLE, "doubleValue")
+        );
         put(Type.BOXED_BOOLEAN, Type.BOOLEAN,
             new UnBoxing(Type.BOXED_BOOLEAN, Type.BOOLEAN, "booleanValue")
         );
@@ -350,6 +378,102 @@ class UnBoxing implements Converter {
 }
 
 /**
+ * Converting from a double to a float requires an D2F instruction.
+ */
+
+class D2F implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(D2F);
+    }
+
+}
+
+/**
+ * Converting from a double to an int requires an D2I instruction.
+ */
+
+class D2I implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(D2I);
+    }
+
+}
+
+/**
+ * Converting from a double to a long requires an D2L instruction.
+ */
+
+class D2L implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(D2L);
+    }
+
+}
+
+/**
+ * Converting from a float to a double requires an F2D instruction.
+ */
+
+class F2D implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(F2D);
+    }
+
+}
+
+/**
+ * Converting from a float to an int requires an F2I instruction.
+ */
+
+class F2I implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(F2I);
+    }
+
+}
+
+/**
+ * Converting from a float to a long requires an F2L instruction.
+ */
+
+class F2L implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(F2L);
+    }
+
+}
+
+/**
  * Converting from an int to a char requires an I2C instruction.
  */
 
@@ -361,6 +485,102 @@ class I2C implements Converter {
 
     public void codegen(CLEmitter output) {
         output.addNoArgInstruction(I2C);
+    }
+
+}
+
+/**
+ * Converting from an int to a double requires an I2D instruction.
+ */
+
+class I2D implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(I2D);
+    }
+
+}
+
+/**
+ * Converting from an int to a float requires an I2F instruction.
+ */
+
+class I2F implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(I2F);
+    }
+
+}
+
+/**
+ * Converting from an int to a long requires an I2L instruction.
+ */
+
+class I2L implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(I2L);
+    }
+
+}
+
+/**
+ * Converting from a long to a double requires an L2D instruction.
+ */
+
+class L2D implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(L2D);
+    }
+
+}
+
+/**
+ * Converting from a long to a float requires an L2F instruction.
+ */
+
+class L2F implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(L2F);
+    }
+
+}
+
+/**
+ * Converting from a long to an int requires an L2I instruction.
+ */
+
+class L2I implements Converter {
+
+    /**
+     * @inheritDoc
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(L2I);
     }
 
 }
