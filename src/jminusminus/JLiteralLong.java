@@ -16,6 +16,11 @@ class JLiteralLong extends JExpression {
     private String text;
 
     /**
+     * Long representation of the long.
+     */
+    private long data;
+
+    /**
      * Construct an AST node for a long literal given its line number and string
      * representation.
      *
@@ -26,6 +31,16 @@ class JLiteralLong extends JExpression {
     public JLiteralLong(int line, String text) {
         super(line);
         this.text = text;
+        try {
+            //last character is an l
+            this.data = parse(text.substring(0, text.length() - 1));
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Bad long format (Likely out of long" +
+                                                 " bounds): " +
+                                                 text
+                    );
+        }
     }
 
     /**
@@ -49,15 +64,12 @@ class JLiteralLong extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        //last character is an L
-        long i = parse(text.substring(0, text.length() - 1));
-
-        if (i == 0) {
+        if (data == 0) {
             output.addNoArgInstruction(LCONST_0);
-        } else if (i == 1) {
+        } else if (data == 1) {
             output.addNoArgInstruction(LCONST_1);
         } else {
-            output.addLDCInstruction(i);
+            output.addLDCInstruction(data);
         }
     }
 

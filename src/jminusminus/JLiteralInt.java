@@ -16,6 +16,11 @@ class JLiteralInt extends JExpression {
     private String text;
 
     /**
+     * Integer representation of the int.
+     */
+    private int data;
+
+    /**
      * Construct an AST node for an int literal given its line number and string
      * representation.
      *
@@ -26,7 +31,17 @@ class JLiteralInt extends JExpression {
     public JLiteralInt(int line, String text) {
         super(line);
         this.text = text;
-        //todo in all numeric literal classes, create an out of bounds exception and check in constructors
+        try {
+            this.data = parse(text);
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Bad int format (Likely out of int" +
+                                                 " bounds): " +
+                                                 text
+                    );
+        }
+        //todo in all numeric literal classes, create an out of bounds exception and
+        // check in constructors
         //todo catch the above exception in scanner
     }
 
@@ -51,8 +66,7 @@ class JLiteralInt extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        int i = parse(text);
-        switch (i) {
+        switch (data) {
             case 0:
                 output.addNoArgInstruction(ICONST_0);
                 break;
@@ -72,12 +86,12 @@ class JLiteralInt extends JExpression {
                 output.addNoArgInstruction(ICONST_5);
                 break;
             default:
-                if (i >= 6 && i <= 127) {
-                    output.addOneArgInstruction(BIPUSH, i);
-                } else if (i >= 128 && i <= 32767) {
-                    output.addOneArgInstruction(SIPUSH, i);
+                if (data >= 6 && data <= 127) {
+                    output.addOneArgInstruction(BIPUSH, data);
+                } else if (data >= 128 && data <= 32767) {
+                    output.addOneArgInstruction(SIPUSH, data);
                 } else {
-                    output.addLDCInstruction(i);
+                    output.addLDCInstruction(data);
                 }
         }
     }
@@ -92,7 +106,7 @@ class JLiteralInt extends JExpression {
         );
     }
 
-    private int parse(String str) {
+    private int parse(String str) throws NumberFormatException {
         if (str.charAt(0) != '0') {
             //regular ol' integer
             return Integer.parseInt(str);
