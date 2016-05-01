@@ -982,7 +982,7 @@ public class Parser {
      * <p>
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalOrExpression // level 13
+     *       conditionalExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
@@ -994,11 +994,35 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalOrExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
             return new JPlusAssignOp(line, lhs, assignmentExpression());
+        } else {
+            return lhs;
+        }
+    }
+
+    /**
+     * Parse a conditional expression.
+     * <p>
+     * <pre>
+     *   conditionalExpression ::=
+     *       conditionalOrExpression // level 13
+     *           [? assignmentExpression : conditionalExpression]
+     * </pre>
+     *
+     * @return an AST for a conditionalExpression.
+     */
+
+    private JExpression conditionalExpression() {
+        int line = scanner.token().line();
+        JExpression lhs = conditionalOrExpression();
+        if (have(TERNARY_START)) {
+            JExpression middle = assignmentExpression();
+            mustBe(TERNARY_END);
+            return new JTernaryOp(line, lhs, middle, conditionalExpression());
         } else {
             return lhs;
         }
@@ -1033,8 +1057,8 @@ public class Parser {
      * Parse a conditional-and expression.
      * <p>
      * <pre>
-     *   conditionalAndExpression ::= equalityExpression // level 10
-     *                                  {LAND equalityExpression}
+     *   conditionalAndExpression ::= inclusiveOrExpression // level 10
+     *                                  {LAND inclusiveOrExpression}
      * </pre>
      *
      * @return an AST for a conditionalAndExpression.
@@ -1043,10 +1067,85 @@ public class Parser {
     private JExpression conditionalAndExpression() {
         int line = scanner.token().line();
         boolean more = true;
-        JExpression lhs = equalityExpression();
+        JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusive-or expression.
+     * <p>
+     * <pre>
+     *   inclusiveOrExpression ::= exclusiveOrExpression // level 9
+     *                                  {BOR exclusiveOrExpression}
+     * </pre>
+     *
+     * @return an AST for a inclusiveOrExpression.
+     */
+
+    private JExpression inclusiveOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = exclusiveOrExpression();
+        while (more) {
+            if (have(BOR)) {
+                lhs = new JBitwiseInclusiveOrOp(line, lhs, exclusiveOrExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    /**
+     * Parse an exclusive-or expression.
+     * <p>
+     * <pre>
+     *   exclusiveOrExpression ::= andExpression // level 8
+     *                                  {XOR andExpression}
+     * </pre>
+     *
+     * @return an AST for a exclusiveOrExpression.
+     */
+
+    private JExpression exclusiveOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = andExpression();
+        while (more) {
+            if (have(XOR)) {
+                lhs = new JBitwiseExclusiveOrOp(line, lhs, andExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    /**
+     * Parse an and expression.
+     * <p>
+     * <pre>
+     *   andExpression ::= equalityExpression // level 7
+     *                                  {LAND equalityExpression}
+     * </pre>
+     *
+     * @return an AST for a andExpression.
+     */
+
+    private JExpression andExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = equalityExpression();
+        while (more) {
+            if (have(BAND)) {
+                lhs = new JBitwiseAndOp(line, lhs, equalityExpression());
             } else {
                 more = false;
             }

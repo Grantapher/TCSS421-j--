@@ -12,9 +12,9 @@ import junit.framework.TestSuite;
 public class JMinusMinusTestRunner {
 
     public static Test suite() {
-        //todo needed tests - LOR, BCOMP, shift operators
+        //todo needed tests - LOR, BCOMP, shift operators, bitwise ops, ternary
 
-        //todo needed FAIL tests - BCOMP (floating point, char), shift ops (fp)
+        //todo needed FAIL tests - BCOMP (floating point, char), shift ops (fp), bitwise ops, ternary (match type)
 
         TestSuite suite = new TestSuite();
         suite.addTestSuite(HelloWorldTest.class);

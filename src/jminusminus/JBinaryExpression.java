@@ -50,8 +50,8 @@ abstract class JBinaryExpression extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JBinaryExpression line=\"%d\" type=\"%s\" " + "operator=\"%s\">\n",
-                 line(), ((type == null) ? "" : type.toString()),
-                 Util.escapeSpecialXMLChars(operator)
+                line(), ((type == null) ? "" : type.toString()),
+                Util.escapeSpecialXMLChars(operator)
         );
         p.indentRight();
         p.printf("<Lhs>\n");
@@ -288,3 +288,165 @@ class JModuloOp extends JBinaryExpression {
     }
 }
 
+abstract class JBitwiseExpression extends JBinaryExpression {
+
+    public JBitwiseExpression(int line, String op, JExpression lhs, JExpression rhs) {
+        super(line, op, lhs, rhs);
+    }
+
+    /**
+     * Analyzing the bitwise operation involves analyzing its operands, checking
+     * types, and determining the result type.
+     *
+     * @param context context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        lhs.type().mustMatchOneOf(line(), Type.INT, Type.CHAR, Type.LONG);
+        rhs.type().mustMatchOneOf(line(), Type.INT, Type.CHAR, Type.LONG);
+        if (lhs.type() == Type.LONG) {
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            this.type = Type.LONG;
+        } else {
+            rhs.type().mustMatchOneOf(line(), Type.INT, Type.CHAR);
+            this.type = Type.INT;
+        }
+        return this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+
+    public void writeToStdOut(PrettyPrinter p) {
+        p.printf("<JBitwiseExpression line=\"%d\" type=\"%s\" " + "operator=\"%s\">\n",
+                line(), ((type == null) ? "" : type.toString()),
+                Util.escapeSpecialXMLChars(operator)
+        );
+        p.indentRight();
+        p.printf("<Lhs>\n");
+        p.indentRight();
+        lhs.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</Lhs>\n");
+        p.printf("<Rhs>\n");
+        p.indentRight();
+        rhs.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</Rhs>\n");
+        p.indentLeft();
+        p.printf("</JBitwiseExpression>\n");
+    }
+
+}
+
+/**
+ * The AST node for an inclusive or (|) expression.
+ */
+
+class JBitwiseInclusiveOrOp extends JBitwiseExpression {
+
+    /**
+     * Construct an AST for an inclusive or expression given its line number,
+     * and the lhs and rhs operands.
+     *
+     * @param line line in which the inclusive or expression occurs in the
+     *             source file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
+     */
+
+    public JBitwiseInclusiveOrOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "|", lhs, rhs);
+    }
+
+    /**
+     * Generating code for the | operation involves generating code for the two
+     * operands, and then the inclusive or instruction.
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addNoArgInstruction(this.type == Type.LONG ? LOR : IOR);
+    }
+
+}
+
+/**
+ * The AST node for an exclusive or (^) expression.
+ */
+
+class JBitwiseExclusiveOrOp extends JBitwiseExpression {
+
+    /**
+     * Construct an AST for an exclusive or expression given its line number,
+     * and the lhs and rhs operands.
+     *
+     * @param line line in which the exclusive or expression occurs in the
+     *             source file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
+     */
+
+    public JBitwiseExclusiveOrOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "^", lhs, rhs);
+    }
+
+    /**
+     * Generating code for the ^ operation involves generating code for the two
+     * operands, and then the exclusive or instruction.
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addNoArgInstruction(this.type == Type.LONG ? LXOR : IXOR);
+    }
+
+}
+
+/**
+ * The AST node for an and (&) expression.
+ */
+
+class JBitwiseAndOp extends JBitwiseExpression {
+
+    /**
+     * Construct an AST for an and expression given its line number,
+     * and the lhs and rhs operands.
+     *
+     * @param line line in which the and expression occurs in the
+     *             source file.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
+     */
+
+    public JBitwiseAndOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "&", lhs, rhs);
+    }
+
+    /**
+     * Generating code for the & operation involves generating code for the two
+     * operands, and then the and instruction.
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addNoArgInstruction(this.type == Type.LONG ? LAND : IAND);
+    }
+
+}

@@ -112,11 +112,7 @@ class JRightShift extends JShiftExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        if (type == Type.LONG) {
-            output.addNoArgInstruction(LSHR);
-        } else {
-            output.addNoArgInstruction(ISHR);
-        }
+        output.addNoArgInstruction(this.type == Type.LONG ? LSHR : ISHR);
     }
 
 }
@@ -152,11 +148,7 @@ class JUnsignedRightShift extends JShiftExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        if (type == Type.LONG) {
-            output.addNoArgInstruction(LUSHR);
-        } else {
-            output.addNoArgInstruction(IUSHR);
-        }
+        output.addNoArgInstruction(this.type == Type.LONG ? LUSHR : IUSHR);
     }
 
 }
@@ -192,11 +184,7 @@ class JLeftShift extends JShiftExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        if (type == Type.LONG) {
-            output.addNoArgInstruction(LSHL);
-        } else {
-            output.addNoArgInstruction(ISHL);
-        }
+        output.addNoArgInstruction(this.type == Type.LONG ? LSHL : ISHL);
     }
 
 }

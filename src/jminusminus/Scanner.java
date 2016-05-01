@@ -220,15 +220,12 @@ class Scanner {
         switch (ch) {
             case '?':
                 nextCh();
-                reportUnimplementedError(TERNARY_START);
                 return new TokenInfo(TERNARY_START, line);
             case ':':
                 nextCh();
-                reportUnimplementedError(TERNARY_END);
                 return new TokenInfo(TERNARY_END, line);
             case '~':
                 nextCh();
-                reportUnimplementedError(BCOMP);
                 return new TokenInfo(BCOMP, line);
             case '^':
                 nextCh();
@@ -237,7 +234,6 @@ class Scanner {
                     reportUnimplementedError(XOR_ASSIGN);
                     return new TokenInfo(XOR_ASSIGN, line);
                 } else {
-                    reportUnimplementedError(XOR);
                     return new TokenInfo(XOR, line);
                 }
             case '|':
@@ -248,10 +244,8 @@ class Scanner {
                     return new TokenInfo(BOR_ASSIGN, line);
                 } else if (ch == '|') {
                     nextCh();
-                    reportUnimplementedError(LOR);
                     return new TokenInfo(LOR, line);
                 } else {
-                    reportUnimplementedError(BOR);
                     return new TokenInfo(BOR, line);
                 }
             case '(':
@@ -345,7 +339,6 @@ class Scanner {
                     nextCh();
                     return new TokenInfo(LAND, line);
                 } else {
-                    reportUnimplementedError(BAND);
                     return new TokenInfo(BAND, line);
                 }
             case '>':
@@ -363,11 +356,9 @@ class Scanner {
                             reportUnimplementedError(URSHIFT_ASSIGN);
                             return new TokenInfo(URSHIFT_ASSIGN, line);
                         } else {
-                            reportUnimplementedError(URSHIFT);
                             return new TokenInfo(URSHIFT, line);
                         }
                     } else {
-                        reportUnimplementedError(RSHIFT);
                         return new TokenInfo(RSHIFT, line);
                     }
                 } else if (ch == '=') {
@@ -385,7 +376,6 @@ class Scanner {
                         reportUnimplementedError(LSHIFT_ASSIGN);
                         return new TokenInfo(LSHIFT_ASSIGN, line);
                     } else {
-                        reportUnimplementedError(LSHIFT);
                         return new TokenInfo(LSHIFT, line);
                     }
                 } else if (ch == '=') {
@@ -733,7 +723,7 @@ class Scanner {
                     nextCh();
                 }
                 return new TokenInfo(null == literalType ? INT_LITERAL : literalType,
-                                     buffer.toString(), line
+                        buffer.toString(), line
                 );
             default:
                 if (isIdentifierStart(ch)) {
