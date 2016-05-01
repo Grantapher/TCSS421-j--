@@ -41,8 +41,8 @@ abstract class JUnaryExpression extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JUnaryExpression line=\"%d\" type=\"%s\" " + "operator=\"%s\">\n",
-                 line(), ((type == null) ? "" : type.toString()),
-                 Util.escapeSpecialXMLChars(operator)
+                line(), ((type == null) ? "" : type.toString()),
+                Util.escapeSpecialXMLChars(operator)
         );
         p.indentRight();
         p.printf("<Operand>\n");
@@ -168,6 +168,59 @@ class JLogicalNotOp extends JUnaryExpression {
 
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
         arg.codegen(output, targetLabel, !onTrue);
+    }
+
+}
+
+/**
+ * The AST node for a bitwise complement (~) expression.
+ */
+
+class JBitwiseComplementOp extends JUnaryExpression {
+
+    /**
+     * Construct an AST for a bitwise complement expression given its line number, and
+     * the operand.
+     *
+     * @param line line in which the bitwise complement expression occurs in the source
+     *             file.
+     * @param arg  the operand.
+     */
+
+    public JBitwiseComplementOp(int line, JExpression arg) {
+        super(line, "~", arg);
+    }
+
+    /**
+     * Analyzing a bitwise complement operation means analyzing its operand, insuring
+     * it's an int or a long, and setting the result to that type.
+     *
+     * @param context context in which names are resolved.
+     */
+
+    public JExpression analyze(Context context) {
+        arg = (JExpression) arg.analyze(context);
+        type = arg.type();
+        arg.type().mustMatchOneOf(line(), Type.INT, Type.LONG);
+        return this;
+    }
+
+    /**
+     * Generate code for the case where we have a long or an int.
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
+        if (type == Type.LONG) {
+            output.addLDCInstruction(-1L);
+            output.addNoArgInstruction(LXOR);
+        } else {
+            output.addNoArgInstruction(ICONST_M1);
+            output.addNoArgInstruction(IXOR);
+        }
     }
 
 }

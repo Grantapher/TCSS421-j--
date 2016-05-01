@@ -982,7 +982,7 @@ public class Parser {
      * <p>
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalAndExpression // level 13
+     *       conditionalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
@@ -994,7 +994,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalAndExpression();
+        JExpression lhs = conditionalOrExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1005,6 +1005,31 @@ public class Parser {
     }
 
     /**
+     * Parse a conditional-or expression.
+     * <p>
+     * <pre>
+     *   conditionalOrExpression ::= conditionalAndExpression // level 11
+     *                                  {LOR conditionalAndExpression}
+     * </pre>
+     *
+     * @return an AST for a conditionalOrExpression.
+     */
+
+    private JExpression conditionalOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = conditionalAndExpression();
+        while (more) {
+            if (have(LOR)) {
+                lhs = new JLogicalOrOp(line, lhs, equalityExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    /**
      * Parse a conditional-and expression.
      * <p>
      * <pre>
@@ -1012,7 +1037,7 @@ public class Parser {
      *                                  {LAND equalityExpression}
      * </pre>
      *
-     * @return an AST for a conditionalExpression.
+     * @return an AST for a conditionalAndExpression.
      */
 
     private JExpression conditionalAndExpression() {
@@ -1060,8 +1085,8 @@ public class Parser {
      * Parse a relational expression.
      * <p>
      * <pre>
-     *   relationalExpression ::= additiveExpression  // level 5
-     *                              [(GT | LT | GEQ | LEQ) additiveExpression
+     *   relationalExpression ::= shiftExpression  // level 5
+     *                              [(GT | LT | GEQ | LEQ) shiftExpression
      *                              | INSTANCEOF referenceType]
      * </pre>
      *
@@ -1070,17 +1095,43 @@ public class Parser {
 
     private JExpression relationalExpression() {
         int line = scanner.token().line();
-        JExpression lhs = additiveExpression();
+        JExpression lhs = shiftExpression();
         if (have(GT)) {
-            return new JGreaterThanOp(line, lhs, additiveExpression());
+            return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LT)) {
-            return new JLessThanOp(line, lhs, additiveExpression());
+            return new JLessThanOp(line, lhs, shiftExpression());
         } else if (have(LEQ)) {
-            return new JLessEqualOp(line, lhs, additiveExpression());
+            return new JLessEqualOp(line, lhs, shiftExpression());
         } else if (have(GEQ)) {
-            return new JGreaterEqualOp(line, lhs, additiveExpression());
+            return new JGreaterEqualOp(line, lhs, shiftExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
+        } else {
+            return lhs;
+        }
+    }
+
+    /**
+     * Parse a shift expression.
+     * <p>
+     * <pre>
+     *   shiftExpression ::= additiveExpression  // level 5
+     *                              (LSHIFT | RSHIFT | URSHIFT) additiveExpression
+     *
+     * </pre>
+     *
+     * @return an AST for a shiftExpression.
+     */
+
+    private JExpression shiftExpression() {
+        int line = scanner.token().line();
+        JExpression lhs = additiveExpression();
+        if (have(LSHIFT)) {
+            return new JLeftShift(line, lhs, additiveExpression());
+        } else if (have(RSHIFT)) {
+            return new JRightShift(line, lhs, additiveExpression());
+        } else if (have(URSHIFT)) {
+            return new JUnsignedRightShift(line, lhs, additiveExpression());
         } else {
             return lhs;
         }
@@ -1185,6 +1236,8 @@ public class Parser {
         int line = scanner.token().line();
         if (have(LNOT)) {
             return new JLogicalNotOp(line, unaryExpression());
+        } else if (have(BCOMP)) {
+            return new JBitwiseComplementOp(line, unaryExpression());
         } else if (seeCast()) {
             mustBe(LPAREN);
             boolean isBasicType = seeBasicType();
