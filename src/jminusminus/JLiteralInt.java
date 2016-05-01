@@ -31,19 +31,9 @@ class JLiteralInt extends JExpression {
     public JLiteralInt(int line, String text) {
         super(line);
         this.text = text;
-        try {
-            this.data = parse(text);
-        } catch (NumberFormatException e) {
-            JAST.compilationUnit
-                    .reportSemanticError(line, "Bad int format (Likely out of int" +
-                                                 " bounds): " +
-                                                 text
-                    );
-        }
-        //todo in all numeric literal classes, create an out of bounds exception and
-        // check in constructors
-        //todo catch the above exception in scanner
     }
+
+
 
     /**
      * Analyzing an int literal is trivial.
@@ -51,8 +41,16 @@ class JLiteralInt extends JExpression {
      * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
-
     public JExpression analyze(Context context) {
+        try {
+            this.data = parse(text);
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Bad int format (Likely out of int" +
+                                    " bounds): " +
+                                    text
+                    );
+        }
         type = Type.INT;
         return this;
     }

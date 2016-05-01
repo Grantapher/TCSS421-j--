@@ -16,6 +16,11 @@ class JLiteralDouble extends JExpression {
     private String text;
 
     /**
+     * Float representation of the float.
+     */
+    private double data;
+
+    /**
      * Construct an AST node for a double literal given its line number and string
      * representation.
      *
@@ -36,6 +41,11 @@ class JLiteralDouble extends JExpression {
      */
 
     public JExpression analyze(Context context) {
+        try {
+            this.data = Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit.reportSemanticError(line, "Bad double format: " + text);
+        }
         type = Type.DOUBLE;
         return this;
     }
@@ -49,14 +59,12 @@ class JLiteralDouble extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        double i = Double.parseDouble(text);
-
-        if (i == 0d) {
+        if (data == 0d) {
             output.addNoArgInstruction(DCONST_0);
-        } else if (i == 1d) {
+        } else if (data == 1d) {
             output.addNoArgInstruction(DCONST_1);
         } else {
-            output.addLDCInstruction(i);
+            output.addLDCInstruction(data);
         }
     }
 
@@ -66,7 +74,7 @@ class JLiteralDouble extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JLiteralDouble line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
-                 ((type == null) ? "" : type.toString()), text
+                ((type == null) ? "" : type.toString()), text
         );
     }
 

@@ -31,16 +31,6 @@ class JLiteralLong extends JExpression {
     public JLiteralLong(int line, String text) {
         super(line);
         this.text = text;
-        try {
-            //last character is an l
-            this.data = parse(text.substring(0, text.length() - 1));
-        } catch (NumberFormatException e) {
-            JAST.compilationUnit
-                    .reportSemanticError(line, "Bad long format (Likely out of long" +
-                                                 " bounds): " +
-                                                 text
-                    );
-        }
     }
 
     /**
@@ -51,6 +41,16 @@ class JLiteralLong extends JExpression {
      */
 
     public JExpression analyze(Context context) {
+        try {
+            //last character is an l
+            this.data = parse(text.substring(0, text.length() - 1));
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Bad long format (Likely out of long" +
+                                    " bounds): " +
+                                    text
+                    );
+        }
         type = Type.LONG;
         return this;
     }

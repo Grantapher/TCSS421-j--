@@ -106,7 +106,7 @@ public class Parser {
         } else if (isRecovered) {
             isRecovered = false;
             reportParserError("%s found where %s sought", scanner.token().image(),
-                              sought.image()
+                    sought.image()
             );
         } else {
             // Do not report the (possibly spurious) error,
@@ -134,7 +134,7 @@ public class Parser {
         return lastDotIndex == -1 ? null // It was a simple
                 // name
                 : new AmbiguousName(name.line(), qualifiedName.substring(0, lastDotIndex)
-                );
+        );
     }
 
     /**
@@ -279,11 +279,7 @@ public class Parser {
      */
 
     private boolean seeBasicType() {
-        if (see(BOOLEAN) || see(CHAR) || see(INT)) {
-            return true;
-        } else {
-            return false;
-        }
+        return see(BOOLEAN) || see(CHAR) || see(INT) || see(LONG) || see(FLOAT) || see(DOUBLE);
     }
 
     /**
@@ -366,7 +362,7 @@ public class Parser {
         }
         mustBe(EOF);
         return new JCompilationUnit(scanner.fileName(), line, packageName, imports,
-                                    typeDeclarations
+                typeDeclarations
         );
     }
 
@@ -573,12 +569,12 @@ public class Parser {
                     ArrayList<JFormalParameter> params = formalParameters();
                     JBlock body = have(SEMI) ? null : block();
                     memberDecl = new JMethodDeclaration(line, mods, name, type, params,
-                                                        body
+                            body
                     );
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
-                                                       variableDeclarators(type)
+                            variableDeclarators(type)
                     );
                     mustBe(SEMI);
                 }
@@ -1302,7 +1298,7 @@ public class Parser {
             TypeName id = qualifiedIdentifier();
             if (see(LPAREN)) {
                 return new JMessageExpression(line, null, ambiguousPart(id),
-                                              id.simpleName(), arguments()
+                        id.simpleName(), arguments()
                 );
             } else if (ambiguousPart(id) == null) {
                 // A simple name

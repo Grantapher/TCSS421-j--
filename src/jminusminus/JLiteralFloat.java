@@ -16,6 +16,11 @@ class JLiteralFloat extends JExpression {
     private String text;
 
     /**
+     * Float representation of the float.
+     */
+    private float data;
+
+    /**
      * Construct an AST node for a float literal given its line number and string
      * representation.
      *
@@ -36,6 +41,11 @@ class JLiteralFloat extends JExpression {
      */
 
     public JExpression analyze(Context context) {
+        try {
+            this.data = Float.parseFloat(text);
+        } catch (NumberFormatException e) {
+            JAST.compilationUnit.reportSemanticError(line, "Bad float format: " + text);
+        }
         type = Type.FLOAT;
         return this;
     }
@@ -49,16 +59,14 @@ class JLiteralFloat extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        float i = Float.parseFloat(text);
-
-        if (i == 0.0f) {
+        if (data == 0f) {
             output.addNoArgInstruction(FCONST_0);
-        } else if (i == 1f) {
+        } else if (data == 1f) {
             output.addNoArgInstruction(FCONST_1);
-        } else if (i == 2f) {
+        } else if (data == 2f) {
             output.addNoArgInstruction(FCONST_2);
         } else {
-            output.addLDCInstruction(i);
+            output.addLDCInstruction(data);
         }
     }
 
@@ -68,7 +76,7 @@ class JLiteralFloat extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JLiteralFloat line=\"%d\" type=\"%s\" " + "value=\"%s\"/>\n", line(),
-                 ((type == null) ? "" : type.toString()), text
+                ((type == null) ? "" : type.toString()), text
         );
     }
 
