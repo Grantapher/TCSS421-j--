@@ -10,7 +10,7 @@ public class Bitwise {
         return i | mask;
     }
 
-    public static long lOr(long i, int mask) {
+    public static long lOr(long i, long mask) {
         return i | mask;
     }
 
@@ -22,7 +22,7 @@ public class Bitwise {
         return i ^ mask;
     }
 
-    public static long lXor(long i, int mask) {
+    public static long lXor(long i, long mask) {
         return i ^ mask;
     }
 
@@ -34,7 +34,7 @@ public class Bitwise {
         return i & mask;
     }
 
-    public static long lAnd(long i, int mask) {
+    public static long lAnd(long i, long mask) {
         return i & mask;
     }
 

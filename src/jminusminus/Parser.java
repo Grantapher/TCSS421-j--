@@ -529,9 +529,11 @@ public class Parser {
      * <pre>
      *   memberDecl ::= IDENTIFIER            // constructor
      *                    formalParameters
+     *                    throwTypes
      *                    block
      *                | (VOID | type) IDENTIFIER  // method
      *                    formalParameters
+     *                    throwTypes
      *                    (block | SEMI)
      *                | type variableDeclarators SEMI
      * </pre>
@@ -548,13 +550,7 @@ public class Parser {
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
-            ArrayList<TypeName> throwTypes = new ArrayList<>();
-            if (have(THROWS)) {
-                do {
-                    throwTypes.add(qualifiedIdentifier());
-                } while (have(COMMA));
-                reportParserError("throws statement not yet implemented in j-- (it parsed successfully though)");
-            }
+            ArrayList<TypeName> throwTypes = throwTypes();
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params, throwTypes, body);
         } else {
@@ -565,13 +561,7 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
-                ArrayList<TypeName> throwTypes = new ArrayList<>();
-                if (have(THROWS)) {
-                    do {
-                        throwTypes.add(qualifiedIdentifier());
-                    } while (have(COMMA));
-                    reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
-                }
+                ArrayList<TypeName> throwTypes = throwTypes();
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
             } else {
@@ -600,6 +590,27 @@ public class Parser {
             }
         }
         return memberDecl;
+    }
+
+    /**
+     * Parse a throwTypes.
+     * <p>
+     * <pre>
+     *   throwTypes ::= throws qualifiedIdentifier { COMMA qualifiedIdentifier }
+     * </pre>
+     *
+     * @return a throws list of the members.
+     */
+    private ArrayList<TypeName> throwTypes() {
+        ArrayList<TypeName> throwTypes = new ArrayList<>();
+        if (have(THROWS)) {
+            throwTypes.add(qualifiedIdentifier());
+            while (have(COMMA)) {
+                throwTypes.add(qualifiedIdentifier());
+            }
+            reportParserError("throws statement not yet implemented in j-- (it parsed successfully though)");
+        }
+        return throwTypes;
     }
 
     /**
