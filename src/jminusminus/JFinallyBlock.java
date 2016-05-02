@@ -1,8 +1,8 @@
 package jminusminus;
 
 //todo
-public class JForStatement extends JStatement {
-    public JForStatement(int line, JForControl control, JStatement statement) {
+public class JFinallyBlock extends JAST{
+    public JFinallyBlock(int line, JBlock block) {
         super(line);
     }
 

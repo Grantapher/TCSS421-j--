@@ -1,8 +1,10 @@
 package jminusminus;
 
+import java.util.ArrayList;
+
 //todo
-public class JForStatement extends JStatement {
-    public JForStatement(int line, JForControl control, JStatement statement) {
+public class JSwitchBlockStatementGroup extends JAST {
+    public JSwitchBlockStatementGroup(int line, ArrayList<JSwitchLabel> switchLabels, JStatement jStatement) {
         super(line);
     }
 

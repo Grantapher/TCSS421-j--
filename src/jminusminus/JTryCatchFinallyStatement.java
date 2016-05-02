@@ -1,8 +1,10 @@
 package jminusminus;
 
+import java.util.ArrayList;
+
 //todo
-public class JForStatement extends JStatement {
-    public JForStatement(int line, JForControl control, JStatement statement) {
+public class JTryCatchFinallyStatement extends JStatement {
+    public JTryCatchFinallyStatement(int line, JBlock block, ArrayList<JCatchBlock> catches, JFinallyBlock finallyBlock) {
         super(line);
     }
 

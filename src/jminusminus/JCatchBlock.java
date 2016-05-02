@@ -1,8 +1,8 @@
 package jminusminus;
 
 //todo
-public class JForStatement extends JStatement {
-    public JForStatement(int line, JForControl control, JStatement statement) {
+public class JCatchBlock extends JAST {
+    public JCatchBlock(int line, JFormalParameter param, JBlock block) {
         super(line);
     }
 

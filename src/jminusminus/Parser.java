@@ -571,20 +571,12 @@ public class Parser {
                     mustBe(IDENTIFIER);
                     String name = scanner.previousToken().image();
                     ArrayList<JFormalParameter> params = formalParameters();
-                    ArrayList<TypeName> throwTypes = new ArrayList<>();
-                    if (have(THROWS)) {
-                        do {
-                            throwTypes.add(qualifiedIdentifier());
-                        } while (have(COMMA));
-                        reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
-                    }
+                    ArrayList<TypeName> throwTypes = throwTypes();
                     JBlock body = have(SEMI) ? null : block();
                     memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
                 } else {
                     // Field
-                    memberDecl = new JFieldDeclaration(line, mods,
-                            variableDeclarators(type)
-                    );
+                    memberDecl = new JFieldDeclaration(line, mods, variableDeclarators(type));
                     mustBe(SEMI);
                 }
             }
@@ -659,7 +651,10 @@ public class Parser {
      * <pre>
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
-     *               | FOR ( forControl ) statement
+     *               | FOR LPAREN forControl RPAREN statement
+     *               | WHILE parExpression statement
+     *               | TRY block (CATCH LPAREN formalParameter RPAREN block {CATCH LPAREN formalParameter RPAREN block}
+     *                          |{CATCH LPAREN formalParameter RPAREN block} FINALLY block)
      *               | WHILE parExpression statement
      *               | RETURN [expression] SEMI
      *               | SEMI
@@ -683,12 +678,43 @@ public class Parser {
             mustBe(LPAREN);
             JForControl control = forControl();
             mustBe(RPAREN);
+            JStatement statement = statement();
             reportParserError("for loops aren't yet implemented in j-- (it was parsed though)");
-            return new JForStatement(line, control, statement());
+            return new JForStatement(line, control, statement);
         } else if (have(WHILE)) {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
+        } else if (have(TRY)) {
+            JBlock block = block();
+            if (!see(FINALLY) && !see(CATCH)) {
+                reportParserError("catch or finally expected");
+            }
+            ArrayList<JCatchBlock> catches = new ArrayList<>();
+            while (have(CATCH)) {
+                int catchLine = scanner.previousToken().line();
+                mustBe(LPAREN);
+                JFormalParameter param = formalParameter();
+                mustBe(RPAREN);
+                catches.add(new JCatchBlock(catchLine, param, block()));
+            }
+            JFinallyBlock finallyBlock = null;
+            if (have(FINALLY)) {
+                int finallyLine = scanner.previousToken().line();
+                finallyBlock = new JFinallyBlock(finallyLine, block());
+            }
+            reportParserError("try-catch-finally is not yet implemented in j-- (it did parse correctly though)");
+            return new JTryCatchFinallyStatement(line, block, catches, finallyBlock);
+        } else if (have(SWITCH)) {
+            JExpression parExpression = parExpression();
+            mustBe(LCURLY);
+            ArrayList<JSwitchBlockStatementGroup> switchBlockStatementGroups = new ArrayList<>();
+            while (!see(RCURLY)) {
+                switchBlockStatementGroups.add(switchBlockStatementGroup());
+            }
+            mustBe(RCURLY);
+            reportParserError("switch is not yet implemented in j-- (it did parse correctly though)");
+            return new JSwitchStatement(line, parExpression, switchBlockStatementGroups);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
@@ -709,6 +735,54 @@ public class Parser {
             mustBe(SEMI);
             return statement;
         }
+    }
+
+    /**
+     * Parse a switchBlockStatementGroup.
+     * <p>
+     * <pre>
+     *   switchBlockStatementGroup ::= switchLabel {switchLabel} {blockStatement}
+     * </pre>
+     *
+     * @return an AST for a switch block statement group.
+     */
+    private JSwitchBlockStatementGroup switchBlockStatementGroup() {
+        int line = scanner.token().line();
+        ArrayList<JSwitchLabel> switchLabels = new ArrayList<>();
+        switchLabels.add(switchLabel());
+        while (see(CASE) || see(DEFAULT)) {
+            switchLabels.add(switchLabel());
+        }
+        boolean defaultFound = false;
+        for (JSwitchLabel switchLabel : switchLabels) {
+            if (defaultFound && switchLabel.isDefault()) {
+                reportParserError("duplicate default labels found in switch statement");
+            } else if (switchLabel.isDefault()) {
+                defaultFound = true;
+            }
+        }
+        return new JSwitchBlockStatementGroup(line, switchLabels, blockStatement());
+    }
+
+    /**
+     * Parse a switchLabel.
+     * <p>
+     * <pre>
+     *   switchLabel ::= CASE expression COLON
+     *                 | DEFAULT COLON
+     * </pre>
+     *
+     * @return an AST for a switch label.
+     */
+    private JSwitchLabel switchLabel() {
+        int line = scanner.token().line();
+        JExpression expression = null;
+        if (have(CASE)) {
+            expression = expression();
+        }
+        mustBe(COLON);
+        return new JSwitchLabel(line, expression);
+
     }
 
     /**

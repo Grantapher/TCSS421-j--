@@ -8,7 +8,7 @@ public class JForVarControl extends JAST {
 
     @Override
     public JAST analyze(Context context) {
-        return null;
+        return this;
     }
 
     @Override

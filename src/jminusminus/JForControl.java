@@ -12,7 +12,7 @@ public class JForControl extends JAST {
 
     @Override
     public JAST analyze(Context context) {
-        return null;
+        return this;
     }
 
     @Override
