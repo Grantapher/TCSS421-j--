@@ -71,7 +71,7 @@ enum TokenKind {
 
     //operators
     TERNARY_START("?"),
-    TERNARY_END(":"),
+    COLON(":"),
     ASSIGN("="),
     EQUAL("=="),
     LNOT("!"),

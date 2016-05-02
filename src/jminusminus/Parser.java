@@ -26,7 +26,7 @@ public class Parser {
     private boolean isInError;
 
     /**
-     * Wheter we have recovered from a parser error.
+     * Whether we have recovered from a parser error.
      */
     private boolean isRecovered;
 
@@ -542,24 +542,38 @@ public class Parser {
 
     private JMember memberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
-        JMember memberDecl = null;
+        JMember memberDecl;
         if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
+            ArrayList<TypeName> throwTypes = new ArrayList<>();
+            if (have(THROWS)) {
+                do {
+                    throwTypes.add(qualifiedIdentifier());
+                } while (have(COMMA));
+                reportParserError("throws statement not yet implemented in j-- (it parsed successfully though)");
+            }
             JBlock body = block();
-            memberDecl = new JConstructorDeclaration(line, mods, name, params, body);
+            memberDecl = new JConstructorDeclaration(line, mods, name, params, throwTypes, body);
         } else {
-            Type type = null;
+            Type type;
             if (have(VOID)) {
                 // void method
                 type = Type.VOID;
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
+                ArrayList<TypeName> throwTypes = new ArrayList<>();
+                if (have(THROWS)) {
+                    do {
+                        throwTypes.add(qualifiedIdentifier());
+                    } while (have(COMMA));
+                    reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
+                }
                 JBlock body = have(SEMI) ? null : block();
-                memberDecl = new JMethodDeclaration(line, mods, name, type, params, body);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
             } else {
                 type = type();
                 if (seeIdentLParen()) {
@@ -567,10 +581,15 @@ public class Parser {
                     mustBe(IDENTIFIER);
                     String name = scanner.previousToken().image();
                     ArrayList<JFormalParameter> params = formalParameters();
+                    ArrayList<TypeName> throwTypes = new ArrayList<>();
+                    if (have(THROWS)) {
+                        do {
+                            throwTypes.add(qualifiedIdentifier());
+                        } while (have(COMMA));
+                        reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
+                    }
                     JBlock body = have(SEMI) ? null : block();
-                    memberDecl = new JMethodDeclaration(line, mods, name, type, params,
-                            body
-                    );
+                    memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
@@ -629,9 +648,11 @@ public class Parser {
      * <pre>
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
+     *               | FOR ( forControl ) statement
      *               | WHILE parExpression statement
      *               | RETURN [expression] SEMI
      *               | SEMI
+     *               | THROW expression SEMI
      *               | statementExpression SEMI
      * </pre>
      *
@@ -647,6 +668,12 @@ public class Parser {
             JStatement consequent = statement();
             JStatement alternate = have(ELSE) ? statement() : null;
             return new JIfStatement(line, test, consequent, alternate);
+        } else if (have(FOR)) {
+            mustBe(LPAREN);
+            JForControl control = forControl();
+            mustBe(RPAREN);
+            reportParserError("for loops aren't yet implemented in j-- (it was parsed though)");
+            return new JForStatement(line, control, statement());
         } else if (have(WHILE)) {
             JExpression test = parExpression();
             JStatement statement = statement();
@@ -661,11 +688,121 @@ public class Parser {
             }
         } else if (have(SEMI)) {
             return new JEmptyStatement(line);
+        } else if (have(THROW)) {
+            JExpression expr = expression();
+            mustBe(SEMI);
+            reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
+            return new JThrowStatement(line, expr);
         } else { // Must be a statementExpression
             JStatement statement = statementExpression();
             mustBe(SEMI);
             return statement;
         }
+    }
+
+    /**
+     * Parse a forControl.
+     * <p>
+     * <pre>
+     *   forControl ::= forVarControl
+     *               | forInit SEMI [expression] SEMI [ForUpdate]
+     * </pre>
+     *
+     * @return an AST for a for control.
+     */
+    private JForControl forControl() {
+        int line = scanner.token().line();
+        if (see(FINAL) || seeReferenceType() || seeBasicType()) {
+            return new JForControl(line, forVarControl());
+        } else {
+            JForInitUpdate forInit = forInitUpdate();
+            mustBe(SEMI);
+            JExpression expression = null;
+            if (!see(SEMI)) {
+                expression = expression();
+            }
+            mustBe(SEMI);
+            JForInitUpdate forUpdate = null;
+            if (!see(RPAREN)) {
+                forUpdate = forInitUpdate();
+            }
+            return new JForControl(line, forInit, expression, forUpdate);
+        }
+    }
+
+    /**
+     * Parse a forVarControl.
+     * <p>
+     * <pre>
+     *   forVarControl ::= [final] type IDENTIFIER forVarControlRest
+     * </pre>
+     *
+     * @return an AST for a for var control.
+     */
+    private JForVarControl forVarControl() {
+        int line = scanner.token().line();
+        boolean isfinal = have(FINAL);
+        Type type = type();
+        mustBe(IDENTIFIER);
+        String identifier = scanner.previousToken().image();
+        return new JForVarControl(line, isfinal, type, identifier, forVarControlRest(type));
+    }
+
+    /**
+     * Parse a forVarControlRest.
+     * <p>
+     * <pre>
+     *   forVarControlRest ::= [ASSIGN variableInitializer] { COMMA variableDeclarator } SEMI
+     *                                  [expression] SMI [forUpdate]
+     *                       | COLON expression
+     * </pre>
+     *
+     * @return an AST for a for var control rest.
+     */
+    private JForVarControlRest forVarControlRest(Type type) {
+        int line = scanner.token().line();
+        if (have(COLON)) {
+            return new JForVarControlRest(line, expression());
+        } else {
+            JExpression variableInitializer = null;
+            if (have(ASSIGN)) {
+                variableInitializer = variableInitializer(type);
+            }
+            ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<>();
+            while (have(COMMA)) {
+                variableDeclarators.add(variableDeclarator(type));
+            }
+            mustBe(SEMI);
+            JExpression expression = null;
+            if (!see(SEMI)) {
+                expression = expression();
+            }
+            mustBe(SEMI);
+            JForInitUpdate forUpdate = null;
+            if (!see(RPAREN)) {
+                forUpdate = forInitUpdate();
+            }
+            return new JForVarControlRest(line, variableInitializer, variableDeclarators, expression, forUpdate);
+        }
+    }
+
+    /**
+     * Parse a forInitUpdate.
+     * <p>
+     * <pre>
+     *   forInitUpdate ::= statementExpression { COMMA statementExpression }
+     * </pre>
+     *
+     * @return an AST for a for init update.
+     */
+    private JForInitUpdate forInitUpdate() {
+        int line = scanner.token().line();
+        ArrayList<JStatement> statementExpressions = new ArrayList<>();
+        statementExpressions.add(statementExpression());
+        while (have(COMMA)) {
+            statementExpressions.add(statementExpression());
+        }
+        return new JForInitUpdate(line, statementExpressions);
     }
 
     /**
@@ -918,7 +1055,7 @@ public class Parser {
      */
 
     private Type referenceType() {
-        Type type = null;
+        Type type;
         if (!see(IDENTIFIER)) {
             type = basicType();
             mustBe(LBRACK);
@@ -1051,7 +1188,7 @@ public class Parser {
         JExpression lhs = conditionalOrExpression();
         if (have(TERNARY_START)) {
             JExpression middle = assignmentExpression();
-            mustBe(TERNARY_END);
+            mustBe(COLON);
             return new JTernaryOp(line, lhs, middle, conditionalExpression());
         } else {
             return lhs;

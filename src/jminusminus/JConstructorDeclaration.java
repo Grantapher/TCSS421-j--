@@ -28,19 +28,20 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      * number, modifiers, constructor name, formal parameters, and the
      * constructor body.
      *
-     * @param line   line in which the constructor declaration occurs in the source
-     *               file.
-     * @param mods   modifiers.
-     * @param name   constructor name.
-     * @param params the formal parameters.
-     * @param body   constructor body.
+     * @param line       line in which the constructor declaration occurs in the source
+     *                   file.
+     * @param mods       modifiers.
+     * @param name       constructor name.
+     * @param params     the formal parameters.
+     * @param throwTypes
+     * @param body       constructor body.
      */
 
     public JConstructorDeclaration(int line, ArrayList<String> mods, String name,
-                                   ArrayList<JFormalParameter> params, JBlock body)
+                                   ArrayList<JFormalParameter> params, ArrayList<TypeName> throwTypes, JBlock body)
 
     {
-        super(line, mods, name, Type.CONSTRUCTOR, params, body);
+        super(line, mods, name, Type.CONSTRUCTOR, params, throwTypes, body);
     }
 
     /**
@@ -58,8 +59,8 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
                     .reportSemanticError(line(), "Constructor cannot be declared static");
         } else if (isAbstract) {
             JAST.compilationUnit.reportSemanticError(line(),
-                                                     "Constructor cannot be declared " +
-                                                             "abstract"
+                    "Constructor cannot be declared " +
+                            "abstract"
             );
         }
         if (body.statements().size() > 0 &&
@@ -98,7 +99,7 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         // to be always initialized, via a function call. 
         for (JFormalParameter param : params) {
             LocalVariableDefn defn = new LocalVariableDefn(param.type(),
-                                                           this.context.nextOffset()
+                    this.context.nextOffset()
             );
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
@@ -123,10 +124,10 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         if (!invokesConstructor) {
             partial.addNoArgInstruction(ALOAD_0);
             partial.addMemberAccessInstruction(INVOKESPECIAL,
-                                               ((JTypeDecl) context.classContext()
-                                                                   .definition())
-                                                       .superType().jvmName(), "<init>",
-                                               "()V"
+                    ((JTypeDecl) context.classContext()
+                            .definition())
+                            .superType().jvmName(), "<init>",
+                    "()V"
             );
         }
         partial.addNoArgInstruction(RETURN);
@@ -144,10 +145,10 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         if (!invokesConstructor) {
             output.addNoArgInstruction(ALOAD_0);
             output.addMemberAccessInstruction(INVOKESPECIAL,
-                                              ((JTypeDecl) context.classContext()
-                                                                  .definition())
-                                                      .superType().jvmName(), "<init>",
-                                              "()V"
+                    ((JTypeDecl) context.classContext()
+                            .definition())
+                            .superType().jvmName(), "<init>",
+                    "()V"
             );
         }
         // Field initializations

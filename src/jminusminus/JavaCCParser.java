@@ -391,7 +391,7 @@ class JavaCCParser implements JavaCCParserConstants {
         body = block();
                 memberDecl =
                 new JConstructorDeclaration( line, mods,
-                                             name, params, body );
+                                             name, params, throwTypes, body );
       } else if (jj_2_2(2147483647)) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VOID:

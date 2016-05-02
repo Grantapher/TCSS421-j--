@@ -194,14 +194,16 @@ class Scanner {
                     }
                 } else if (ch == '*') {
                     nextCh();
-                    while (ch != EOFCH) {
-                        if (ch == '*') {
-                            nextCh();
-                            if (ch == '/') {
+                    findEndOfComment:
+                    {
+                        while (ch != EOFCH) {
+                            while (ch == '*') {
                                 nextCh();
-                                break;
+                                if (ch == '/') {
+                                    nextCh();
+                                    break findEndOfComment;
+                                }
                             }
-                        } else {
                             nextCh();
                         }
                     }
@@ -222,7 +224,7 @@ class Scanner {
                 return new TokenInfo(TERNARY_START, line);
             case ':':
                 nextCh();
-                return new TokenInfo(TERNARY_END, line);
+                return new TokenInfo(COLON, line);
             case '~':
                 nextCh();
                 return new TokenInfo(BCOMP, line);
