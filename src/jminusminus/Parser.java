@@ -694,9 +694,11 @@ public class Parser {
             while (have(CATCH)) {
                 int catchLine = scanner.previousToken().line();
                 mustBe(LPAREN);
-                JFormalParameter param = formalParameter();
+                Type type = type();
+                mustBe(IDENTIFIER);
+                String name = scanner.previousToken().image();
                 mustBe(RPAREN);
-                catches.add(new JCatchBlock(catchLine, param, block()));
+                catches.add(new JCatchBlock(catchLine, type, name, block()));
             }
             JFinallyBlock finallyBlock = null;
             if (have(FINALLY)) {
@@ -894,42 +896,64 @@ public class Parser {
      * Parse formal parameters.
      * <p>
      * <pre>
-     *   formalParameters ::= LPAREN
-     *                          [formalParameter
-     *                            {COMMA  formalParameter}]
-     *                        RPAREN
+     *   formalParameters ::= LPAREN [formalParameterDecls] RPAREN
      * </pre>
      *
      * @return a list of formal parameters.
      */
 
     private ArrayList<JFormalParameter> formalParameters() {
-        ArrayList<JFormalParameter> parameters = new ArrayList<JFormalParameter>();
         mustBe(LPAREN);
+        ArrayList<JFormalParameter> parameters = new ArrayList<>();
         if (have(RPAREN)) return parameters; // ()
-        do {
-            parameters.add(formalParameter());
-        } while (have(COMMA));
+        formalParameterDecls(parameters);
         mustBe(RPAREN);
         return parameters;
     }
 
     /**
-     * Parse a formal parameter.
+     * Parse formal parameter declarations.
      * <p>
      * <pre>
-     *   formalParameter ::= type IDENTIFIER
+     *   formalParameterDecls ::= type formalParameterDeclsRest
      * </pre>
      *
-     * @return an AST for a formalParameter.
+     * @param parameters the list to add the completed parameters to
+     * @return an AST for a formalParameterDecls.
      */
-
-    private JFormalParameter formalParameter() {
+    private void formalParameterDecls(ArrayList<JFormalParameter> parameters) {
         int line = scanner.token().line();
-        Type type = type();
-        mustBe(IDENTIFIER);
-        String name = scanner.previousToken().image();
-        return new JFormalParameter(line, name, type);
+        formalParameterDeclsRest(type(), parameters);
+    }
+
+    /**
+     * Parse formal parameter declarations rest.
+     * <p>
+     * <pre>
+     *   formalParameterDeclsRest ::= IDENTIFIER [ COMMA formalParameterDecls ]
+     *                              | DOT DOT DOT IDENTIFIER
+     * </pre>
+     *
+     * @param type       the type of the next parameter
+     * @param parameters the list to ad the completed parameters to
+     * @return an AST for a formalParameterDecls.
+     */
+    private void formalParameterDeclsRest(Type type, ArrayList<JFormalParameter> parameters) {
+        int line = scanner.token().line();
+        if (have(DOT)) {
+            mustBe(DOT);
+            mustBe(DOT);
+            mustBe(IDENTIFIER);
+            String identifier = scanner.previousToken().image();
+            parameters.add(new JFormalParameter(line, identifier, type, true));
+        } else {
+            mustBe(IDENTIFIER);
+            String identifier = scanner.previousToken().image();
+            parameters.add(new JFormalParameter(line, identifier, type, false));
+            if (have(COMMA)) {
+                formalParameterDecls(parameters);
+            }
+        }
     }
 
     /**

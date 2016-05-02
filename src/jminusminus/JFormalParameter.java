@@ -20,18 +20,25 @@ class JFormalParameter extends JAST {
     private Type type;
 
     /**
+     * Whether the parameter has arity.
+     */
+    private boolean arity;
+
+    /**
      * Construct an AST node for a formal parameter declaration given its line
      * number, name, and type.
      *
-     * @param line line in which the parameter occurs in the source file.
-     * @param name parameter name.
-     * @param type parameter type.
+     * @param line  line in which the parameter occurs in the source file.
+     * @param name  parameter name.
+     * @param type  parameter type.
+     * @param arity whether the parameter has arity
      */
 
-    public JFormalParameter(int line, String name, Type type) {
+    public JFormalParameter(int line, String name, Type type, boolean arity) {
         super(line);
         this.name = name;
         this.type = type;
+        this.arity = arity;
     }
 
     /**
@@ -93,8 +100,8 @@ class JFormalParameter extends JAST {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JFormalParameter line=\"%d\" name=\"%s\" " + "type=\"%s\"/>\n", line(),
-                 name, (type == null) ? "" : type.toString()
+        p.printf("<JFormalParameter line=\"%d\" name=\"%s\" type=\"%s\" arity=\"%s\"/>\n", line(),
+                name, (type == null) ? "" : type.toString(), arity ? "true" : "false"
         );
     }
 

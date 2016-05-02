@@ -2,7 +2,7 @@ package jminusminus;
 
 //todo
 public class JCatchBlock extends JAST {
-    public JCatchBlock(int line, JFormalParameter param, JBlock block) {
+    public JCatchBlock(int line, Type type, String name, JBlock block) {
         super(line);
     }
 
