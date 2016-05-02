@@ -985,6 +985,16 @@ public class Parser {
      *       conditionalExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
+     *            | SUB_ASSIGN // must be valid lhs
+     *            | MUL_ASSIGN // must be valid lhs
+     *            | DIV_ASSIGN // must be valid lhs
+     *            | MOD_ASSIGN // must be valid lhs
+     *            | SHR_ASSIGN // must be valid lhs
+     *            | USHR_ASSIGN // must be valid lhs
+     *            | SHL_ASSIGN // must be valid lhs
+     *            | AND_ASSIGN // must be valid lhs
+     *            | OR_ASSIGN // must be valid lhs
+     *            | XOR_ASSIGN // must be valid lhs
      *            )
      *            assignmentExpression]
      * </pre>
@@ -999,6 +1009,26 @@ public class Parser {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
             return new JPlusAssignOp(line, lhs, assignmentExpression());
+        } else if (have(SUB_ASSIGN)) {
+            return new JSubAssignOp(line, lhs, assignmentExpression());
+        } else if (have(MUL_ASSIGN)) {
+            return new JMultiplyAssignOp(line, lhs, assignmentExpression());
+        } else if (have(DIV_ASSIGN)) {
+            return new JDivideAssignOp(line, lhs, assignmentExpression());
+        } else if (have(MOD_ASSIGN)) {
+            return new JModuloAssignOp(line, lhs, assignmentExpression());
+        } else if (have(RSHIFT_ASSIGN)) {
+            return new JRightShiftAssignOp(line, lhs, assignmentExpression());
+        } else if (have(URSHIFT_ASSIGN)) {
+            return new JUnsignedRightShiftAssignOp(line, lhs, assignmentExpression());
+        } else if (have(LSHIFT_ASSIGN)) {
+            return new JLeftShiftAssignOp(line, lhs, assignmentExpression());
+        } else if (have(BAND_ASSIGN)) {
+            return new JAndAssignOp(line, lhs, assignmentExpression());
+        } else if (have(BOR_ASSIGN)) {
+            return new JOrAssignOp(line, lhs, assignmentExpression());
+        } else if (have(XOR_ASSIGN)) {
+            return new JXorAssignOp(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }

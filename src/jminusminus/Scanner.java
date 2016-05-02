@@ -207,7 +207,6 @@ class Scanner {
                     }
                 } else if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(DIV_ASSIGN);
                     return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
@@ -231,7 +230,6 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(XOR_ASSIGN);
                     return new TokenInfo(XOR_ASSIGN, line);
                 } else {
                     return new TokenInfo(XOR, line);
@@ -240,7 +238,6 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(BOR_ASSIGN);
                     return new TokenInfo(BOR_ASSIGN, line);
                 } else if (ch == '|') {
                     nextCh();
@@ -292,7 +289,6 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(MUL_ASSIGN);
                     return new TokenInfo(MUL_ASSIGN, line);
                 } else {
                     return new TokenInfo(MUL, line);
@@ -301,7 +297,6 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(MOD_ASSIGN);
                     return new TokenInfo(MOD_ASSIGN, line);
                 } else {
                     return new TokenInfo(MOD, line);
@@ -324,7 +319,6 @@ class Scanner {
                     return new TokenInfo(DEC, line);
                 } else if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(SUB_ASSIGN);
                     return new TokenInfo(SUB_ASSIGN, line);
                 } else {
                     return new TokenInfo(SUB, line);
@@ -333,7 +327,6 @@ class Scanner {
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    reportUnimplementedError(BAND_ASSIGN);
                     return new TokenInfo(BAND_ASSIGN, line);
                 } else if (ch == '&') {
                     nextCh();
@@ -347,13 +340,11 @@ class Scanner {
                     nextCh();
                     if (ch == '=') {
                         nextCh();
-                        reportUnimplementedError(RSHIFT_ASSIGN);
                         return new TokenInfo(RSHIFT_ASSIGN, line);
                     } else if (ch == '>') {
                         nextCh();
                         if (ch == '=') {
                             nextCh();
-                            reportUnimplementedError(URSHIFT_ASSIGN);
                             return new TokenInfo(URSHIFT_ASSIGN, line);
                         } else {
                             return new TokenInfo(URSHIFT, line);
@@ -373,7 +364,6 @@ class Scanner {
                     nextCh();
                     if (ch == '=') {
                         nextCh();
-                        reportUnimplementedError(LSHIFT_ASSIGN);
                         return new TokenInfo(LSHIFT_ASSIGN, line);
                     } else {
                         return new TokenInfo(LSHIFT, line);
