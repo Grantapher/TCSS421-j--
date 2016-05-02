@@ -124,6 +124,7 @@ class Scanner {
         putReserved(TRANSIENT);
         putReserved(TRUE);
         putReserved(TRY);
+        putReserved(UNTIL);
         putReserved(VOID);
         putReserved(VOLATILE);
         putReserved(WHILE);
@@ -131,27 +132,16 @@ class Scanner {
         //unimplemented
         putUnimplemented(BREAK);
         putUnimplemented(BYTE);
-        putUnimplemented(CASE);
-        putUnimplemented(CATCH);
         putUnimplemented(CONST);
         putUnimplemented(CONTINUE);
-        putUnimplemented(DEFAULT);
-        putUnimplemented(DO);
-        putUnimplemented(FINAL);
-        putUnimplemented(FINALLY);
-        putUnimplemented(FOR);
         putUnimplemented(GOTO);
         putUnimplemented(IMPLEMENTS);
         putUnimplemented(INTERFACE);
         putUnimplemented(NATIVE);
         putUnimplemented(SHORT);
         putUnimplemented(STRICTFP);
-        putUnimplemented(SWITCH);
         putUnimplemented(SYNCHRONIZED);
-        putUnimplemented(THROW);
-        putUnimplemented(THROWS);
         putUnimplemented(TRANSIENT);
-        putUnimplemented(TRY);
         putUnimplemented(VOLATILE);
 
         // Prime the pump.

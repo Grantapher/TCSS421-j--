@@ -2,6 +2,8 @@
 
 package jminusminus;
 
+import com.sun.javafx.fxml.expression.Expression;
+
 import java.util.ArrayList;
 
 import static jminusminus.TokenKind.*;
@@ -653,6 +655,7 @@ public class Parser {
      *               | IF parExpression statement [ELSE statement]
      *               | FOR LPAREN forControl RPAREN statement
      *               | WHILE parExpression statement
+     *               | DO statement (WHILE | UNTIL) parExpression SEMI
      *               | TRY block (CATCH LPAREN formalParameter RPAREN block {CATCH LPAREN formalParameter RPAREN block}
      *                          |{CATCH LPAREN formalParameter RPAREN block} FINALLY block)
      *               | WHILE parExpression statement
@@ -685,6 +688,19 @@ public class Parser {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
+        } else if (have(DO)) {
+            JStatement statement = statement();
+            TokenKind doEndCondition = scanner.token().kind();
+            if (!have(WHILE) || !have(UNTIL)) {
+                reportParserError("Bad do end condition, must be \'until\' or \'while\'");
+            }
+            JExpression parExpresion = parExpression();
+            mustBe(SEMI);
+            if (doEndCondition == WHILE) {
+                return new JDoWhileStatement(line, statement, parExpresion);
+            } else { // UNTIL
+                return new JDoUntilStatement(line, statement, parExpresion);
+            }
         } else if (have(TRY)) {
             JBlock block = block();
             if (!see(FINALLY) && !see(CATCH)) {

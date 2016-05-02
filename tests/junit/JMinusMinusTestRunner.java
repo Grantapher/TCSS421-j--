@@ -12,7 +12,7 @@ import junit.framework.TestSuite;
 public class JMinusMinusTestRunner {
 
     public static Test suite() {
-        //todo needed tests - LOR, BCOMP, shift operators, bitwise ops, ternary, all assignmentExpressions, throws, throw, for, switch, try
+        //todo needed tests - LOR, BCOMP, shift operators, bitwise ops, ternary, all assignmentExpressions, throws, throw, for, switch, try, arity, do-while/do-until
 
         //todo needed FAIL tests - BCOMP (floating point, char), shift ops (fp), bitwise ops, ternary (match type), assignmentExpressions (match type)
 
