@@ -133,7 +133,7 @@
     sources, binaries, documentation and junit test framework. 
     -->
     <target name="package"
-            depends="clean,javacc,compileJavaCC,compileSPIM,jar,javadoc,j2h">
+            depends="clean,compileSPIM,jar,javadoc,j2h">
         <echo message="Making a distributable j--.zip..."/>
         <zip destfile="j--.zip"
              basedir="../"
