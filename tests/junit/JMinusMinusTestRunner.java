@@ -12,19 +12,18 @@ import junit.framework.TestSuite;
 public class JMinusMinusTestRunner {
 
     public static Test suite() {
-        //todo needed tests - bitwise ops, ternary, all assignmentExpressions,
-
         //todo needed FAIL tests - BCOMP (floating point, char), shift ops (fp),
         //todo bitwise ops, ternary (match type), assignmentExpressions (match type)
 
 
         //todo much later - throws, throw, for,
         //todo switch, try, arity, do-while/do-until
-        
+
         //todo bug - method signitures can't tell differences between same name methods
 
         TestSuite suite = new TestSuite();
         suite.addTestSuite(HelloWorldTest.class);
+        suite.addTestSuite(AssignmentTest.class);
         suite.addTestSuite(BitwiseTest.class);
         suite.addTestSuite(DivisionTest.class);
         suite.addTestSuite(ModuloTest.class);
@@ -34,6 +33,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(ComparisonTest.class);
         suite.addTestSuite(CommentsTest.class);
         suite.addTestSuite(ShiftTest.class);
+        suite.addTestSuite(TernaryTest.class);
         suite.addTestSuite(UnaryTest.class);
         suite.addTestSuite(FactorialTest.class);
         suite.addTestSuite(GCDTest.class);

@@ -8,63 +8,63 @@ public class Assignment {
         return local;
     }
 
-    public static int minusEqual(int start, int add) {
+    public static int minusEqual(int start, int sub) {
         int local = start;
-        local -= add;
+        local -= sub;
         return local;
     }
 
-    public static int timesEqual(int start, int add) {
+    public static int timesEqual(int start, int mul) {
         int local = start;
-        local *= add;
+        local *= mul;
         return local;
     }
 
-    public static int divideEqual(int start, int add) {
+    public static int divideEqual(int start, int div) {
         int local = start;
-        local /= add;
+        local /= div;
         return local;
     }
 
-    public static int modEqual(int start, int add) {
+    public static int modEqual(int start, int mod) {
         int local = start;
-        local %= add;
+        local %= mod;
         return local;
     }
 
-    public static int andEqual(int start, int add) {
+    public static int andEqual(int start, int and) {
         int local = start;
-        local &= add;
+        local &= and;
         return local;
     }
 
-    public static int xorEqual(int start, int add) {
+    public static int xorEqual(int start, int xor) {
         int local = start;
-        local ^= add;
+        local ^= xor;
         return local;
     }
 
-    public static int orEqual(int start, int add) {
+    public static int orEqual(int start, int or) {
         int local = start;
-        local |= add;
+        local |= or;
         return local;
     }
 
-    public static int leftShiftEqual(int start, int add) {
+    public static int leftShiftEqual(int start, int shl) {
         int local = start;
-        local <<= add;
+        local <<= shl;
         return local;
     }
 
-    public static int rightShiftEqual(int start, int add) {
+    public static int rightShiftEqual(int start, int shr) {
         int local = start;
-        local >>= add;
+        local >>= shr;
         return local;
     }
 
-    public static int unsignedRightShiftEqual(int start, int add) {
+    public static int unsignedRightShiftEqual(int start, int ushr) {
         int local = start;
-        local >>>= add;
+        local >>>= ushr;
         return local;
     }
 
