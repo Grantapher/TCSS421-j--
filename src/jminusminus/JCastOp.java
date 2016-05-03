@@ -90,6 +90,12 @@ class JCastOp extends JExpression {
         converter.codegen(output);
     }
 
+    @Override
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        codegen(output);
+        output.addBranchInstruction(onTrue ? IFNE : IFEQ, targetLabel);
+    }
+
     /**
      * @inheritDoc
      */
