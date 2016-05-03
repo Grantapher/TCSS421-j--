@@ -19,14 +19,14 @@ public class LogicalTest extends TestCase {
         assertTrue(Logical.notEqual(true, false));
     }
 
-    public void testAnd() {
+    public void testLogicalAnd() {
         assertFalse(Logical.and(false, false));
         assertFalse(Logical.and(false, true));
         assertFalse(Logical.and(true, false));
         assertTrue(Logical.and(true, true));
     }
 
-    public void testOr() {
+    public void testLogicalOr() {
         assertFalse(Logical.or(false, false));
         assertTrue(Logical.or(false, true));
         assertTrue(Logical.or(true, false));

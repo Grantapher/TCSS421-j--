@@ -25,6 +25,7 @@ public class JMinusMinusTestRunner {
 
         TestSuite suite = new TestSuite();
         suite.addTestSuite(HelloWorldTest.class);
+        suite.addTestSuite(BitwiseTest.class);
         suite.addTestSuite(DivisionTest.class);
         suite.addTestSuite(ModuloTest.class);
         suite.addTestSuite(LogicalTest.class);
