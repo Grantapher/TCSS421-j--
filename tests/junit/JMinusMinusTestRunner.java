@@ -12,7 +12,7 @@ import junit.framework.TestSuite;
 public class JMinusMinusTestRunner {
 
     public static Test suite() {
-        //todo needed tests - post++, --pre, LOR, BCOMP, shift operators, bitwise ops,
+        //todo needed tests - post++, --pre, BCOMP, shift operators, bitwise ops,
         //todo ternary, all assignmentExpressions,
 
         //todo needed FAIL tests - BCOMP (floating point, char), shift ops (fp),
@@ -31,6 +31,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(FPTest.class);
         suite.addTestSuite(ComparisonTest.class);
         suite.addTestSuite(CommentsTest.class);
+        suite.addTestSuite(UnaryTest.class);
         suite.addTestSuite(FactorialTest.class);
         suite.addTestSuite(GCDTest.class);
         suite.addTestSuite(SeriesTest.class);
