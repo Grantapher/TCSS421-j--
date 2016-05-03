@@ -2,8 +2,6 @@
 
 package jminusminus;
 
-import com.sun.javafx.fxml.expression.Expression;
-
 import java.util.ArrayList;
 
 import static jminusminus.TokenKind.*;
@@ -108,7 +106,7 @@ public class Parser {
         } else if (isRecovered) {
             isRecovered = false;
             reportParserError("%s found where %s sought", scanner.token().image(),
-                    sought.image()
+                              sought.image()
             );
         } else {
             // Do not report the (possibly spurious) error,
@@ -136,7 +134,7 @@ public class Parser {
         return lastDotIndex == -1 ? null // It was a simple
                 // name
                 : new AmbiguousName(name.line(), qualifiedName.substring(0, lastDotIndex)
-        );
+                );
     }
 
     /**
@@ -281,7 +279,8 @@ public class Parser {
      */
 
     private boolean seeBasicType() {
-        return see(BOOLEAN) || see(CHAR) || see(INT) || see(LONG) || see(FLOAT) || see(DOUBLE);
+        return see(BOOLEAN) || see(CHAR) || see(INT) || see(LONG) || see(FLOAT) ||
+                see(DOUBLE);
     }
 
     /**
@@ -364,7 +363,7 @@ public class Parser {
         }
         mustBe(EOF);
         return new JCompilationUnit(scanner.fileName(), line, packageName, imports,
-                typeDeclarations
+                                    typeDeclarations
         );
     }
 
@@ -554,7 +553,9 @@ public class Parser {
             ArrayList<JFormalParameter> params = formalParameters();
             ArrayList<TypeName> throwTypes = throwTypes();
             JBlock body = block();
-            memberDecl = new JConstructorDeclaration(line, mods, name, params, throwTypes, body);
+            memberDecl = new JConstructorDeclaration(line, mods, name, params, throwTypes,
+                                                     body
+            );
         } else {
             Type type;
             if (have(VOID)) {
@@ -565,7 +566,9 @@ public class Parser {
                 ArrayList<JFormalParameter> params = formalParameters();
                 ArrayList<TypeName> throwTypes = throwTypes();
                 JBlock body = have(SEMI) ? null : block();
-                memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params,
+                                                    throwTypes, body
+                );
             } else {
                 type = type();
                 if (seeIdentLParen()) {
@@ -575,10 +578,14 @@ public class Parser {
                     ArrayList<JFormalParameter> params = formalParameters();
                     ArrayList<TypeName> throwTypes = throwTypes();
                     JBlock body = have(SEMI) ? null : block();
-                    memberDecl = new JMethodDeclaration(line, mods, name, type, params, throwTypes, body);
+                    memberDecl = new JMethodDeclaration(line, mods, name, type, params,
+                                                        throwTypes, body
+                    );
                 } else {
                     // Field
-                    memberDecl = new JFieldDeclaration(line, mods, variableDeclarators(type));
+                    memberDecl = new JFieldDeclaration(line, mods,
+                                                       variableDeclarators(type)
+                    );
                     mustBe(SEMI);
                 }
             }
@@ -602,7 +609,9 @@ public class Parser {
             while (have(COMMA)) {
                 throwTypes.add(qualifiedIdentifier());
             }
-            reportParserError("throws statement not yet implemented in j-- (it parsed successfully though)");
+            reportParserError("throws statement not yet implemented in j-- (it parsed " +
+                                      "successfully though)"
+            );
         }
         return throwTypes;
     }
@@ -656,8 +665,10 @@ public class Parser {
      *               | FOR LPAREN forControl RPAREN statement
      *               | WHILE parExpression statement
      *               | DO statement (WHILE | UNTIL) parExpression SEMI
-     *               | TRY block (CATCH LPAREN formalParameter RPAREN block {CATCH LPAREN formalParameter RPAREN block}
-     *                          |{CATCH LPAREN formalParameter RPAREN block} FINALLY block)
+     *               | TRY block (CATCH LPAREN formalParameter RPAREN block {CATCH
+     *               LPAREN formalParameter RPAREN block}
+     *                          |{CATCH LPAREN formalParameter RPAREN block} FINALLY
+     *                          block)
      *               | WHILE parExpression statement
      *               | RETURN [expression] SEMI
      *               | SEMI
@@ -682,7 +693,9 @@ public class Parser {
             JForControl control = forControl();
             mustBe(RPAREN);
             JStatement statement = statement();
-            reportParserError("for loops aren't yet implemented in j-- (it was parsed though)");
+            reportParserError(
+                    "for loops aren't yet implemented in j-- (it was parsed though)"
+            );
             return new JForStatement(line, control, statement);
         } else if (have(WHILE)) {
             JExpression test = parExpression();
@@ -691,14 +704,28 @@ public class Parser {
         } else if (have(DO)) {
             JStatement statement = statement();
             TokenKind doEndCondition = scanner.token().kind();
-            if (!have(WHILE) || !have(UNTIL)) {
+            if (!have(WHILE) && !have(UNTIL)) {
                 reportParserError("Bad do end condition, must be \'until\' or \'while\'");
             }
             JExpression parExpresion = parExpression();
             mustBe(SEMI);
             if (doEndCondition == WHILE) {
+                reportParserError(
+                        "do-while loops aren't yet implemented in j-- (it was parsed " +
+                                "though)"
+                );
                 return new JDoWhileStatement(line, statement, parExpresion);
-            } else { // UNTIL
+            } else if (doEndCondition == UNTIL) { // UNTIL
+                reportParserError(
+                        "do-until loops aren't yet implemented in j-- (it was parsed " +
+                                "though)"
+                );
+                return new JDoUntilStatement(line, statement, parExpresion);
+            } else {
+                reportParserError(
+                        "do-until loops aren't yet implemented in j-- (it was parsed " +
+                                "though)"
+                );
                 return new JDoUntilStatement(line, statement, parExpresion);
             }
         } else if (have(TRY)) {
@@ -721,17 +748,23 @@ public class Parser {
                 int finallyLine = scanner.previousToken().line();
                 finallyBlock = new JFinallyBlock(finallyLine, block());
             }
-            reportParserError("try-catch-finally is not yet implemented in j-- (it did parse correctly though)");
+            reportParserError(
+                    "try-catch-finally is not yet implemented in j-- (it did parse " +
+                            "correctly though)"
+            );
             return new JTryCatchFinallyStatement(line, block, catches, finallyBlock);
         } else if (have(SWITCH)) {
             JExpression parExpression = parExpression();
             mustBe(LCURLY);
-            ArrayList<JSwitchBlockStatementGroup> switchBlockStatementGroups = new ArrayList<>();
+            ArrayList<JSwitchBlockStatementGroup> switchBlockStatementGroups = new
+                    ArrayList<>();
             while (!see(RCURLY)) {
                 switchBlockStatementGroups.add(switchBlockStatementGroup());
             }
             mustBe(RCURLY);
-            reportParserError("switch is not yet implemented in j-- (it did parse correctly though)");
+            reportParserError(
+                    "switch is not yet implemented in j-- (it did parse correctly though)"
+            );
             return new JSwitchStatement(line, parExpression, switchBlockStatementGroups);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
@@ -746,7 +779,10 @@ public class Parser {
         } else if (have(THROW)) {
             JExpression expr = expression();
             mustBe(SEMI);
-            reportParserError("throw statement not yet implemented in j-- (it parsed successfully though)");
+            reportParserError(
+                    "throw statement not yet implemented in j-- (it parsed successfully" +
+                            " though)"
+            );
             return new JThrowStatement(line, expr);
         } else { // Must be a statementExpression
             JStatement statement = statementExpression();
@@ -797,6 +833,8 @@ public class Parser {
         JExpression expression = null;
         if (have(CASE)) {
             expression = expression();
+        } else {
+            mustBe(DEFAULT);
         }
         mustBe(COLON);
         return new JSwitchLabel(line, expression);
@@ -848,14 +886,16 @@ public class Parser {
         Type type = type();
         mustBe(IDENTIFIER);
         String identifier = scanner.previousToken().image();
-        return new JForVarControl(line, isfinal, type, identifier, forVarControlRest(type));
+        return new JForVarControl(line, isfinal, type, identifier, forVarControlRest(type)
+        );
     }
 
     /**
      * Parse a forVarControlRest.
      * <p>
      * <pre>
-     *   forVarControlRest ::= [ASSIGN variableInitializer] { COMMA variableDeclarator } SEMI
+     *   forVarControlRest ::= [ASSIGN variableInitializer] { COMMA variableDeclarator
+     *   } SEMI
      *                                  [expression] SMI [forUpdate]
      *                       | COLON expression
      * </pre>
@@ -885,7 +925,9 @@ public class Parser {
             if (!see(RPAREN)) {
                 forUpdate = forInitUpdate();
             }
-            return new JForVarControlRest(line, variableInitializer, variableDeclarators, expression, forUpdate);
+            return new JForVarControlRest(line, variableInitializer, variableDeclarators,
+                                          expression, forUpdate
+            );
         }
     }
 
@@ -935,10 +977,8 @@ public class Parser {
      * </pre>
      *
      * @param parameters the list to add the completed parameters to
-     * @return an AST for a formalParameterDecls.
      */
     private void formalParameterDecls(ArrayList<JFormalParameter> parameters) {
-        int line = scanner.token().line();
         formalParameterDeclsRest(type(), parameters);
     }
 
@@ -952,9 +992,9 @@ public class Parser {
      *
      * @param type       the type of the next parameter
      * @param parameters the list to ad the completed parameters to
-     * @return an AST for a formalParameterDecls.
      */
-    private void formalParameterDeclsRest(Type type, ArrayList<JFormalParameter> parameters) {
+    private void formalParameterDeclsRest(Type type,
+                                          ArrayList<JFormalParameter> parameters) {
         int line = scanner.token().line();
         if (have(DOT)) {
             mustBe(DOT);
@@ -962,6 +1002,9 @@ public class Parser {
             mustBe(IDENTIFIER);
             String identifier = scanner.previousToken().image();
             parameters.add(new JFormalParameter(line, identifier, type, true));
+            reportParserError("Variable arity if not yet implemented in j-- (it parsed " +
+                                      "successfully though)"
+            );
         } else {
             mustBe(IDENTIFIER);
             String identifier = scanner.previousToken().image();
@@ -1212,6 +1255,7 @@ public class Parser {
         int line = scanner.token().line();
         JExpression expr = expression();
         if (expr instanceof JAssignment || expr instanceof JPreIncrementOp ||
+                expr instanceof JPostIncrementOp || expr instanceof JPreDecrementOp ||
                 expr instanceof JPostDecrementOp || expr instanceof JMessageExpression ||
                 expr instanceof JSuperConstruction || expr instanceof JThisConstruction ||
                 expr instanceof JNewOp || expr instanceof JNewArrayOp) {
@@ -1589,6 +1633,7 @@ public class Parser {
      * <p>
      * <pre>
      *   unaryExpression ::= INC unaryExpression // level 1
+     *                     | DEC unaryExpression
      *                     | SUB unaryExpression
      *                     | simpleUnaryExpression
      * </pre>
@@ -1600,6 +1645,8 @@ public class Parser {
         int line = scanner.token().line();
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression());
+        } else if (have(DEC)) {
+            return new JPreDecrementOp(line, unaryExpression());
         } else if (have(SUB)) {
             return new JNegateOp(line, unaryExpression());
         } else {
@@ -1645,7 +1692,7 @@ public class Parser {
      * Parse a postfix expression.
      * <p>
      * <pre>
-     *   postfixExpression ::= primary {selector} {DEC}
+     *   postfixExpression ::= primary {selector} {DEC | INC}
      * </pre>
      *
      * @return an AST for a postfixExpression.
@@ -1657,8 +1704,12 @@ public class Parser {
         while (see(DOT) || see(LBRACK)) {
             primaryExpr = selector(primaryExpr);
         }
-        while (have(DEC)) {
-            primaryExpr = new JPostDecrementOp(line, primaryExpr);
+        while (see(DEC) || see(INC)) {
+            if (have(DEC)) {
+                primaryExpr = new JPostDecrementOp(line, primaryExpr);
+            } else if (have(INC)) {
+                primaryExpr = new JPostIncrementOp(line, primaryExpr);
+            }
         }
         return primaryExpr;
     }
@@ -1742,7 +1793,7 @@ public class Parser {
             TypeName id = qualifiedIdentifier();
             if (see(LPAREN)) {
                 return new JMessageExpression(line, null, ambiguousPart(id),
-                        id.simpleName(), arguments()
+                                              id.simpleName(), arguments()
                 );
             } else if (ambiguousPart(id) == null) {
                 // A simple name
