@@ -77,5 +77,4 @@ abstract class JAST {
      */
 
     public abstract void writeToStdOut(PrettyPrinter p);
-
 }

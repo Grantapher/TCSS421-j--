@@ -114,6 +114,11 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         return thisType;
     }
 
+    @Override
+    public boolean isPublic() {
+        return mods.contains("public");
+    }
+
     /**
      * The initializations for instance fields (now expressed as assignment
      * statments).
@@ -233,13 +238,12 @@ class JClassDeclaration extends JAST implements JTypeDecl {
             for (Method method : thisType.abstractMethods()) {
                 methods += "\n" + method;
             }
-            JAST.compilationUnit.reportSemanticError(line,
-                                                     "Class must be declared abstract " +
-                                                             "since it defines " +
-                                                             "the following abstract " +
-                                                             "methods: %s",
-                                                     methods
-            );
+            JAST.compilationUnit
+                    .reportSemanticError(line, "Class must be declared abstract " +
+                                                 "since it defines " +
+                                                 "the following abstract " +
+                                                 "methods: %s", methods
+                    );
 
         }
         return this;

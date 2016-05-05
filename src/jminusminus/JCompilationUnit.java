@@ -186,8 +186,28 @@ class JCompilationUnit extends JAST {
      */
 
     public JAST analyze(Context context) {
+        int numPublicTypes = 0;
+        String publicType = "";
         for (JAST typeDeclaration : typeDeclarations) {
             typeDeclaration.analyze(this.context);
+            if (((JTypeDecl) typeDeclaration).isPublic()) {
+                numPublicTypes++;
+                publicType = ((JTypeDecl) typeDeclaration).name();
+            }
+        }
+        if (numPublicTypes > 1) {
+            reportSemanticError(-1, "File contains more than one public" +
+                                        " type declaration."
+            );
+        } else if (numPublicTypes == 1) {
+            String fileSuffix = publicType + ".java";
+            if (!(fileName.equals(fileSuffix) || fileName.endsWith("/" + fileSuffix) ||
+                    fileName.endsWith("\\" + fileSuffix))) {
+                reportSemanticError(-1, "Class " + publicType +
+                        " is declared public, should be declared in a file named " +
+                        publicType + ".java"
+                );
+            }
         }
         return this;
     }

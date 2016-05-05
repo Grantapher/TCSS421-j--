@@ -51,4 +51,11 @@ interface JTypeDecl {
 
     public Type thisType();
 
+    /**
+     * Return if this type declaration is public.
+     *
+     * @return if the type is declared public
+     */
+
+    public boolean isPublic();
 }
