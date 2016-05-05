@@ -483,10 +483,7 @@
     <!--
         rebuild: rebuilds the project and runs the compiler tests.
     -->
-    <target name="rebuild"
-            depends="clean,compile,jar,runCompilerTests">
-        <echo message="Rebuilding j--"/>
-    </target>
+    <target name="rebuild" depends="clean,compile,jar,runCompilerTests"/>
 
 
 </project>

@@ -158,7 +158,7 @@ class JCompilationUnit extends JAST {
             } catch (Exception e) {
                 JAST.compilationUnit
                         .reportSemanticError(imported.line(), "Unable to find %s",
-                                             imported.toString()
+                                imported.toString()
                         );
             }
         }
@@ -188,24 +188,24 @@ class JCompilationUnit extends JAST {
     public JAST analyze(Context context) {
         int numPublicTypes = 0;
         String publicType = "";
+        int line = 0;
         for (JAST typeDeclaration : typeDeclarations) {
             typeDeclaration.analyze(this.context);
             if (((JTypeDecl) typeDeclaration).isPublic()) {
                 numPublicTypes++;
                 publicType = ((JTypeDecl) typeDeclaration).name();
+                line = typeDeclaration.line();
             }
         }
         if (numPublicTypes > 1) {
-            reportSemanticError(-1, "File contains more than one public" +
-                                        " type declaration."
-            );
+            reportSemanticError(line, "File contains more than one public type declaration.");
         } else if (numPublicTypes == 1) {
             String fileSuffix = publicType + ".java";
             if (!(fileName.equals(fileSuffix) || fileName.endsWith("/" + fileSuffix) ||
                     fileName.endsWith("\\" + fileSuffix))) {
-                reportSemanticError(-1, "Class " + publicType +
-                        " is declared public, should be declared in a file named " +
-                        publicType + ".java"
+                reportSemanticError(line, "Class " + publicType +
+                                " is declared public, should be declared in a file named " +
+                                publicType + ".java"
                 );
             }
         }

@@ -4,7 +4,7 @@ import java.lang.Float;
 import java.lang.Integer;
 
 //fail cases for literal scannings
-public class LiteralScanFail {
+public class LiteralParseFail {
 
     public static void test() {
         int i = 2147483648;
