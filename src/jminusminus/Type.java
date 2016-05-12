@@ -115,6 +115,11 @@ class Type {
     public final static Type NULLTYPE = new Type(java.lang.Object.class);
 
     /**
+     * The type that gets thrown and caught.
+     */
+    public final static Type THROWABLE = typeFor(java.lang.Throwable.class);
+
+    /**
      * A type marker indicating a constructor (having no return type).
      */
     public final static Type CONSTRUCTOR = new Type(null);
@@ -282,6 +287,10 @@ class Type {
 
     public boolean isJavaAssignableFrom(Type that) {
         return this.classRep.isAssignableFrom(that.classRep);
+    }
+
+    public boolean isSubtypeOf(Type that) {
+        return that.classRep.isAssignableFrom(this.classRep);
     }
 
     /**
@@ -465,7 +474,8 @@ class Type {
                                 : cls == char.class ? "C" : cls == boolean.class ? "Z"
                                         : cls == long.class ? "J"
                                                 : cls == float.class ? "F"
-                                                        : cls == double.class ? "D" : "?")
+                                                        : cls == double.class ? "D"
+                                                                : "?" )
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
 

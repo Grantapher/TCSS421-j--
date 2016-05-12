@@ -779,10 +779,6 @@ public class Parser {
         } else if (have(THROW)) {
             JExpression expr = expression();
             mustBe(SEMI);
-            reportParserError(
-                    "throw statement not yet implemented in j-- (it parsed successfully" +
-                            " though)"
-            );
             return new JThrowStatement(line, expr);
         } else { // Must be a statementExpression
             JStatement statement = statementExpression();

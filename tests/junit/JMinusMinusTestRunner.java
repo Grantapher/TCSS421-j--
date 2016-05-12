@@ -22,23 +22,24 @@ public class JMinusMinusTestRunner {
         //todo bug - method signitures can't tell differences between same name methods
 
         TestSuite suite = new TestSuite();
-        suite.addTestSuite(HelloWorldTest.class);
         suite.addTestSuite(AssignmentTest.class);
         suite.addTestSuite(BitwiseTest.class);
-        suite.addTestSuite(DivisionTest.class);
-        suite.addTestSuite(ModuloTest.class);
-        suite.addTestSuite(LogicalTest.class);
-        suite.addTestSuite(IntsTest.class);
-        suite.addTestSuite(FPTest.class);
-        suite.addTestSuite(ComparisonTest.class);
+        suite.addTestSuite(ClassesTest.class);
         suite.addTestSuite(CommentsTest.class);
+        suite.addTestSuite(ComparisonTest.class);
+        suite.addTestSuite(DivisionTest.class);
+        suite.addTestSuite(FactorialTest.class);
+        suite.addTestSuite(FPTest.class);
+        suite.addTestSuite(GCDTest.class);
+        suite.addTestSuite(HelloWorldTest.class);
+        suite.addTestSuite(IntsTest.class);
+        suite.addTestSuite(LogicalTest.class);
+        suite.addTestSuite(ModuloTest.class);
+        suite.addTestSuite(SeriesTest.class);
         suite.addTestSuite(ShiftTest.class);
         suite.addTestSuite(TernaryTest.class);
+        suite.addTestSuite(ThrowTest.class);
         suite.addTestSuite(UnaryTest.class);
-        suite.addTestSuite(FactorialTest.class);
-        suite.addTestSuite(GCDTest.class);
-        suite.addTestSuite(SeriesTest.class);
-        suite.addTestSuite(ClassesTest.class);
         return suite;
     }
 

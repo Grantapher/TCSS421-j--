@@ -15,17 +15,29 @@ public class JThrowStatement extends JStatement {
     public JAST analyze(Context context) {
         expression = expression.analyze(context);
         type = expression.type();
+        if (!type.isSubtypeOf(Type.THROWABLE)) {
+            JAST.compilationUnit.reportSemanticError(line(),
+                                                     "Throw statement only works on " +
+                                                             "subtypes of " +
+                                                             "\"Throwable\", found type" +
+                                                             " \"%s\"",
+                                                     type.simpleName()
+            );
+        }
         return this;
     }
 
     @Override
     public void codegen(CLEmitter output) {
-        //todo
+        expression.codegen(output);
+        output.addNoArgInstruction(CLConstants.ATHROW);
     }
 
     @Override
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JThrowStatement line=\"%d\" type=\"%s\">\n", line(), ((type == null) ? "" : type.toString()));
+        p.printf("<JThrowStatement line=\"%d\" type=\"%s\">\n", line(),
+                 ((type == null) ? "" : type.toString())
+        );
         p.indentRight();
         p.printf("<expression>\n");
         p.indentRight();
