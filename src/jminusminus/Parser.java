@@ -106,7 +106,7 @@ public class Parser {
         } else if (isRecovered) {
             isRecovered = false;
             reportParserError("%s found where %s sought", scanner.token().image(),
-                              sought.image()
+                    sought.image()
             );
         } else {
             // Do not report the (possibly spurious) error,
@@ -134,7 +134,7 @@ public class Parser {
         return lastDotIndex == -1 ? null // It was a simple
                 // name
                 : new AmbiguousName(name.line(), qualifiedName.substring(0, lastDotIndex)
-                );
+        );
     }
 
     /**
@@ -363,7 +363,7 @@ public class Parser {
         }
         mustBe(EOF);
         return new JCompilationUnit(scanner.fileName(), line, packageName, imports,
-                                    typeDeclarations
+                typeDeclarations
         );
     }
 
@@ -554,7 +554,7 @@ public class Parser {
             ArrayList<TypeName> throwTypes = throwTypes();
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params, throwTypes,
-                                                     body
+                    body
             );
         } else {
             Type type;
@@ -567,7 +567,7 @@ public class Parser {
                 ArrayList<TypeName> throwTypes = throwTypes();
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type, params,
-                                                    throwTypes, body
+                        throwTypes, body
                 );
             } else {
                 type = type();
@@ -579,12 +579,12 @@ public class Parser {
                     ArrayList<TypeName> throwTypes = throwTypes();
                     JBlock body = have(SEMI) ? null : block();
                     memberDecl = new JMethodDeclaration(line, mods, name, type, params,
-                                                        throwTypes, body
+                            throwTypes, body
                     );
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
-                                                       variableDeclarators(type)
+                            variableDeclarators(type)
                     );
                     mustBe(SEMI);
                 }
@@ -610,7 +610,7 @@ public class Parser {
                 throwTypes.add(qualifiedIdentifier());
             }
             reportParserError("throws statement not yet implemented in j-- (it parsed " +
-                                      "successfully though)"
+                            "successfully though)"
             );
         }
         return throwTypes;
@@ -690,13 +690,33 @@ public class Parser {
             return new JIfStatement(line, test, consequent, alternate);
         } else if (have(FOR)) {
             mustBe(LPAREN);
-            JForControl control = forControl();
+            //catch unimplemented
+            if (have(IDENTIFIER) && have(IDENTIFIER) && have(COLON)) {
+                expression();
+                mustBe(RPAREN);
+                statement();
+                reportParserError(
+                        "enhanced-for statement is not yet implemented in j-- (it did parse " +
+                                "correctly though)"
+                );
+                return new JEmptyStatement(line);
+            }
+            JForInit forInit = null;
+            if (!see(SEMI))
+                forInit = forInit();
+            mustBe(SEMI);
+            JExpression expression = null;
+            if (!see(SEMI)) {
+                expression = expression();
+            }
+            mustBe(SEMI);
+            JForUpdate forUpdate = null;
+            if (!see(RPAREN)) {
+                forUpdate = forUpdate();
+            }
             mustBe(RPAREN);
             JStatement statement = statement();
-            reportParserError(
-                    "for loops aren't yet implemented in j-- (it was parsed though)"
-            );
-            return new JForStatement(line, control, statement);
+            return new JForStatement(line, forInit, expression, forUpdate, statement);
         } else if (have(WHILE)) {
             JExpression test = parExpression();
             JStatement statement = statement();
@@ -710,22 +730,10 @@ public class Parser {
             JExpression parExpresion = parExpression();
             mustBe(SEMI);
             if (doEndCondition == WHILE) {
-                reportParserError(
-                        "do-while loops aren't yet implemented in j-- (it was parsed " +
-                                "though)"
-                );
                 return new JDoWhileStatement(line, statement, parExpresion);
             } else if (doEndCondition == UNTIL) { // UNTIL
-                reportParserError(
-                        "do-until loops aren't yet implemented in j-- (it was parsed " +
-                                "though)"
-                );
                 return new JDoUntilStatement(line, statement, parExpresion);
             } else {
-                reportParserError(
-                        "do-until loops aren't yet implemented in j-- (it was parsed " +
-                                "though)"
-                );
                 return new JDoUntilStatement(line, statement, parExpresion);
             }
         } else if (have(TRY)) {
@@ -838,112 +846,47 @@ public class Parser {
     }
 
     /**
-     * Parse a forControl.
+     * Parse a forInit.
      * <p>
      * <pre>
-     *   forControl ::= forVarControl
-     *               | forInit SEMI [expression] SEMI [ForUpdate]
+     *   forInit ::= statementExpression { COMMA statementExpression }
+     *             | type variableDeclarators
      * </pre>
      *
-     * @return an AST for a for control.
+     * @return an AST for a for init.
      */
-    private JForControl forControl() {
+    private JForInit forInit() {
         int line = scanner.token().line();
-        if (see(FINAL) || seeReferenceType() || seeBasicType()) {
-            return new JForControl(line, forVarControl());
+        if (seeReferenceType() || seeBasicType()) {
+            Type type = type();
+            return new JForInit(line, variableDeclarators(type));
         } else {
-            JForInitUpdate forInit = forInitUpdate();
-            mustBe(SEMI);
-            JExpression expression = null;
-            if (!see(SEMI)) {
-                expression = expression();
-            }
-            mustBe(SEMI);
-            JForInitUpdate forUpdate = null;
-            if (!see(RPAREN)) {
-                forUpdate = forInitUpdate();
-            }
-            return new JForControl(line, forInit, expression, forUpdate);
-        }
-    }
-
-    /**
-     * Parse a forVarControl.
-     * <p>
-     * <pre>
-     *   forVarControl ::= [final] type IDENTIFIER forVarControlRest
-     * </pre>
-     *
-     * @return an AST for a for var control.
-     */
-    private JForVarControl forVarControl() {
-        int line = scanner.token().line();
-        boolean isfinal = have(FINAL);
-        Type type = type();
-        mustBe(IDENTIFIER);
-        String identifier = scanner.previousToken().image();
-        return new JForVarControl(line, isfinal, type, identifier, forVarControlRest(type)
-        );
-    }
-
-    /**
-     * Parse a forVarControlRest.
-     * <p>
-     * <pre>
-     *   forVarControlRest ::= [ASSIGN variableInitializer] { COMMA variableDeclarator
-     *   } SEMI
-     *                                  [expression] SMI [forUpdate]
-     *                       | COLON expression
-     * </pre>
-     *
-     * @return an AST for a for var control rest.
-     */
-    private JForVarControlRest forVarControlRest(Type type) {
-        int line = scanner.token().line();
-        if (have(COLON)) {
-            return new JForVarControlRest(line, expression());
-        } else {
-            JExpression variableInitializer = null;
-            if (have(ASSIGN)) {
-                variableInitializer = variableInitializer(type);
-            }
-            ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<>();
+            ArrayList<JStatement> statementExpressions = new ArrayList<>();
+            statementExpressions.add(statementExpression());
             while (have(COMMA)) {
-                variableDeclarators.add(variableDeclarator(type));
+                statementExpressions.add(statementExpression());
             }
-            mustBe(SEMI);
-            JExpression expression = null;
-            if (!see(SEMI)) {
-                expression = expression();
-            }
-            mustBe(SEMI);
-            JForInitUpdate forUpdate = null;
-            if (!see(RPAREN)) {
-                forUpdate = forInitUpdate();
-            }
-            return new JForVarControlRest(line, variableInitializer, variableDeclarators,
-                                          expression, forUpdate
-            );
+            return new JForInit(line, statementExpressions, 0);
         }
     }
 
     /**
-     * Parse a forInitUpdate.
+     * Parse a forUpdate.
      * <p>
      * <pre>
-     *   forInitUpdate ::= statementExpression { COMMA statementExpression }
+     *   forUpdate ::= statementExpression { COMMA statementExpression }
      * </pre>
      *
-     * @return an AST for a for init update.
+     * @return an AST for a for update.
      */
-    private JForInitUpdate forInitUpdate() {
+    private JForUpdate forUpdate() {
         int line = scanner.token().line();
         ArrayList<JStatement> statementExpressions = new ArrayList<>();
         statementExpressions.add(statementExpression());
         while (have(COMMA)) {
             statementExpressions.add(statementExpression());
         }
-        return new JForInitUpdate(line, statementExpressions);
+        return new JForUpdate(line, statementExpressions);
     }
 
     /**
@@ -999,7 +942,7 @@ public class Parser {
             String identifier = scanner.previousToken().image();
             parameters.add(new JFormalParameter(line, identifier, type, true));
             reportParserError("Variable arity if not yet implemented in j-- (it parsed " +
-                                      "successfully though)"
+                            "successfully though)"
             );
         } else {
             mustBe(IDENTIFIER);
@@ -1789,7 +1732,7 @@ public class Parser {
             TypeName id = qualifiedIdentifier();
             if (see(LPAREN)) {
                 return new JMessageExpression(line, null, ambiguousPart(id),
-                                              id.simpleName(), arguments()
+                        id.simpleName(), arguments()
                 );
             } else if (ambiguousPart(id) == null) {
                 // A simple name

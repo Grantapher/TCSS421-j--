@@ -33,8 +33,6 @@ class JLiteralInt extends JExpression {
         this.text = text;
     }
 
-
-
     /**
      * Analyzing an int literal is trivial.
      *

@@ -34,6 +34,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(HelloWorldTest.class);
         suite.addTestSuite(IntsTest.class);
         suite.addTestSuite(LogicalTest.class);
+        suite.addTestSuite(LoopTest.class);
         suite.addTestSuite(ModuloTest.class);
         suite.addTestSuite(SeriesTest.class);
         suite.addTestSuite(ShiftTest.class);
