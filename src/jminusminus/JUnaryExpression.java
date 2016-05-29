@@ -41,8 +41,8 @@ abstract class JUnaryExpression extends JExpression {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JUnaryExpression line=\"%d\" type=\"%s\" " + "operator=\"%s\">\n",
-                 line(), ((type == null) ? "" : type.toString()),
-                 Util.escapeSpecialXMLChars(operator)
+                line(), ((type == null) ? "" : type.toString()),
+                Util.escapeSpecialXMLChars(operator)
         );
         p.indentRight();
         p.printf("<Operand>\n");
@@ -85,8 +85,8 @@ class JNegateOp extends JUnaryExpression {
 
     public JExpression analyze(Context context) {
         arg = arg.analyze(context);
-        arg.type().mustMatchExpected(line(), Type.INT);
-        type = Type.INT;
+        arg.type().mustMatchOneOf(line(), Type.INT, Type.FLOAT, Type.LONG, Type.DOUBLE);
+        type = arg.type();
         return this;
     }
 
@@ -100,7 +100,15 @@ class JNegateOp extends JUnaryExpression {
 
     public void codegen(CLEmitter output) {
         arg.codegen(output);
-        output.addNoArgInstruction(INEG);
+        if (type().equals(Type.INT)) {
+            output.addNoArgInstruction(INEG);
+        } else if (type().equals(Type.LONG)) {
+            output.addNoArgInstruction(LNEG);
+        } else if (type().equals(Type.FLOAT)) {
+            output.addNoArgInstruction(FNEG);
+        } else { //double
+            output.addNoArgInstruction(DNEG);
+        }
     }
 
 }
@@ -258,8 +266,8 @@ class JPostDecrementOp extends JUnaryExpression {
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
+            arg.type().mustMatchOneOf(line(), Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE);
+            type = arg.type();
         }
         return this;
     }
@@ -278,7 +286,7 @@ class JPostDecrementOp extends JUnaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
+        if (arg.type() == Type.INT && arg instanceof JVariable) {
             // A local variable; otherwise analyze() would
             // have replaced it with an explicit field selection.
             int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn()).offset();
@@ -294,8 +302,19 @@ class JPostDecrementOp extends JUnaryExpression {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
             }
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(ISUB);
+            if (type().equals(Type.INT)) {
+                output.addNoArgInstruction(ICONST_1);
+                output.addNoArgInstruction(ISUB);
+            } else if (type().equals(Type.LONG)) {
+                output.addNoArgInstruction(LCONST_1);
+                output.addNoArgInstruction(LSUB);
+            } else if (type().equals(Type.FLOAT)) {
+                output.addNoArgInstruction(FCONST_1);
+                output.addNoArgInstruction(FSUB);
+            } else { //double
+                output.addNoArgInstruction(DCONST_1);
+                output.addNoArgInstruction(DSUB);
+            }
             ((JLhs) arg).codegenStore(output);
         }
     }
@@ -335,8 +354,8 @@ class JPreDecrementOp extends JUnaryExpression {
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
+            arg.type().mustMatchOneOf(line(), Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE);
+            type = arg.type();
         }
         return this;
     }
@@ -355,7 +374,7 @@ class JPreDecrementOp extends JUnaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
+        if (arg.type() == Type.INT && arg instanceof JVariable) {
             // A local variable; otherwise analyze() would
             // have replaced it with an explicit field selection.
             int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn()).offset();
@@ -367,8 +386,19 @@ class JPreDecrementOp extends JUnaryExpression {
         } else {
             ((JLhs) arg).codegenLoadLhsLvalue(output);
             ((JLhs) arg).codegenLoadLhsRvalue(output);
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(ISUB);
+            if (type().equals(Type.INT)) {
+                output.addNoArgInstruction(ICONST_1);
+                output.addNoArgInstruction(ISUB);
+            } else if (type().equals(Type.LONG)) {
+                output.addNoArgInstruction(LCONST_1);
+                output.addNoArgInstruction(LSUB);
+            } else if (type().equals(Type.FLOAT)) {
+                output.addNoArgInstruction(FCONST_1);
+                output.addNoArgInstruction(FSUB);
+            } else { //double
+                output.addNoArgInstruction(DCONST_1);
+                output.addNoArgInstruction(DSUB);
+            }
             if (!isStatementExpression) {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
@@ -412,8 +442,8 @@ class JPreIncrementOp extends JUnaryExpression {
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
+            arg.type().mustMatchOneOf(line(), Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE);
+            type = arg.type();
         }
         return this;
     }
@@ -432,7 +462,7 @@ class JPreIncrementOp extends JUnaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
+        if (arg.type() == Type.INT && arg instanceof JVariable) {
             // A local variable; otherwise analyze() would
             // have replaced it with an explicit field selection.
             int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn()).offset();
@@ -444,8 +474,19 @@ class JPreIncrementOp extends JUnaryExpression {
         } else {
             ((JLhs) arg).codegenLoadLhsLvalue(output);
             ((JLhs) arg).codegenLoadLhsRvalue(output);
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(IADD);
+            if (type().equals(Type.INT)) {
+                output.addNoArgInstruction(ICONST_1);
+                output.addNoArgInstruction(IADD);
+            } else if (type().equals(Type.LONG)) {
+                output.addNoArgInstruction(LCONST_1);
+                output.addNoArgInstruction(LADD);
+            } else if (type().equals(Type.FLOAT)) {
+                output.addNoArgInstruction(FCONST_1);
+                output.addNoArgInstruction(FADD);
+            } else { //double
+                output.addNoArgInstruction(DCONST_1);
+                output.addNoArgInstruction(DADD);
+            }
             if (!isStatementExpression) {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
@@ -489,8 +530,8 @@ class JPostIncrementOp extends JUnaryExpression {
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
+            arg.type().mustMatchOneOf(line(), Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE);
+            type = arg.type();
         }
         return this;
     }
@@ -509,7 +550,7 @@ class JPostIncrementOp extends JUnaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
+        if (arg.type() == Type.INT && arg instanceof JVariable) {
             // A local variable; otherwise analyze() would
             // have replaced it with an explicit field selection.
             int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn()).offset();
@@ -525,8 +566,19 @@ class JPostIncrementOp extends JUnaryExpression {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
             }
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(IADD);
+            if (type().equals(Type.INT)) {
+                output.addNoArgInstruction(ICONST_1);
+                output.addNoArgInstruction(IADD);
+            } else if (type().equals(Type.LONG)) {
+                output.addNoArgInstruction(LCONST_1);
+                output.addNoArgInstruction(LADD);
+            } else if (type().equals(Type.FLOAT)) {
+                output.addNoArgInstruction(FCONST_1);
+                output.addNoArgInstruction(FADD);
+            } else { //double
+                output.addNoArgInstruction(DCONST_1);
+                output.addNoArgInstruction(DADD);
+            }
             ((JLhs) arg).codegenStore(output);
         }
     }

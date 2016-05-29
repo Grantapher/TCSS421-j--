@@ -29,4 +29,28 @@ public class ComparisonTest extends TestCase {
         assertTrue(Comparison.greaterEqual(1, 0));
     }
 
+    public void testLLessThan() {
+        assertFalse(Comparison.lLessThan(1L, 1L));
+        assertTrue(Comparison.lLessThan(0L, 1L));
+        assertFalse(Comparison.lLessThan(1L, 0L));
+    }
+
+    public void testLGreaterThan() {
+        assertFalse(Comparison.lGreaterThan(1L, 1L));
+        assertFalse(Comparison.lGreaterThan(0L, 1L));
+        assertTrue(Comparison.lGreaterThan(1L, 0L));
+    }
+
+    public void testLLessEqual() {
+        assertTrue(Comparison.lLessEqual(1L, 1L));
+        assertTrue(Comparison.lLessEqual(0L, 1L));
+        assertFalse(Comparison.lLessEqual(1L, 0L));
+    }
+
+    public void testLGreaterEqual() {
+        assertTrue(Comparison.lGreaterEqual(1L, 1L));
+        assertFalse(Comparison.lGreaterEqual(0L, 1L));
+        assertTrue(Comparison.lGreaterEqual(1L, 0L));
+    }
+
 }

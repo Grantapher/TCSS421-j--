@@ -18,4 +18,20 @@ public class Comparison {
         return a >= b;
     }
 
+    public static boolean lLessThan(long a, long b) {
+        return a < b;
+    }
+
+    public static boolean lGreaterThan(long a, long b) {
+        return a > b;
+    }
+
+    public static boolean lLessEqual(long a, long b) {
+        return a <= b;
+    }
+
+    public static boolean lGreaterEqual(long a, long b) {
+        return a >= b;
+    }
+
 }

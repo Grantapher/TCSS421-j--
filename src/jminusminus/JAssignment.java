@@ -220,7 +220,15 @@ class JPlusAssignOp extends JAssignmentExpression {
         } else {
             ((JLhs) lhs).codegenLoadLhsRvalue(output); //iload_2
             rhs.codegen(output);                    //iload_1
-            output.addNoArgInstruction(IADD);       //iadd
+            if (type().equals(Type.INT)) {
+                output.addNoArgInstruction(IADD);
+            } else if (type().equals(Type.LONG)) {
+                output.addNoArgInstruction(LADD);
+            } else if (type().equals(Type.FLOAT)) {
+                output.addNoArgInstruction(FADD);
+            } else { //double
+                output.addNoArgInstruction(DADD);
+            }
         }
         if (!isStatementExpression) {
             // Generate code to leave the r-value atop stack
