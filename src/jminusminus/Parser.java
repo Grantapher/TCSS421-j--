@@ -662,6 +662,7 @@ public class Parser {
      * <pre>
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
+     *               | UNLESS parExpression statement [ELSE statement]
      *               | FOR LPAREN forControl RPAREN statement
      *               | WHILE parExpression statement
      *               | DO statement (WHILE | UNTIL) parExpression SEMI
@@ -688,6 +689,11 @@ public class Parser {
             JStatement consequent = statement();
             JStatement alternate = have(ELSE) ? statement() : null;
             return new JIfStatement(line, test, consequent, alternate);
+        } else if (have(UNLESS)) {
+            JExpression test = parExpression();
+            JStatement consequent = statement();
+            JStatement alternate = have(ELSE) ? statement() : null;
+            return new JUnlessStatement(line, test, consequent, alternate);
         } else if (have(FOR)) {
             mustBe(LPAREN);
             //catch unimplemented

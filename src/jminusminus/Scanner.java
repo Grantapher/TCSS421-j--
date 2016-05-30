@@ -124,6 +124,7 @@ class Scanner {
         putReserved(TRANSIENT);
         putReserved(TRUE);
         putReserved(TRY);
+        putReserved(UNLESS);
         putReserved(UNTIL);
         putReserved(VOID);
         putReserved(VOLATILE);

@@ -65,6 +65,7 @@ enum TokenKind {
     TRANSIENT("transient"),
     TRUE("true"),
     TRY("try"),
+    UNLESS("unless"),
     UNTIL("until"),
     VOID("void"),
     VOLATILE("volatile"),
