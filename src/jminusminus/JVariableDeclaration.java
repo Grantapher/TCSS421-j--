@@ -69,18 +69,19 @@ class JVariableDeclaration extends JStatement {
             // declared
             // in preAnalyze())
             int offset = ((LocalContext) context).nextOffset();
-            LocalVariableDefn defn = new LocalVariableDefn(decl.type().resolve(context),
-                                                           offset
-            );
+            Type type = decl.type().resolve(context);
+            LocalVariableDefn defn = new LocalVariableDefn(type, offset);
+            if (type == Type.LONG || type == Type.DOUBLE)
+                ((LocalContext) context).nextOffset();
 
             // First, check for shadowing
             IDefn previousDefn = context.lookup(decl.name());
             if (previousDefn != null && previousDefn instanceof LocalVariableDefn) {
-                JAST.compilationUnit.reportSemanticError(decl.line(),
-                                                         "The name " + decl.name() +
-                                                                 " overshadows another " +
-                                                                 "local variable."
-                );
+                JAST.compilationUnit
+                        .reportSemanticError(decl.line(), "The name " + decl.name() +
+                                                     " overshadows another " +
+                                                     "local variable."
+                        );
             }
 
             // Then declare it in the local context
@@ -90,9 +91,9 @@ class JVariableDeclaration extends JStatement {
             // statements and analyzed
             if (decl.initializer() != null) {
                 defn.initialize();
-                JAssignOp assignOp = new JAssignOp(decl.line(), new JVariable(decl.line(),
-                                                                              decl.name()
-                ), decl.initializer()
+                JAssignOp assignOp = new JAssignOp(decl.line(),
+                                                   new JVariable(decl.line(), decl.name()
+                                                   ), decl.initializer()
                 );
                 assignOp.isStatementExpression = true;
                 initializations.add(new JStatementExpression(decl.line(), assignOp)

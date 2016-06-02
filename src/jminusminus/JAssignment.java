@@ -119,7 +119,8 @@ abstract class JAssignmentExpression extends JAssignment {
     }
 
     /**
-     * Code generation for assignment expressions involves, generating code for loading any
+     * Code generation for assignment expressions involves, generating code for loading
+     * any
      * necessary l-value onto the stack, for loading the r-value, for (unless a statement)
      * copying the r-value to its proper place on the stack, and for doing the store.
      *
@@ -159,7 +160,8 @@ abstract class JAssignmentExpression extends JAssignment {
     @Override
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
+            JAST.compilationUnit
+                    .reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
@@ -179,8 +181,8 @@ abstract class JAssignmentExpression extends JAssignment {
     @Override
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JAssignmentExpression line=\"%d\" type=\"%s\" " + "operator=\"%s\">\n",
-                line(), ((type == null) ? "" : type.toString()),
-                Util.escapeSpecialXMLChars(operator)
+                 line(), ((type == null) ? "" : type.toString()),
+                 Util.escapeSpecialXMLChars(operator)
         );
         p.indentRight();
         p.printf("<Lhs>\n");
@@ -208,7 +210,8 @@ class JPlusAssignOp extends JAssignmentExpression {
     }
 
     /**
-     * Plus assign has special circumstances involving strings, so it will override the codegen method.
+     * Plus assign has special circumstances involving strings, so it will override the
+     * codegen method.
      *
      * @param output the code emitter (basically an abstraction for producing the
      */
@@ -239,19 +242,21 @@ class JPlusAssignOp extends JAssignmentExpression {
 
     @Override
     protected void analyzeOperation(Context context) {
-        lhs.type().mustMatchOneOf(line(), Type.STRING, Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE);
+        lhs.type().mustMatchOneOf(line(), Type.STRING, Type.INT, Type.LONG, Type.FLOAT,
+                                  Type.DOUBLE
+        );
         Type lType = lhs.type();
         if (lType.equals(Type.STRING)) {
             rhs = (new JStringConcatenationOp(line, lhs, rhs)).analyze(context);
             type = Type.STRING;
-        } else if (lType.equals(Type.INT) || lType.equals(Type.LONG) || lType.equals(Type.FLOAT)
-                || lType.equals(Type.DOUBLE)) {
+        } else if (lType.equals(Type.INT) || lType.equals(Type.LONG) ||
+                lType.equals(Type.FLOAT) || lType.equals(Type.DOUBLE)) {
             rhs.type().mustMatchExpected(line(), lType);
             type = lType;
         } else {
-            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for +=: " +
-                            lhs.type()
-            );
+            JAST.compilationUnit
+                    .reportSemanticError(line(), "Invalid lhs type for +=: " + lhs.type()
+                    );
         }
     }
 
@@ -269,7 +274,8 @@ class JPlusAssignOp extends JAssignmentExpression {
  */
 abstract class JArithmeticAssignmentExpression extends JAssignmentExpression {
 
-    public JArithmeticAssignmentExpression(int line, String op, JExpression lhs, JExpression rhs) {
+    public JArithmeticAssignmentExpression(int line, String op, JExpression lhs,
+                                           JExpression rhs) {
         super(line, op, lhs, rhs);
     }
 
@@ -355,7 +361,8 @@ class JDivideAssignOp extends JArithmeticAssignmentExpression {
  */
 abstract class JIntegerAssignmentExpression extends JAssignmentExpression {
 
-    public JIntegerAssignmentExpression(int line, String op, JExpression lhs, JExpression rhs) {
+    public JIntegerAssignmentExpression(int line, String op, JExpression lhs,
+                                        JExpression rhs) {
         super(line, op, lhs, rhs);
     }
 

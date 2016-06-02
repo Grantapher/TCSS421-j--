@@ -122,18 +122,18 @@ class JMethodDeclaration extends JAST implements JMember {
                     .reportSemanticError(line(), "abstract method cannot have a body");
         } else if (body == null && !isAbstract) {
             JAST.compilationUnit.reportSemanticError(line(),
-                    "Method with null body must be " +
-                            "abstarct"
+                                                     "Method with null body must be " +
+                                                             "abstarct"
             );
         } else if (isAbstract && isPrivate) {
             JAST.compilationUnit.reportSemanticError(line(),
-                    "private method cannot be declared" +
-                            " abstract"
+                                                     "private method cannot be declared" +
+                                                             " abstract"
             );
         } else if (isAbstract && isStatic) {
             JAST.compilationUnit.reportSemanticError(line(),
-                    "static method cannot be declared " +
-                            "abstract"
+                                                     "static method cannot be declared " +
+                                                             "abstract"
             );
         }
 
@@ -172,9 +172,11 @@ class JMethodDeclaration extends JAST implements JMember {
         // Declare the parameters. We consider a formal parameter 
         // to be always initialized, via a function call.
         for (JFormalParameter param : params) {
-            Type type = param.type();
-            LocalVariableDefn defn = new LocalVariableDefn(param.type(), this.context.nextOffset());
-            if (type == Type.LONG || type == Type.DOUBLE) this.context.nextOffset();
+            LocalVariableDefn defn = new LocalVariableDefn(param.type(),
+                                                           this.context.nextOffset()
+            );
+            if (param.type() == Type.LONG || param.type() == Type.DOUBLE)
+                this.context.nextOffset();
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
         }
@@ -182,8 +184,8 @@ class JMethodDeclaration extends JAST implements JMember {
             body = body.analyze(this.context);
             if (returnType != Type.VOID && !methodContext.methodHasReturn()) {
                 JAST.compilationUnit.reportSemanticError(line(),
-                        "Non-void method must have a " +
-                                "return statement"
+                                                         "Non-void method must have a " +
+                                                                 "return statement"
                 );
             }
         }
@@ -252,7 +254,7 @@ class JMethodDeclaration extends JAST implements JMember {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JMethodDeclaration line=\"%d\" name=\"%s\" " + "returnType=\"%s\">\n",
-                line(), name, returnType.toString()
+                 line(), name, returnType.toString()
         );
         p.indentRight();
         if (context != null) {

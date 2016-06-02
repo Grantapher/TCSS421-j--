@@ -5,7 +5,7 @@ public class DoUntil {
         int i = 0;
         do {
             i++;
-        } until(i >= 10);
+        } until (i >= 10);
         return i; //10
     }
 
